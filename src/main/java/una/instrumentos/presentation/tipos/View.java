@@ -1,6 +1,6 @@
-package instrumentos.presentation.tipos;
+package una.instrumentos.presentation.tipos;
 
-import instrumentos.logic.TipoInstrumento;
+import una.instrumentos.logic.TipoInstrumento;
 
 import javax.swing.*;
 import javax.swing.table.TableColumnModel;

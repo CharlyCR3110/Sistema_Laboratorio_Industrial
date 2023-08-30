@@ -1,6 +1,6 @@
-package instrumentos.logic;
+package una.instrumentos.logic;
 
-import instrumentos.data.Data;
+import una.instrumentos.data.Data;
 
 import java.util.Comparator;
 import java.util.List;

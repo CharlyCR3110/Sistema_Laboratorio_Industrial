@@ -1,9 +1,8 @@
-package instrumentos.presentation.tipos;
+package una.instrumentos.presentation.tipos;
 
-import instrumentos.logic.TipoInstrumento;
+import una.instrumentos.logic.TipoInstrumento;
 
-import instrumentos.logic.Service;
-import instrumentos.logic.TipoInstrumento;
+import una.instrumentos.logic.Service;
 
 import java.util.List;
 

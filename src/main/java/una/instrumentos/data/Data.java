@@ -1,6 +1,6 @@
-package instrumentos.data;
+package una.instrumentos.data;
 
-import instrumentos.logic.TipoInstrumento;
+import una.instrumentos.logic.TipoInstrumento;
 
 import java.util.ArrayList;
 import java.util.List;

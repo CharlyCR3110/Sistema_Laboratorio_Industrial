@@ -1,4 +1,4 @@
-package instrumentos.logic;
+package una.instrumentos.logic;
 
 import java.util.Objects;
 

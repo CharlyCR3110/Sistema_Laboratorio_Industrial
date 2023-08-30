@@ -1,3 +1,7 @@
+import una.instrumentos.presentation.tipos.Controller;
+import una.instrumentos.presentation.tipos.Model;
+import una.instrumentos.presentation.tipos.View;
+
 import javax.swing.*;
 
 public class Application {
@@ -9,9 +13,9 @@ public class Application {
 		window = new JFrame();
 		window.setContentPane(new JTabbedPane());
 
-		instrumentos.presentation.tipos.Model tiposModel= new instrumentos.presentation.tipos.Model();
-		instrumentos.presentation.tipos.View tiposView = new instrumentos.presentation.tipos.View();
-		tiposController = new instrumentos.presentation.tipos.Controller(tiposView,tiposModel);
+		Model tiposModel= new Model();
+		View tiposView = new View();
+		tiposController = new Controller(tiposView,tiposModel);
 
 		// Se agrega el panel de tipos de instrumento al tabbed pane (la pestanita de arriba y su contenido)
 		window.getContentPane().add("Tipos de Instrumento",tiposView.getPanel());
@@ -22,6 +26,6 @@ public class Application {
 		window.setTitle("SILAB: Sistema de Laboratorio Industrial");
 		window.setVisible(true);
 	}
-	public static instrumentos.presentation.tipos.Controller tiposController;
+	public static Controller tiposController;
 	public static JFrame window;
 }
