@@ -31,6 +31,13 @@ public class Service {
 		if (result==null) data.getInstrumentos().add(e);
 		else throw new Exception("Instrumento ya existe");
 	}
+		// CALIBRACION
+	public void create(Calibracion e) throws Exception {
+		Calibracion result = data.getCalibraciones().stream()
+				.filter(i->i.getNumero().equals(e.getNumero())).findFirst().orElse(null);
+		if (result==null) data.getCalibraciones().add(e);
+		else throw new Exception("Calibracion ya existe");
+	}
 	// READ
 		// Tipo Instrumento
 	public TipoInstrumento read(TipoInstrumento e) throws Exception{
