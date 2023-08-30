@@ -3,7 +3,9 @@ package una.instrumentos.presentation.tipos;
 import una.instrumentos.logic.TipoInstrumento;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.table.TableColumnModel;
+import java.awt.*;
 import java.awt.event.*;
 import java.util.Observable;
 import java.util.Observer;
@@ -87,7 +89,9 @@ public class View implements Observer {
             tipoInstrumento.setCodigo(codigo.getText());
             tipoInstrumento.setNombre(nombre.getText());
             tipoInstrumento.setUnidad(unidad.getText());
-            controller.save(tipoInstrumento);
+            if (controller.save(tipoInstrumento) == 0) {
+                return; // esto significa que hubieron campos vacios, entonces no se hace el clearAction para evitar que se borren los campos
+            }
             clearAction();
         } catch (Exception ex) {
             showErrorMessageBox(ex.getMessage());
@@ -161,6 +165,22 @@ public class View implements Observer {
             }
         }
         this.panel.revalidate();
+    }
+    public void showError(String message) {
+        JOptionPane.showMessageDialog(panel, message, "Error", JOptionPane.ERROR_MESSAGE);
+    }
+    public void highlightEmptyField(String fieldName) {
+        switch (fieldName) {
+            case "codigo":
+                codigo.requestFocus();
+                break;
+            case "nombre":
+                nombre.requestFocus();
+                break;
+            case "unidad":
+                unidad.requestFocus();
+                break;
+        }
     }
 
     // metodos para obtener los valores de los campos de texto
