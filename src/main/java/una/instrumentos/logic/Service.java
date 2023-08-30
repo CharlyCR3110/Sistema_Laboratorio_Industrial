@@ -16,32 +16,42 @@ public class Service {
 	private Service(){
 		data = new Data();
 	}
-
-	//================= TIPOS DE INSTRUMENTO ============
+	// CREATE
+		// TIPO INSTRUMENTO
 	public void create(TipoInstrumento e) throws Exception{
 		TipoInstrumento result = data.getTipos().stream()
 				.filter(i->i.getCodigo().equals(e.getCodigo())).findFirst().orElse(null);
 		if (result==null) data.getTipos().add(e);
 		else throw new Exception("Tipo ya existe");
 	}
-
+		// INSTRUMENTO
+	public void create(Instrumento e) throws Exception {
+		Instrumento result = data.getInstrumentos().stream()
+				.filter(i->i.getSerie().equals(e.getSerie())).findFirst().orElse(null);
+		if (result==null) data.getInstrumentos().add(e);
+		else throw new Exception("Instrumento ya existe");
+	}
+	// READ
+		// Tipo Instrumento
 	public TipoInstrumento read(TipoInstrumento e) throws Exception{
 		TipoInstrumento result = data.getTipos().stream()
 				.filter(i->i.getCodigo().equals(e.getCodigo())).findFirst().orElse(null);
 		if (result!=null) return result;
 		else throw new Exception("Tipo no existe");
 	}
+		// Instrumento
 	public Instrumento read(Instrumento e ) throws  Exception {
 		Instrumento result = data.getInstrumentos().stream()
 				.filter(i->i.getSerie().equals(e.getSerie())).findFirst().orElse(null);
 		if (result!=null) return result;
 		else throw new Exception("Instrumento no existe");
 	}
-	public void create(Instrumento e) throws Exception {
-		Instrumento result = data.getInstrumentos().stream()
-				.filter(i->i.getSerie().equals(e.getSerie())).findFirst().orElse(null);
-		if (result==null) data.getInstrumentos().add(e);
-		else throw new Exception("Instrumento ya existe");
+		// Calibracion
+	public Calibracion read(Calibracion e) throws Exception {
+		Calibracion result = data.getCalibraciones().stream()
+				.filter(i->i.getNumero().equals(e.getNumero())).findFirst().orElse(null);
+		if (result!=null) return result;
+		else throw new Exception("Calibracion no existe");
 	}
 
 	public void update(TipoInstrumento e) throws Exception{
