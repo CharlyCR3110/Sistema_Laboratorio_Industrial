@@ -33,6 +33,20 @@ public class View implements Observer {
                 handleListClick();
             }
         });
+        clear.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                clearAction();
+            }
+        });
+    }
+    private void clearAction() {
+        // Se limpian los campos (o sea, se ponen en blanco)
+        codigo.setText("");
+        nombre.setText("");
+        unidad.setText("");
+        // Ademas de limpiar los campos, se deselecciona la lista
+        list.clearSelection();
     }
 
     private void searchAction() {
