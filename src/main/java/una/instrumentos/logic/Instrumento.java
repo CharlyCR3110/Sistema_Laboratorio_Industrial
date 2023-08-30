@@ -5,9 +5,9 @@ import java.util.Objects;
 
 public class Instrumento {
 	public Instrumento() {
-		this("","","",0,0,0);
+		this("","",0,0,0,"");
 	}
-	public Instrumento(String serie, String descripcion, String tipo, Integer minimo, Integer maximo, Integer tolerancia) {
+	public Instrumento(String serie, String descripcion, Integer minimo, Integer maximo, Integer tolerancia, String tipo) {
 		this.serie = serie;
 		this.descripcion = descripcion;
 		this.tipo = tipo;
