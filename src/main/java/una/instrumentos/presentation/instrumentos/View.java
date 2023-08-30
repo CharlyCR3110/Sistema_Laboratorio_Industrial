@@ -51,12 +51,12 @@ public class View implements Observer {
 				clearAction();
 			}
 		});
-//		save.addMouseListener(new MouseAdapter() {
-//			@Override
-//			public void mouseClicked(MouseEvent e) {
-//				saveAction();
-//			}
-//		});
+		save.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				saveAction();
+			}
+		});
 //		delete.addMouseListener(new MouseAdapter() {
 //			@Override
 //			public void mouseClicked(MouseEvent e) {
@@ -69,6 +69,22 @@ public class View implements Observer {
 //				editAction();
 //			}
 //		});
+	}
+	private void saveAction() {
+		try {
+			Instrumento instrumento = new Instrumento();
+			instrumento.setSerie(serie.getText());
+			instrumento.setDescripcion(descripcion.getText());
+			instrumento.setMinimo(Integer.parseInt(minimo.getText()));
+			instrumento.setMaximo(Integer.parseInt(maximo.getText()));
+			instrumento.setTolerancia(Integer.parseInt(tolerancia.getText()));
+			instrumento.setTipo(tipo.getSelectedItem().toString());
+			if (controller.save(instrumento) == 1) {
+				clearAction();
+			}
+		} catch (Exception ex) {
+			JOptionPane.showMessageDialog(panel, ex.getMessage(), "Información", JOptionPane.INFORMATION_MESSAGE);
+		}
 	}
 	private void clearAction() {
 		// Se limpian los campos (o sea, se ponen en blanco)
@@ -122,7 +138,7 @@ public class View implements Observer {
 	public void update(Observable updatedModel, Object properties) {
 		int changedProps = (int) properties;
 		if ((changedProps & Model.LIST) == Model.LIST) {
-			int[] cols = {TableModel.SERIE, TableModel.DESCRIPCION, TableModel.MINIMO};
+			int[] cols = {TableModel.SERIE, TableModel.DESCRIPCION, TableModel.MINIMO, TableModel.MAXIMO, TableModel.TOLERANCIA, TableModel.TIPO};
 			list.setModel(new TableModel(cols, model.getList()));
 			list.setRowHeight(30);
 			TableColumnModel columnModel = list.getColumnModel();
@@ -165,6 +181,9 @@ public class View implements Observer {
 				break;
 			case "tolerancia":
 				tolerancia.requestFocus();
+				break;
+			case "tipo":
+				tipo.requestFocus();
 				break;
 		}
 	}
