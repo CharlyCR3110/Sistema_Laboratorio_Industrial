@@ -1,8 +1,14 @@
 package instrumentos.presentation.tipos;
 
+import instrumentos.logic.TipoInstrumento;
 
 import javax.swing.*;
-public class View {
+import javax.swing.table.TableColumnModel;
+import java.awt.event.*;
+import java.util.Observable;
+import java.util.Observer;
+
+public class View implements Observer {
     private JPanel panel;
     private JTextField searchNombre;
     private JButton search;
@@ -20,10 +26,63 @@ public class View {
     private JButton clear;
 
     public View() {
-
+        search.addActionListener(e -> searchAction());
+        list.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                handleListClick();
+            }
+        });
     }
+
+    private void searchAction() {
+        try {
+            TipoInstrumento filter = new TipoInstrumento();
+            filter.setNombre(searchNombre.getText());
+            controller.search(filter);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(panel, ex.getMessage(), "Información", JOptionPane.INFORMATION_MESSAGE);
+        }
+    }
+    private void handleListClick() {
+        int row = list.getSelectedRow();
+        controller.edit(row);
+    }
+    private void showErrorMessageBox(String message) {
+        JOptionPane.showMessageDialog(panel, message, "Información", JOptionPane.INFORMATION_MESSAGE);
+    }
+
     public JPanel getPanel() {
         return panel;
     }
 
+    Controller controller;
+    Model model;
+
+    public void setController(Controller controller) {
+        this.controller = controller;
+    }
+
+    public void setModel(Model model) {
+        this.model = model;
+        model.addObserver(this);
+    }
+
+    @Override
+    public void update(Observable updatedModel, Object properties) {
+        int changedProps = (int) properties;
+        if ((changedProps & Model.LIST) == Model.LIST) {
+            int[] cols = {TableModel.CODIGO, TableModel.NOMBRE, TableModel.UNIDAD};
+            list.setModel(new TableModel(cols, model.getList()));
+            list.setRowHeight(30);
+            TableColumnModel columnModel = list.getColumnModel();
+            columnModel.getColumn(2).setPreferredWidth(200);
+        }
+        if ((changedProps & Model.CURRENT) == Model.CURRENT) {
+            codigo.setText(model.getCurrent().getCodigo());
+            nombre.setText(model.getCurrent().getNombre());
+            unidad.setText(model.getCurrent().getUnidad());
+        }
+        this.panel.revalidate();
+    }
 }
