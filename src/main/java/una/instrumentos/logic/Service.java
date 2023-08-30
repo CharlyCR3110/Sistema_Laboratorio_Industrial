@@ -42,7 +42,6 @@ public class Service {
 			throw new Exception("Tipo no existe");
 		}
 	}
-
 	public void delete(TipoInstrumento e) throws Exception{
 		data.getTipos().remove(e);
 	}
@@ -55,4 +54,8 @@ public class Service {
 	}
 	private static Service theInstance;
 
+	public TipoInstrumento get(TipoInstrumento e) {
+		return data.getTipos().stream()
+				.filter(i->i.getCodigo().equals(e.getCodigo())).findFirst().orElse(null);
+	}
 }
