@@ -32,4 +32,15 @@ public class Controller{
 	}
 	View view;
 	Model model;
+
+	public void save(TipoInstrumento tipoInstrumento) {
+		try {
+			Service.instance().create(tipoInstrumento);
+			model.setList(Service.instance().search(new TipoInstrumento()));
+			model.setCurrent(new TipoInstrumento());
+			model.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
