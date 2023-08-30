@@ -30,6 +30,31 @@ public class Controller{
 			model.commit();
 		} catch (Exception ex) {}
 	}
+	public void edit(Instrumento e) {
+		try {
+            Instrumento current = Service.instance().read(e); // Leer el elemento actual de la base de datos
+
+            // Realizar las operaciones de edición en el elemento actual
+            // Se obtiene el valor de los campos de texto y se asigna al elemento actual
+			current.setDescripcion(view.getDescripcion());
+			current.setMinimo(Integer.valueOf(view.getMinimo()));
+			current.setMaximo(Integer.valueOf(view.getMaximo()));
+			current.setTolerancia(Integer.valueOf(view.getTolerancia()));
+			current.setTipo(view.getTipo());
+
+			try {
+				Service.instance().update(current); // Actualizar el elemento en la base de datos
+			} catch (Exception ex) {
+				// TO-DO manejar correctamente la excepcion
+				ex.printStackTrace();
+			}
+
+            model.setCurrent(current); // Actualizar el elemento en el modelo
+            model.commit(); // Confirmar los cambios en el modelo
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+	}
 	public int save(Instrumento instrumento) {
 		if (!validateAndHandleEmptyField(instrumento.getSerie(), "serie") ||
 				!validateAndHandleEmptyField(instrumento.getDescripcion(), "descripcion")) {
