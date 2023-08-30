@@ -39,6 +39,24 @@ public class View implements Observer {
                 clearAction();
             }
         });
+        save.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                saveAction();
+            }
+        });
+    }
+    private void saveAction() {
+        try {
+            TipoInstrumento tipoInstrumento = new TipoInstrumento();
+            tipoInstrumento.setCodigo(codigo.getText());
+            tipoInstrumento.setNombre(nombre.getText());
+            tipoInstrumento.setUnidad(unidad.getText());
+            controller.save(tipoInstrumento);
+            clearAction();
+        } catch (Exception ex) {
+            showErrorMessageBox(ex.getMessage());
+        }
     }
     private void clearAction() {
         // Se limpian los campos (o sea, se ponen en blanco)
@@ -48,7 +66,6 @@ public class View implements Observer {
         // Ademas de limpiar los campos, se deselecciona la lista
         list.clearSelection();
     }
-
     private void searchAction() {
         try {
             TipoInstrumento filter = new TipoInstrumento();
