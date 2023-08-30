@@ -124,9 +124,10 @@ public class Service {
 	}
 		// Calibracion
 	public List<Calibracion> search(Calibracion e) {
-		return data.getCalibraciones().stream()
-				.filter(i->i.getNumeroDeMediciones().equals(e.getNumeroDeMediciones()))
-				.sorted(Comparator.comparing(Calibracion::getNumeroDeMediciones))
+		// si el numero de calibracion es null, entonces se devuelve la lista completa
+		return e.equals(new Calibracion()) ? data.getCalibraciones() : data.getCalibraciones().stream()
+				.filter(i->i.getNumero().equals(e.getNumero()))
+				.sorted(Comparator.comparing(Calibracion::getNumero))
 				.collect(Collectors.toList());
 	}
 	private static Service theInstance;
