@@ -1,6 +1,7 @@
 package una.instrumentos.presentation.instrumentos;
 
 import una.instrumentos.logic.Instrumento;
+import una.instrumentos.logic.TipoInstrumento;
 
 import javax.swing.*;
 import javax.swing.table.TableColumnModel;
@@ -63,12 +64,24 @@ public class View implements Observer {
 				deleteAction();
 			}
 		});
-//		edit.addMouseListener(new MouseAdapter() {
-//			@Override
-//			public void mouseClicked(MouseEvent e) {
-//				editAction();
-//			}
-//		});
+		edit.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				editAction();
+			}
+		});
+	}
+	private void editAction() {
+		// Se obtiene el elemento seleccionado de la lista
+		int row = list.getSelectedRow();
+		try {
+			Instrumento instrumento = model.getList().get(row);
+			controller.edit(instrumento);
+		} catch (IndexOutOfBoundsException e) {
+			showErrorMessageBox("Debe seleccionar un elemento de la lista");
+		}
+		// Se llama al controlador para editar el elemento
+		clearAction();
 	}
 	private void deleteAction() {
 		try {
