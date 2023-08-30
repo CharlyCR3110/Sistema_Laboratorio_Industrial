@@ -52,33 +52,41 @@ public class Controller{
 	Model model;
 
 	public int save(TipoInstrumento tipoInstrumento) {
-		// Validar la entrada de datos
-		if (tipoInstrumento.getCodigo().isEmpty()) {
-			view.showError("El código no puede estar vacío");
-			view.highlightEmptyField("codigo");
-			return 0;
-		}
-		if (tipoInstrumento.getNombre().isEmpty()) {
-			view.showError("El nombre no puede estar vacío");
-			view.highlightEmptyField("nombre");
-			return 0;
-		}
-		if (tipoInstrumento.getUnidad().isEmpty()) {
-			view.showError("La unidad no puede estar vacía");
-			view.highlightEmptyField("unidad");
+		if (!validateAndHandleEmptyField(tipoInstrumento.getCodigo(), "codigo") ||
+				!validateAndHandleEmptyField(tipoInstrumento.getNombre(), "nombre") ||
+				!validateAndHandleEmptyField(tipoInstrumento.getUnidad(), "unidad")) {
 			return 0;
 		}
 
 		try {
-			Service.instance().create(tipoInstrumento);
-			model.setList(Service.instance().search(new TipoInstrumento()));
-			model.setCurrent(new TipoInstrumento());
-			model.commit();
+			Service service = Service.instance();
+			service.create(tipoInstrumento);
+			updateModelAfterSave(service);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 
 		return 1;
+	}
+
+	private boolean validateAndHandleEmptyField(String value, String fieldName) {
+		if (value.isEmpty()) {
+			view.showError("El " + fieldName + " no puede estar vacío");
+			view.highlightEmptyField(fieldName);
+			return false;
+		}
+		return true;
+	}
+
+	private void updateModelAfterSave(Service service) {
+		TipoInstrumento emptySearch = new TipoInstrumento();
+		try {
+			model.setList(service.search(emptySearch));
+			model.setCurrent(new TipoInstrumento());
+			model.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void delete(TipoInstrumento tipoInstrumento) {
