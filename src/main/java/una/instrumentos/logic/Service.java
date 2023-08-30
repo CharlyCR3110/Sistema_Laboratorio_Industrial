@@ -94,19 +94,28 @@ public class Service {
 			throw new Exception("Calibracion no existe");
 		}
 	}
+	// DELETE
+		// Tipo Instrumento
 	public void delete(TipoInstrumento e) throws Exception{
 		data.getTipos().remove(e);
 	}
+		// Instrumento
 	public void delete(Instrumento e) throws Exception {
 		data.getInstrumentos().remove(e);
 	}
-
+		// Calibracion
+	public void delete(Calibracion e) throws Exception {
+		data.getCalibraciones().remove(e);
+	}
+	// SEARCH
+		// Tipo Instrumento
 	public List<TipoInstrumento> search(TipoInstrumento e){
 		return data.getTipos().stream()
 				.filter(i->i.getNombre().contains(e.getNombre()))
 				.sorted(Comparator.comparing(TipoInstrumento::getNombre))
 				.collect(Collectors.toList());
 	}
+		// Instrumento
 	public List<Instrumento> search(Instrumento e){
 		return data.getInstrumentos().stream()
 				.filter(i->i.getDescripcion().contains(e.getDescripcion()))
