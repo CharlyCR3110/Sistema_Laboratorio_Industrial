@@ -24,6 +24,7 @@ public class View implements Observer {
     private JLabel nombreLbl;
     private JLabel unidadLbl;
     private JButton clear;
+    private JButton edit;
 
     public View() {
         // Para que no se pueda editar la tabla
@@ -84,6 +85,9 @@ public class View implements Observer {
         unidad.setText("");
         // Ademas de limpiar los campos, se deselecciona la lista
         list.clearSelection();
+        // Reactivar el boton de guardar
+        save.setEnabled(true);
+        codigo.setEnabled(true);
     }
     private void searchAction() {
         try {
@@ -132,6 +136,14 @@ public class View implements Observer {
             codigo.setText(model.getCurrent().getCodigo());
             nombre.setText(model.getCurrent().getNombre());
             unidad.setText(model.getCurrent().getUnidad());
+            // Se deshabilitan el boton Guardar y el campo de codigo
+            if (model.getCurrent().getCodigo().equals("")) {
+                save.setEnabled(true);
+                codigo.setEnabled(true);
+            } else {
+                save.setEnabled(false);
+                codigo.setEnabled(false);
+            }
         }
         this.panel.revalidate();
     }
