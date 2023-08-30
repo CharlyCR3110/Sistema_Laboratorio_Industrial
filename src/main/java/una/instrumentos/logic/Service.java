@@ -54,6 +54,16 @@ public class Service {
 			throw new Exception("Tipo no existe");
 		}
 	}
+	public void update(Instrumento e) throws Exception {
+		Instrumento result;
+		try{
+			result = this.read(e);
+			data.getInstrumentos().remove(result);
+			data.getInstrumentos().add(e);
+		}catch (Exception ex) {
+			throw new Exception("Instrumento no existe");
+		}
+	}
 	public void delete(TipoInstrumento e) throws Exception{
 		data.getTipos().remove(e);
 	}
