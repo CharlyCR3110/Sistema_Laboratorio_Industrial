@@ -51,7 +51,24 @@ public class Controller{
 	View view;
 	Model model;
 
-	public void save(TipoInstrumento tipoInstrumento) {
+	public int save(TipoInstrumento tipoInstrumento) {
+		// Validar la entrada de datos
+		if (tipoInstrumento.getCodigo().isEmpty()) {
+			view.showError("El código no puede estar vacío");
+			view.highlightEmptyField("codigo");
+			return 0;
+		}
+		if (tipoInstrumento.getNombre().isEmpty()) {
+			view.showError("El nombre no puede estar vacío");
+			view.highlightEmptyField("nombre");
+			return 0;
+		}
+		if (tipoInstrumento.getUnidad().isEmpty()) {
+			view.showError("La unidad no puede estar vacía");
+			view.highlightEmptyField("unidad");
+			return 0;
+		}
+
 		try {
 			Service.instance().create(tipoInstrumento);
 			model.setList(Service.instance().search(new TipoInstrumento()));
@@ -60,6 +77,8 @@ public class Controller{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+		return 1;
 	}
 
 	public void delete(TipoInstrumento tipoInstrumento) {
