@@ -31,6 +31,18 @@ public class Service {
 		if (result!=null) return result;
 		else throw new Exception("Tipo no existe");
 	}
+	public Instrumento read(Instrumento e ) throws  Exception {
+		Instrumento result = data.getInstrumentos().stream()
+				.filter(i->i.getSerie().equals(e.getSerie())).findFirst().orElse(null);
+		if (result!=null) return result;
+		else throw new Exception("Instrumento no existe");
+	}
+	public void create(Instrumento e) throws Exception {
+		Instrumento result = data.getInstrumentos().stream()
+				.filter(i->i.getSerie().equals(e.getSerie())).findFirst().orElse(null);
+		if (result==null) data.getInstrumentos().add(e);
+		else throw new Exception("Instrumento ya existe");
+	}
 
 	public void update(TipoInstrumento e) throws Exception{
 		TipoInstrumento result;
@@ -45,11 +57,20 @@ public class Service {
 	public void delete(TipoInstrumento e) throws Exception{
 		data.getTipos().remove(e);
 	}
+	public void delete(Instrumento e) throws Exception {
+		data.getInstrumentos().remove(e);
+	}
 
 	public List<TipoInstrumento> search(TipoInstrumento e){
 		return data.getTipos().stream()
 				.filter(i->i.getNombre().contains(e.getNombre()))
 				.sorted(Comparator.comparing(TipoInstrumento::getNombre))
+				.collect(Collectors.toList());
+	}
+	public List<Instrumento> search(Instrumento e){
+		return data.getInstrumentos().stream()
+				.filter(i->i.getDescripcion().contains(e.getDescripcion()))
+				.sorted(Comparator.comparing(Instrumento::getDescripcion))
 				.collect(Collectors.toList());
 	}
 	private static Service theInstance;
