@@ -60,7 +60,12 @@ public class Controller{
 
 		try {
 			Service service = Service.instance();
-			service.create(tipoInstrumento);
+			try {
+				service.create(tipoInstrumento);
+			} catch (Exception e) {
+				// mostrar una ventana de error
+				view.showError("Ya existe un tipo de instrumento con ese código");
+			}
 			updateModelAfterSave(service);
 		} catch (Exception e) {
 			e.printStackTrace();
