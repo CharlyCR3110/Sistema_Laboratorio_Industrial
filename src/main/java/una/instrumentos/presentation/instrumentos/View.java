@@ -57,18 +57,28 @@ public class View implements Observer {
 				saveAction();
 			}
 		});
-//		delete.addMouseListener(new MouseAdapter() {
-//			@Override
-//			public void mouseClicked(MouseEvent e) {
-//				deleteAction();
-//			}
-//		});
+		delete.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				deleteAction();
+			}
+		});
 //		edit.addMouseListener(new MouseAdapter() {
 //			@Override
 //			public void mouseClicked(MouseEvent e) {
 //				editAction();
 //			}
 //		});
+	}
+	private void deleteAction() {
+		try {
+			int row = list.getSelectedRow();
+			Instrumento instrumento = model.getList().get(row);
+			controller.delete(instrumento);
+			clearAction();
+		} catch (IndexOutOfBoundsException ex) {
+			showErrorMessageBox("Debe seleccionar un elemento de la lista");
+		}
 	}
 	private void saveAction() {
 		try {
