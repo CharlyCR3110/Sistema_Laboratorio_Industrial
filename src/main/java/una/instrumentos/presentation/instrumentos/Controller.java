@@ -107,6 +107,13 @@ public class Controller{
 			e.printStackTrace();
 		}
 	}
+	public Instrumento getSelected() {
+		int selectedRow = view.getSelectedRow();
+		if (selectedRow < 0) {
+			return null;
+		}
+		return model.getList().get(selectedRow);
+	}
 	View view;
 	Model model;
 }
