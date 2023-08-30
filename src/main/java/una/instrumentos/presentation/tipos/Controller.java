@@ -43,4 +43,15 @@ public class Controller{
 			e.printStackTrace();
 		}
 	}
+
+	public void delete(TipoInstrumento tipoInstrumento) {
+		try {
+			Service.instance().delete(tipoInstrumento);
+			model.setList(Service.instance().search(new TipoInstrumento()));
+			model.setCurrent(new TipoInstrumento());
+			model.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
