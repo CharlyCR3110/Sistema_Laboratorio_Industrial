@@ -23,12 +23,30 @@ public class Controller{
 		model.setCurrent(new TipoInstrumento());
 		model.commit();
 	}
-	public void edit(int row){
+	public void edit(int row){	// se llama edit, pero realmente simplemente carga un elemento de la tabla en los campos de texto
 		TipoInstrumento e = model.getList().get(row);
 		try {
+			// Carga los datos a ser editados
 			model.setCurrent(Service.instance().read(e));
 			model.commit();
 		} catch (Exception ex) {}
+	}
+	public void edit(TipoInstrumento e) {
+		try {
+			TipoInstrumento current = Service.instance().read(e); // Leer el elemento actual de la base de datos
+
+			// Realizar las operaciones de edición en el elemento actual
+			// Se obtiene el valor de los campos de texto y se asigna al elemento actual
+			current.setNombre(view.getNombre());
+			current.setUnidad(view.getUnidad());
+
+			Service.instance().update(current); // Actualizar el elemento en la base de datos
+
+			model.setCurrent(current); // Actualizar el elemento en el modelo
+			model.commit(); // Confirmar los cambios en el modelo
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 	}
 	View view;
 	Model model;
