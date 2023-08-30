@@ -5,14 +5,13 @@ import java.util.Objects;
 
 public class Calibracion {
 	public Calibracion() {
-		this("", LocalDate.now(), 0, new Instrumento());
+		this("", LocalDate.now(), 0);
 	}
 
-	public Calibracion(String numero, LocalDate fecha, Integer numeroDeMediciones, Instrumento instrumento) {
+	public Calibracion(String numero, LocalDate fecha, Integer numeroDeMediciones) {
 		this.numero = numero;
 		this.fecha = fecha;
 		this.numeroDeMediciones = numeroDeMediciones;
-		this.instrumento = instrumento;
 	}
 
 	public String getNumero() {
@@ -40,27 +39,18 @@ public class Calibracion {
 		if (this == o) return true;
 		if (o == null || getClass() != o.getClass()) return false;
 		Calibracion that = (Calibracion) o;
-		return Objects.equals(numero, that.numero) && Objects.equals(fecha, that.fecha) && Objects.equals(numeroDeMediciones, that.numeroDeMediciones) && Objects.equals(instrumento, that.instrumento);
+		return Objects.equals(numero, that.numero) && Objects.equals(fecha, that.fecha) && Objects.equals(numeroDeMediciones, that.numeroDeMediciones);
 	}
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(numero, fecha, numeroDeMediciones, instrumento);
+		return Objects.hash(numero, fecha, numeroDeMediciones);
 	}
 	public void setNumeroDeMediciones(Integer numeroDeMediciones) {
 		this.numeroDeMediciones = numeroDeMediciones;
 	}
 
-	public Instrumento getInstrumento() {
-		return instrumento;
-	}
-
-	public void setInstrumento(Instrumento instrumento) {
-		this.instrumento = instrumento;
-	}
-
 	private String numero;	// numero de calibracion
 	private LocalDate fecha;	// fecha de calibracion
 	private Integer numeroDeMediciones;	// numero de mediciones
-	private Instrumento instrumento;	// instrumento calibrado
 }
