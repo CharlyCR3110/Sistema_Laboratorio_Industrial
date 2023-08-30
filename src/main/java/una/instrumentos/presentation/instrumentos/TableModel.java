@@ -40,6 +40,7 @@ public class TableModel extends AbstractTableModel implements javax.swing.table.
 			case MINIMO: return sucursal.getMinimo();
 			case MAXIMO: return sucursal.getMaximo();
 			case TOLERANCIA: return sucursal.getTolerancia();
+			case TIPO: return sucursal.getTipo();
 			default: return "";
 		}
 	}
@@ -51,6 +52,7 @@ public class TableModel extends AbstractTableModel implements javax.swing.table.
 	public static final int MINIMO = 2;
 	public static final int MAXIMO = 3;
 	public static final int TOLERANCIA = 4;
+	public static final int TIPO = 5;
 	String[] colNames = new String[6];
 	private void initColNames(){
 		colNames[SERIE] = "No. Serie";
@@ -58,6 +60,7 @@ public class TableModel extends AbstractTableModel implements javax.swing.table.
 		colNames[MINIMO] = "Minimo";
 		colNames[MAXIMO] = "Maximo";
 		colNames[TOLERANCIA] = "Tolerancia";
+		colNames[TIPO] = "Tipo";
 	}
 	List<Instrumento> rows;
 	int[] cols;
