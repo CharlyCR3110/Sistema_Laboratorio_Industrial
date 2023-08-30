@@ -60,7 +60,8 @@ public class Service {
 		if (result!=null) return result;
 		else throw new Exception("Calibracion no existe");
 	}
-
+	// UPDATE
+		// Tipo Instrumento
 	public void update(TipoInstrumento e) throws Exception{
 		TipoInstrumento result;
 		try{
@@ -71,6 +72,7 @@ public class Service {
 			throw new Exception("Tipo no existe");
 		}
 	}
+		// Instrumento
 	public void update(Instrumento e) throws Exception {
 		Instrumento result;
 		try{
@@ -79,6 +81,17 @@ public class Service {
 			data.getInstrumentos().add(e);
 		}catch (Exception ex) {
 			throw new Exception("Instrumento no existe");
+		}
+	}
+		// Calibracion
+	public void update (Calibracion e) throws Exception {
+		Calibracion result;
+		try{
+			result = this.read(e);
+			data.getCalibraciones().remove(result);
+			data.getCalibraciones().add(e);
+		}catch (Exception ex) {
+			throw new Exception("Calibracion no existe");
 		}
 	}
 	public void delete(TipoInstrumento e) throws Exception{
