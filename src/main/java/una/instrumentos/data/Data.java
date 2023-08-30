@@ -24,9 +24,8 @@ public class Data {
 		instrumentos.add(new Instrumento("123","Termómetro de mercurio", 0, 100, 5, "TIPO 1"));
 		instrumentos.add(new Instrumento("456","Barómetro de mercurio", 0, 100, 5, "TIPO 2"));
 
-		calibraciones.add(new Calibracion(1,LocalDate.now(), 3, instrumentos.get(0) ));
-		calibraciones.add(new Calibracion(1,LocalDate.now(), 3, instrumentos.get(0) ));
-
+		calibraciones.add(new Calibracion("1",LocalDate.now(), 3, instrumentos.get(0) ));
+		calibraciones.add(new Calibracion("2",LocalDate.now(), 3, instrumentos.get(1) ));
 	}
 
 	public List<TipoInstrumento> getTipos() {
