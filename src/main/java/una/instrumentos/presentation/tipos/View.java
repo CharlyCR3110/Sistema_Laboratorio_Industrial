@@ -26,6 +26,9 @@ public class View implements Observer {
     private JButton clear;
 
     public View() {
+        // Para que no se pueda editar la tabla
+        list.getTableHeader().setReorderingAllowed(false);
+        // Eventos
         search.addActionListener(e -> searchAction());
         list.addMouseListener(new MouseAdapter() {
             @Override
