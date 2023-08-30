@@ -87,6 +87,10 @@ public class View implements Observer {
 		try {
 			int row = list.getSelectedRow();
 			Instrumento instrumento = model.getList().get(row);
+			if (instrumento.hasCalibraciones()) {
+				showErrorMessageBox("No se puede eliminar un instrumento que tiene calibraciones");
+				return;
+			}
 			controller.delete(instrumento);
 			clearAction();
 		} catch (IndexOutOfBoundsException ex) {
@@ -231,4 +235,19 @@ public class View implements Observer {
 		return tipo.getSelectedItem().toString();
 	}
 
+	// test
+	private Instrumento getInstrumento() {
+		Instrumento instrumento = new Instrumento();
+		instrumento.setSerie(serie.getText());
+		instrumento.setDescripcion(descripcion.getText());
+		instrumento.setMinimo(Integer.parseInt(minimo.getText()));
+		instrumento.setMaximo(Integer.parseInt(maximo.getText()));
+		instrumento.setTolerancia(Integer.parseInt(tolerancia.getText()));
+		instrumento.setTipo(tipo.getSelectedItem().toString());
+		return instrumento;
+	}
+
+	public int getSelectedRow() {
+		return list.getSelectedRow();
+	}
 }
