@@ -42,7 +42,7 @@ public class Controller{
 				service.create(instrumento);
 			} catch (Exception e) {
 				// mostrar una ventana de error
-				view.showError("Ya existe un tipo de instrumento con ese código");
+				view.showError("Ya existe un instrumento con esa serie");
 			}
 			updateModelAfterSave(service);
 		} catch (Exception e) {
