@@ -55,7 +55,22 @@ public class View implements Observer {
                 deleteAction();
             }
         });
+        edit.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                editAction();
+            }
+        });
     }
+    private void editAction() {
+        // Se obtiene el elemento seleccionado de la lista
+        int row = list.getSelectedRow();
+        TipoInstrumento tipoInstrumento = model.getList().get(row);
+        // Se llama al controlador para editar el elemento
+        controller.edit(tipoInstrumento);
+        clearAction();
+    }
+
     private void deleteAction() {
         try {
             int row = list.getSelectedRow();
@@ -100,7 +115,7 @@ public class View implements Observer {
     }
     private void handleListClick() {
         int row = list.getSelectedRow();
-        controller.edit(row);
+        controller.edit(row);   // Se envia la fila seleccionada al controlador
     }
     private void showErrorMessageBox(String message) {
         JOptionPane.showMessageDialog(panel, message, "Información", JOptionPane.INFORMATION_MESSAGE);
@@ -146,5 +161,16 @@ public class View implements Observer {
             }
         }
         this.panel.revalidate();
+    }
+
+    // metodos para obtener los valores de los campos de texto
+    public String getCodigo() {
+        return codigo.getText();
+    }
+    public String getNombre() {
+        return nombre.getText();
+    }
+    public String getUnidad() {
+        return unidad.getText();
     }
 }
