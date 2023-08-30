@@ -122,6 +122,13 @@ public class Service {
 				.sorted(Comparator.comparing(Instrumento::getDescripcion))
 				.collect(Collectors.toList());
 	}
+		// Calibracion
+	public List<Calibracion> search(Calibracion e) {
+		return data.getCalibraciones().stream()
+				.filter(i->i.getNumeroDeMediciones().equals(e.getNumeroDeMediciones()))
+				.sorted(Comparator.comparing(Calibracion::getNumeroDeMediciones))
+				.collect(Collectors.toList());
+	}
 	private static Service theInstance;
 
 	public TipoInstrumento get(TipoInstrumento e) {
