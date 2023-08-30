@@ -45,6 +45,22 @@ public class View implements Observer {
                 saveAction();
             }
         });
+        delete.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                deleteAction();
+            }
+        });
+    }
+    private void deleteAction() {
+        try {
+            int row = list.getSelectedRow();
+            TipoInstrumento tipoInstrumento = model.getList().get(row);
+            controller.delete(tipoInstrumento);
+            clearAction();
+        } catch (Exception ex) {
+            showErrorMessageBox(ex.getMessage());
+        }
     }
     private void saveAction() {
         try {
