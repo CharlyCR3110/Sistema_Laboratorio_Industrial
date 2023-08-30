@@ -67,9 +67,13 @@ public class View implements Observer {
     private void editAction() {
         // Se obtiene el elemento seleccionado de la lista
         int row = list.getSelectedRow();
-        TipoInstrumento tipoInstrumento = model.getList().get(row);
+        try {
+            TipoInstrumento tipoInstrumento = model.getList().get(row);
+            controller.edit(tipoInstrumento);
+        } catch (IndexOutOfBoundsException e) {
+            showErrorMessageBox("Debe seleccionar un elemento de la lista");
+        }
         // Se llama al controlador para editar el elemento
-        controller.edit(tipoInstrumento);
         clearAction();
     }
 
@@ -79,8 +83,8 @@ public class View implements Observer {
             TipoInstrumento tipoInstrumento = model.getList().get(row);
             controller.delete(tipoInstrumento);
             clearAction();
-        } catch (Exception ex) {
-            showErrorMessageBox(ex.getMessage());
+        } catch (IndexOutOfBoundsException e) {
+            showErrorMessageBox("Debe seleccionar un elemento de la lista");
         }
     }
     private void saveAction() {
