@@ -1,46 +1,54 @@
 package una.instrumentos.presentation.calibraciones;
 
 import una.instrumentos.logic.Calibracion;
-
 import java.util.List;
+import java.util.Observable;
 import java.util.Observer;
 
-public class Model extends java.util.Observable {
-	@Override
-	public void addObserver(Observer o) {	// Para que el modelo notifique a la vista de los cambios
+public class Model extends Observable {
+	private List<Calibracion> list;
+	private Calibracion current;
+	private int changedProps = NONE;
+
+	public static final int NONE = 0;
+	public static final int LIST = 1;
+	public static final int CURRENT = 2;
+
+	public void addObserver(Observer o) {
 		super.addObserver(o);
 		commit();
 	}
-	public void commit() {	// Para que el modelo notifique a la vista de los cambios
+
+	public void commit() {
 		setChanged();
 		notifyObservers(changedProps);
 		changedProps = NONE;
 	}
+
 	public Model() {
 	}
-	public void init(List<Calibracion> list) {	// Inicializa el modelo con una lista de instrumentos
+
+	public void init(List<Calibracion> list) {
 		setList(list);
 		setCurrent(new Calibracion());
 	}
-	public List<Calibracion> getList() {	// Devuelve la lista de instrumentos
+
+	public List<Calibracion> getList() {
 		return list;
 	}
-	public void setList(List<Calibracion> list) {	// Establece la lista de calibraciones
+
+	public void setList(List<Calibracion> list) {
 		this.list = list;
-		changedProps += LIST;
+		changedProps |= LIST;  // Usar operador de bits para combinar las propiedades cambiadas
 		System.out.println("Model.setList: " + list.size());
 	}
-	public Calibracion getCurrent() {	// Devuelve el instrumento actual
+
+	public Calibracion getCurrent() {
 		return current;
 	}
-	public void setCurrent(Calibracion current) {	// Establece la calibracion actual
-		changedProps += CURRENT;
+
+	public void setCurrent(Calibracion current) {
+		changedProps |= CURRENT;  // Usar operador de bits para combinar las propiedades cambiadas
 		this.current = current;
 	}
-	List<Calibracion> list;	// Lista de calibraciones
-	Calibracion current;	// calibracion actual
-	int changedProps = NONE;	// Propiedades que han cambiado
-	public static int NONE = 0;	// Ninguna propiedad ha cambiado
-	public static int LIST = 1;	// La lista de calibraciones ha cambiado
-	public static int CURRENT = 2;	// la calibracion actual ha cambiado
 }

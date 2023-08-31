@@ -29,9 +29,7 @@ public class View implements Observer {
     private JButton edit;
 
     public View() {
-        // Para que no se pueda editar la tabla
         list.getTableHeader().setReorderingAllowed(false);
-        // Eventos
         search.addActionListener(e -> searchAction());
         list.addMouseListener(new MouseAdapter() {
             @Override
@@ -64,8 +62,8 @@ public class View implements Observer {
             }
         });
     }
+
     private void editAction() {
-        // Se obtiene el elemento seleccionado de la lista
         int row = list.getSelectedRow();
         try {
             TipoInstrumento tipoInstrumento = model.getList().get(row);
@@ -73,7 +71,6 @@ public class View implements Observer {
         } catch (IndexOutOfBoundsException e) {
             showErrorMessageBox("Debe seleccionar un elemento de la lista");
         }
-        // Se llama al controlador para editar el elemento
         clearAction();
     }
 
@@ -87,6 +84,7 @@ public class View implements Observer {
             showErrorMessageBox("Debe seleccionar un elemento de la lista");
         }
     }
+
     private void saveAction() {
         try {
             TipoInstrumento tipoInstrumento = new TipoInstrumento();
@@ -94,39 +92,40 @@ public class View implements Observer {
             tipoInstrumento.setNombre(nombre.getText());
             tipoInstrumento.setUnidad(unidad.getText());
             if (controller.save(tipoInstrumento) == 0) {
-                return; // esto significa que hubieron campos vacios, entonces no se hace el clearAction para evitar que se borren los campos
+                return;
             }
             clearAction();
         } catch (Exception ex) {
             showErrorMessageBox(ex.getMessage());
         }
     }
+
     private void clearAction() {
-        // Se limpian los campos (o sea, se ponen en blanco)
         codigo.setText("");
         nombre.setText("");
         unidad.setText("");
-        // Ademas de limpiar los campos, se deselecciona la lista
         list.clearSelection();
-        // Reactivar el boton de guardar
         save.setEnabled(true);
         codigo.setEnabled(true);
     }
+
     private void searchAction() {
         try {
             TipoInstrumento filter = new TipoInstrumento();
             filter.setNombre(searchNombre.getText());
             controller.search(filter);
         } catch (Exception ex) {
-            JOptionPane.showMessageDialog(panel, ex.getMessage(), "Información", JOptionPane.INFORMATION_MESSAGE);
+            JOptionPane.showMessageDialog(panel, ex.getMessage(), "Informacion", JOptionPane.INFORMATION_MESSAGE);
         }
     }
+
     private void handleListClick() {
         int row = list.getSelectedRow();
-        controller.edit(row);   // Se envia la fila seleccionada al controlador
+        controller.edit(row);
     }
+
     private void showErrorMessageBox(String message) {
-        JOptionPane.showMessageDialog(panel, message, "Información", JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(panel, message, "Informacion", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public JPanel getPanel() {
@@ -159,7 +158,6 @@ public class View implements Observer {
             codigo.setText(model.getCurrent().getCodigo());
             nombre.setText(model.getCurrent().getNombre());
             unidad.setText(model.getCurrent().getUnidad());
-            // Se deshabilitan el boton Guardar y el campo de codigo
             if (model.getCurrent().getCodigo().equals("")) {
                 save.setEnabled(true);
                 codigo.setEnabled(true);
@@ -170,9 +168,11 @@ public class View implements Observer {
         }
         this.panel.revalidate();
     }
+
     public void showError(String message) {
         JOptionPane.showMessageDialog(panel, message, "Error", JOptionPane.ERROR_MESSAGE);
     }
+
     public void highlightEmptyField(String fieldName) {
         switch (fieldName) {
             case "codigo":
@@ -187,13 +187,14 @@ public class View implements Observer {
         }
     }
 
-    // metodos para obtener los valores de los campos de texto
     public String getCodigo() {
         return codigo.getText();
     }
+
     public String getNombre() {
         return nombre.getText();
     }
+
     public String getUnidad() {
         return unidad.getText();
     }

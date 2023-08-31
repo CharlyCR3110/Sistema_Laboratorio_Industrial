@@ -1,55 +1,64 @@
 package una.instrumentos.presentation.tipos;
 
 import una.instrumentos.logic.TipoInstrumento;
-
 import una.instrumentos.logic.Service;
 
 import java.util.List;
 
-public class Controller{
+public class Controller {
+	private final View view;
+	private final Model model;
+
 	public Controller(View view, Model model) {
-		model.init(Service.instance().search(new TipoInstrumento()));
 		this.view = view;
 		this.model = model;
+		initializeComponents();
+	}
+
+	private void initializeComponents() {
+		model.init(Service.instance().search(new TipoInstrumento()));
 		view.setController(this);
 		view.setModel(model);
 	}
-	public void search(TipoInstrumento filter) throws  Exception{
-		List<TipoInstrumento> rows = Service.instance().search(filter);
-		if (rows.isEmpty()){
-			throw new Exception("NINGUN REGISTRO COINCIDE");
-		}
-		model.setList(rows);
-		model.setCurrent(new TipoInstrumento());
-		model.commit();
-	}
-	public void edit(int row){	// se llama edit, pero realmente simplemente carga un elemento de la tabla en los campos de texto
-		TipoInstrumento e = model.getList().get(row);
+
+	public void search(TipoInstrumento filter) {
 		try {
-			// Carga los datos a ser editados
-			model.setCurrent(Service.instance().read(e));
+			List<TipoInstrumento> rows = Service.instance().search(filter);
+			if (rows.isEmpty()) {
+				throw new Exception("NINGUN REGISTRO COINCIDE");
+			}
+			model.setList(rows);
+			model.setCurrent(new TipoInstrumento());
 			model.commit();
-		} catch (Exception ex) {}
-	}
-	public void edit(TipoInstrumento e) {
-		try {
-			TipoInstrumento current = Service.instance().read(e); // Leer el elemento actual de la base de datos
-
-			// Realizar las operaciones de edición en el elemento actual
-			// Se obtiene el valor de los campos de texto y se asigna al elemento actual
-			current.setNombre(view.getNombre());
-			current.setUnidad(view.getUnidad());
-
-			Service.instance().update(current); // Actualizar el elemento en la base de datos
-
-			model.setCurrent(current); // Actualizar el elemento en el modelo
-			model.commit(); // Confirmar los cambios en el modelo
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
-	View view;
-	Model model;
+
+	public void edit(int row) {
+		TipoInstrumento e = model.getList().get(row);
+		try {
+			TipoInstrumento current = Service.instance().read(e);
+			model.setCurrent(current);
+			model.commit();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+
+	public void edit(TipoInstrumento e) {
+		try {
+			TipoInstrumento current = Service.instance().read(e);
+			current.setNombre(view.getNombre());
+			current.setUnidad(view.getUnidad());
+
+			Service.instance().update(current);
+			model.setCurrent(current);
+			model.commit();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 
 	public int save(TipoInstrumento tipoInstrumento) {
 		if (!validateAndHandleEmptyField(tipoInstrumento.getCodigo(), "codigo") ||
@@ -63,7 +72,6 @@ public class Controller{
 			try {
 				service.create(tipoInstrumento);
 			} catch (Exception e) {
-				// mostrar una ventana de error
 				view.showError("Ya existe un tipo de instrumento con ese código");
 			}
 			updateModelAfterSave(service);
@@ -103,5 +111,9 @@ public class Controller{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public View getView() {
+		return view;
 	}
 }

@@ -7,74 +7,87 @@ import una.utiles.Utiles;
 
 import java.util.List;
 
-public class Controller{
+public class Controller {
+	private final View view;
+	private final Model model;
+
 	public Controller(View view, Model model) {
-		System.out.println("CONTROLLER CALIBRACIONES" + Service.instance().search(new Calibracion()).size());
-		model.init(Service.instance().search(new Calibracion()));
 		this.view = view;
 		this.model = model;
+		initializeComponents();  // Mover esta llamada después de inicializar this.model
 		view.setController(this);
 		view.setModel(model);
 	}
-	public void search(Calibracion filter) throws  Exception{
-		List<Calibracion> rows = Service.instance().search(filter);
-		if (rows.isEmpty()){
-			throw new Exception("NINGUN REGISTRO COINCIDE");
-		}
-		model.setList(rows);
-		model.setCurrent(new Calibracion());
-		model.commit();
+
+	private void initializeComponents() {
+		System.out.println("CONTROLLER CALIBRACIONES " + Service.instance().search(new Calibracion()).size());
+		model.init(Service.instance().search(new Calibracion()));
 	}
-	public void edit(int row){	// se llama edit, pero realmente simplemente carga un elemento de la tabla en los campos de texto
-		Calibracion e = model.getList().get(row);
+
+	public void search(Calibracion filter) {
 		try {
-			// Carga los datos a ser editados
-			model.setCurrent(Service.instance().read(e));
+			List<Calibracion> rows = Service.instance().search(filter);
+			if (rows.isEmpty()) {
+				throw new Exception("NINGUN REGISTRO COINCIDE");
+			}
+			model.setList(rows);
+			model.setCurrent(new Calibracion());
 			model.commit();
-		} catch (Exception ex) {}
-	}
-	public void edit(Calibracion e) {
-		try {
-			Calibracion current = Service.instance().read(e); // Leer el elemento actual de la base de datos
-
-			// Realizar las operaciones de edición en el elemento actual
-			// Se obtiene el valor de los campos de texto y se asigna al elemento actual
-			// verificar la fecha
-			if (view.getFecha().isEmpty())
-				current.setFecha(current.getFecha());
-			else
-				current.setFecha(Utiles.parseDate(view.getFecha()));
-
-
-			if (view.getMediciones().isEmpty())
-				current.setNumeroDeMediciones(0);
-			else
-				current.setNumeroDeMediciones(Integer.parseInt(view.getMediciones()));
-
-			Service.instance().update(current); // Actualizar el elemento en la base de datos
-
-			model.setCurrent(current); // Actualizar el elemento en el modelo
-			model.commit(); // Confirmar los cambios en el modelo
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 	}
-	View view;
-	Model model;
+
+	public void edit(int row) {
+		Calibracion e = model.getList().get(row);
+		try {
+			Calibracion current = Service.instance().read(e);
+			model.setCurrent(current);
+			model.commit();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+
+	public void edit(Calibracion e) {
+		try {
+			Calibracion current = Service.instance().read(e);
+			String fecha = view.getFecha();
+			if (!fecha.isEmpty()) {
+				current.setFecha(Utiles.parseDate(fecha));
+			}
+
+			String mediciones = view.getMediciones();
+			if (!mediciones.isEmpty()) {
+				current.setNumeroDeMediciones(Integer.parseInt(mediciones));
+			}
+
+			try {
+				Service.instance().update(current);
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				// TO-DO: Manejar correctamente la excepción
+			}
+
+			model.setCurrent(current);
+			model.commit();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 
 	public int save(Calibracion calibracion, Instrumento instrumentoSeleccionado) {
-		if (!validateAndHandleEmptyField(calibracion.getNumero(), "número") ||
+		if (!validateAndHandleEmptyField(calibracion.getNumero(), "numero") ||
 				!validateAndHandleEmptyField(calibracion.getFecha().toString(), "fecha") ||
 				!validateAndHandleEmptyField(calibracion.getNumeroDeMediciones().toString(), "mediciones")) {
 			return 0;
 		}
 
-		if (instrumentoSeleccionado == null) {	// Esto no debería pasar, pero por si acaso
+		if (instrumentoSeleccionado == null) {
 			view.showError("Debe seleccionar un instrumento");
 			return 0;
 		}
 
-		// validar que la fecha sea valida
 		try {
 			Utiles.parseDate(calibracion.getFecha().toString());
 		} catch (Exception e) {
@@ -82,16 +95,15 @@ public class Controller{
 			return 0;
 		}
 
-		instrumentoSeleccionado.agregarCalibracion(calibracion);	// Se agrega la calibracion al instrumento
-		calibracion.setInstrumento(instrumentoSeleccionado);	// Se asocia el instrumento a la calibracion
+		instrumentoSeleccionado.agregarCalibracion(calibracion);
+		calibracion.setInstrumento(instrumentoSeleccionado);
 
 		try {
 			Service service = Service.instance();
 			try {
 				service.create(calibracion);
 			} catch (Exception e) {
-				// mostrar una ventana de error
-				view.showError("Ya existe un tipo de instrumento con ese código");
+				view.showError("Ya existe una calibración con ese número");
 			}
 			updateModelAfterSave(service);
 		} catch (Exception e) {
@@ -121,7 +133,7 @@ public class Controller{
 	}
 
 	public void delete(Calibracion calibracion) {
-		calibracion.getInstrumento().getCalibraciones().remove(calibracion);	// Se elimina la calibracion del instrumento
+		calibracion.getInstrumento().getCalibraciones().remove(calibracion);
 		try {
 			Service.instance().delete(calibracion);
 			model.setList(Service.instance().search(new Calibracion()));
@@ -130,5 +142,9 @@ public class Controller{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public View getView() {
+		return this.view;
 	}
 }
