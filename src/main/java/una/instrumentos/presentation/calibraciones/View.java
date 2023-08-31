@@ -59,12 +59,22 @@ public class View implements Observer {
 				deleteAction();
 			}
 		});
-//		edit.addMouseListener(new MouseAdapter() {
-//			@Override
-//			public void mouseClicked(MouseEvent e) {
-//				editAction();
-//			}
-//		});
+		edit.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				editAction();
+			}
+		});
+	}
+	private void editAction() {
+		try {
+			// Se obtiene la calibracion seleccionada desde la lista
+			Calibracion calibracion = model.getCurrent();
+			controller.edit(calibracion);
+			clearAction();
+		} catch (Exception ex) {
+			JOptionPane.showMessageDialog(panel, ex.getMessage(), "Información", JOptionPane.INFORMATION_MESSAGE);
+		}
 	}
 	private void deleteAction() {
 		try {
