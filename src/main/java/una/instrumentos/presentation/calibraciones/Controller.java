@@ -1,5 +1,6 @@
 package una.instrumentos.presentation.calibraciones;
 
+import una.instrumentos.logic.Instrumento;
 import una.instrumentos.logic.Service;
 import una.instrumentos.logic.Calibracion;
 
@@ -51,17 +52,25 @@ public class Controller{
 	View view;
 	Model model;
 
-	public int save(Calibracion tipoInstrumento) {
-//		if (!validateAndHandleEmptyField(tipoInstrumento.getCodigo(), "codigo") ||
-//				!validateAndHandleEmptyField(tipoInstrumento.getNombre(), "nombre") ||
-//				!validateAndHandleEmptyField(tipoInstrumento.getUnidad(), "unidad")) {
-//			return 0;
-//		}
+	public int save(Calibracion calibracion, Instrumento instrumentoSeleccionado) {
+		if (!validateAndHandleEmptyField(calibracion.getNumero(), "número") ||
+				!validateAndHandleEmptyField(calibracion.getFecha().toString(), "fecha") ||
+				!validateAndHandleEmptyField(calibracion.getNumeroDeMediciones().toString(), "mediciones")) {
+			return 0;
+		}
+
+		if (instrumentoSeleccionado == null) {	// Esto no debería pasar, pero por si acaso
+			view.showError("Debe seleccionar un instrumento");
+			return 0;
+		}
+
+		instrumentoSeleccionado.agregarCalibracion(calibracion);	// Se agrega la calibracion al instrumento
+		calibracion.setInstrumento(instrumentoSeleccionado);	// Se asocia el instrumento a la calibracion
 
 		try {
 			Service service = Service.instance();
 			try {
-				service.create(tipoInstrumento);
+				service.create(calibracion);
 			} catch (Exception e) {
 				// mostrar una ventana de error
 				view.showError("Ya existe un tipo de instrumento con ese código");
@@ -70,7 +79,6 @@ public class Controller{
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 		return 1;
 	}
 
