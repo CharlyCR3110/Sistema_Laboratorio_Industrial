@@ -1,11 +1,13 @@
 package una.instrumentos.logic;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class Instrumento {
 	public Instrumento() {
 		this("","",0,0,0,"");
+		this.calibraciones = new ArrayList<Calibracion>();
 	}
 	public Instrumento(String serie, String descripcion, Integer minimo, Integer maximo, Integer tolerancia, String tipo) {
 		this.serie = serie;
@@ -14,6 +16,7 @@ public class Instrumento {
 		this.minimo = minimo;
 		this.maximo = maximo;
 		this.tolerancia = tolerancia;
+		this.calibraciones = new ArrayList<Calibracion>();
 	}
 
 	public String getSerie() {
@@ -64,6 +67,21 @@ public class Instrumento {
 		this.tolerancia = tolerancia;
 	}
 
+	public List<Calibracion> getCalibraciones() {
+		return calibraciones;
+	}
+
+	public void setCalibraciones(List<Calibracion> calibraciones) {
+		this.calibraciones = calibraciones;
+	}
+
+	public void agregarCalibracion(Calibracion calibracion) {
+		calibraciones.add(calibracion);
+	}
+	public boolean hasCalibraciones() {
+		return !calibraciones.isEmpty();
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -83,7 +101,6 @@ public class Instrumento {
 	Integer minimo;
 	Integer maximo;
 	Integer tolerancia;
-
 	//Lista de calibraciones
-//	List<Calibracion> calibraciones;
+	List<Calibracion> calibraciones;
 }
