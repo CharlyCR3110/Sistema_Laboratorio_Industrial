@@ -3,6 +3,7 @@ package una.instrumentos.presentation.calibraciones;
 import una.instrumentos.logic.Instrumento;
 import una.instrumentos.logic.Service;
 import una.instrumentos.logic.Calibracion;
+import una.utiles.Utiles;
 
 import java.util.List;
 
@@ -38,8 +39,8 @@ public class Controller{
 
 			// Realizar las operaciones de edición en el elemento actual
 			// Se obtiene el valor de los campos de texto y se asigna al elemento actual
-//			current.setNombre(view.getNombre());
-//			current.setUnidad(view.getUnidad());
+			current.setFecha(Utiles.parseDate(view.getFecha()));
+			current.setNumeroDeMediciones(Integer.parseInt(view.getMediciones()));
 
 			Service.instance().update(current); // Actualizar el elemento en la base de datos
 
