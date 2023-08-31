@@ -20,6 +20,13 @@ public class Application {
 		setupWindow();
 
 		tabbedPane.addChangeListener(createTabChangeListener());
+
+		// Guarda los datos en archivos XML
+		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+			public void run() {
+				saveData();
+			}
+		}));
 	}
 
 	private static void setLookAndFeel() {
@@ -73,6 +80,19 @@ public class Application {
 			}
 		};
 	}
+
+	// Guarda los datos en archivos XML
+	private static void saveData() {
+		try {
+			una.utiles.XMLDataManager.saveToXML(tiposController.getModel().getList(), "src/main/java/una/xmlFiles/tipos.xml");
+			una.utiles.XMLDataManager.saveToXML(instrumentosController.getModel().getList(), "src/main/java/una/xmlFiles/instrumentos.xml");
+			una.utiles.XMLDataManager.saveToXML(calibracionesController.getModel().getList(), "src/main/java/una/xmlFiles/calibraciones.xml");
+			System.out.println("Datos guardados");
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
+
 
 	private static void setupWindow() {
 		window.setSize(900, 400);
