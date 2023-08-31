@@ -39,8 +39,17 @@ public class Controller{
 
 			// Realizar las operaciones de edición en el elemento actual
 			// Se obtiene el valor de los campos de texto y se asigna al elemento actual
-			current.setFecha(Utiles.parseDate(view.getFecha()));
-			current.setNumeroDeMediciones(Integer.parseInt(view.getMediciones()));
+			// verificar la fecha
+			if (view.getFecha().isEmpty())
+				current.setFecha(current.getFecha());
+			else
+				current.setFecha(Utiles.parseDate(view.getFecha()));
+
+
+			if (view.getMediciones().isEmpty())
+				current.setNumeroDeMediciones(0);
+			else
+				current.setNumeroDeMediciones(Integer.parseInt(view.getMediciones()));
 
 			Service.instance().update(current); // Actualizar el elemento en la base de datos
 
@@ -62,6 +71,14 @@ public class Controller{
 
 		if (instrumentoSeleccionado == null) {	// Esto no debería pasar, pero por si acaso
 			view.showError("Debe seleccionar un instrumento");
+			return 0;
+		}
+
+		// validar que la fecha sea valida
+		try {
+			Utiles.parseDate(calibracion.getFecha().toString());
+		} catch (Exception e) {
+			view.showError("La fecha no es válida");
 			return 0;
 		}
 
