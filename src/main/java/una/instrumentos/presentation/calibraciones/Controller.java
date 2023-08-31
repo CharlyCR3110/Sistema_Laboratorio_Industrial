@@ -102,9 +102,10 @@ public class Controller{
 		}
 	}
 
-	public void delete(Calibracion tipoInstrumento) {
+	public void delete(Calibracion calibracion) {
+		calibracion.getInstrumento().getCalibraciones().remove(calibracion);	// Se elimina la calibracion del instrumento
 		try {
-			Service.instance().delete(tipoInstrumento);
+			Service.instance().delete(calibracion);
 			model.setList(Service.instance().search(new Calibracion()));
 			model.setCurrent(new Calibracion());
 			model.commit();
