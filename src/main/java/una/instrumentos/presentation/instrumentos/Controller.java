@@ -21,6 +21,10 @@ public class Controller {
 		initializeComponents();
 	}
 
+	public Model getModel() {
+		return model;
+	}
+
 	private void initializeComponents() {
 		model.init(Service.instance().search(new Instrumento()));
 		view.setController(this);
