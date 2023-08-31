@@ -156,33 +156,45 @@ public class View implements Observer {
 		model.addObserver(this);
 	}
 
-	@Override
 	public void update(Observable updatedModel, Object properties) {
 		int changedProps = (int) properties;
+
 		if ((changedProps & Model.LIST) == Model.LIST) {
-			int[] cols = {TableModel.NUMERO, TableModel.FECHA, TableModel.MEDICIONES};
-			list.setModel(new TableModel(cols, model.getList()));
-			list.setRowHeight(30);
-			TableColumnModel columnModel = list.getColumnModel();
-			columnModel.getColumn(2).setPreferredWidth(200);
+			updateCalibracionList();
 		}
+
 		if ((changedProps & Model.CURRENT) == Model.CURRENT) {
-			Calibracion currentCalibracion = model.getCurrent();
-			numero.setText(String.valueOf(currentCalibracion.getNumero()));
-			fecha.setText(currentCalibracion.getFecha().toString());
-			mediciones.setText(String.valueOf(currentCalibracion.getNumeroDeMediciones()));
-			boolean enableEdit = currentCalibracion.getNumero().isEmpty() || model.getList().isEmpty();
-			save.setEnabled(enableEdit);
-			numero.setEnabled(false);
-			// mostrar la lista de mediciones
-			int[] cols = {MedicionesTableModel.NUMERO, MedicionesTableModel.REFERENCIA, MedicionesTableModel.MEDICION};
-			medicionesList.setModel(new MedicionesTableModel(cols, currentCalibracion.getMediciones()));
-			medicionesList.setRowHeight(30);
-			TableColumnModel columnModel = medicionesList.getColumnModel();
-			columnModel.getColumn(2).setPreferredWidth(200);
-			medicionesListContainer.setVisible(!enableEdit);
+			updateCurrentCalibracion();
 		}
+
 		panel.revalidate();
+	}
+
+	private void updateCalibracionList() {
+		int[] cols = {TableModel.NUMERO, TableModel.FECHA, TableModel.MEDICIONES};
+		list.setModel(new TableModel(cols, model.getList()));
+		list.setRowHeight(30);
+		TableColumnModel columnModel = list.getColumnModel();
+		columnModel.getColumn(2).setPreferredWidth(200);
+	}
+
+	private void updateCurrentCalibracion() {
+		Calibracion currentCalibracion = model.getCurrent();
+		numero.setText(String.valueOf(currentCalibracion.getNumero()));
+		fecha.setText(currentCalibracion.getFecha().toString());
+		mediciones.setText(String.valueOf(currentCalibracion.getNumeroDeMediciones()));
+
+		boolean enableEdit = currentCalibracion.getNumero().isEmpty() || model.getList().isEmpty();
+		save.setEnabled(enableEdit);
+		numero.setEnabled(false);
+
+		int[] cols = {MedicionesTableModel.NUMERO, MedicionesTableModel.REFERENCIA, MedicionesTableModel.MEDICION};
+		medicionesList.setModel(new MedicionesTableModel(cols, currentCalibracion.getMediciones()));
+		medicionesList.setRowHeight(30);
+		TableColumnModel columnModel = medicionesList.getColumnModel();
+		columnModel.getColumn(2).setPreferredWidth(200);
+
+		medicionesListContainer.setVisible(!enableEdit);
 	}
 
 	public void setInstrumentoSeleccionado(Instrumento instrumento) {
