@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Data {
+public class Data implements java.io.Serializable {
 	private List<TipoInstrumento> tipos;
 	private List<Instrumento> instrumentos;
 	private List<Calibracion> calibraciones;
@@ -17,7 +17,6 @@ public class Data {
 		tipos = new ArrayList<>();
 		instrumentos = new ArrayList<>();
 		calibraciones = new ArrayList<>();
-
 
 		// TODO: Remove this dummy data
 		tipos.add(new TipoInstrumento("TER","Termómetro","Grados Celcius"));
@@ -34,6 +33,18 @@ public class Data {
 
 		calibraciones.get(0).agregarMediciones(3, 0, 100);
 		calibraciones.get(1).agregarMediciones(5, 0, 100);
+	}
+
+	public void setTipos(List<TipoInstrumento> tipos) {
+		this.tipos = tipos;
+	}
+
+	public void setInstrumentos(List<Instrumento> instrumentos) {
+		this.instrumentos = instrumentos;
+	}
+
+	public void setCalibraciones(List<Calibracion> calibraciones) {
+		this.calibraciones = calibraciones;
 	}
 
 	public List<TipoInstrumento> getTipos() {
