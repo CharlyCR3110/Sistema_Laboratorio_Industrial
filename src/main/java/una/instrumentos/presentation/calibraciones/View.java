@@ -2,14 +2,14 @@ package una.instrumentos.presentation.calibraciones;
 
 import una.instrumentos.logic.Calibracion;
 import una.instrumentos.logic.Instrumento;
+import una.instrumentos.logic.Medicion;
 import una.utiles.Utiles;
 
 import javax.swing.*;
 import javax.swing.table.TableColumnModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.*;
 
 public class View implements Observer {
 	private JPanel panel;
@@ -77,7 +77,15 @@ public class View implements Observer {
 	private void editAction() {
 		try {
 			Calibracion calibracion = model.getCurrent();
-			controller.edit(calibracion);
+			// recuperar la medicion seleccionada
+			int row = medicionesList.getSelectedRow();
+			if (row == -1) {
+				showError("Debe seleccionar una medición");
+				return;
+			}
+			Medicion medicion = calibracion.getMediciones().get(row);
+			System.out.println(medicion.getReferencia());
+			controller.edit(calibracion, medicion);
 			clearAction();
 		} catch (Exception ex) {
 			showError(ex.getMessage());
@@ -189,11 +197,11 @@ public class View implements Observer {
 		numero.setEnabled(false);
 
 		int[] cols = {MedicionesTableModel.NUMERO, MedicionesTableModel.REFERENCIA, MedicionesTableModel.MEDICION};
-		medicionesList.setModel(new MedicionesTableModel(cols, currentCalibracion.getMediciones()));
+		List<Boolean> editables = Arrays.asList(false, true, true);
+		medicionesList.setModel(new MedicionesTableModel(cols, currentCalibracion.getMediciones(), editables));
 		medicionesList.setRowHeight(30);
 		TableColumnModel columnModel = medicionesList.getColumnModel();
 		columnModel.getColumn(2).setPreferredWidth(200);
-
 		medicionesListContainer.setVisible(!enableEdit);
 	}
 
