@@ -8,7 +8,6 @@ import javax.swing.*;
 import javax.swing.table.TableColumnModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.time.LocalDate;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -30,12 +29,15 @@ public class View implements Observer {
 	private JButton edit;
 	private JButton report;
 	private JLabel instrumentoLbl;
+	private JTable medicionesList;
+	private JScrollPane medicionesListContainer;
 
 	private Controller controller;
 	private Model model;
 	private Instrumento instrumentoSeleccionado;
 
 	public View() {
+		medicionesListContainer.setVisible(false);
 		list.getTableHeader().setReorderingAllowed(false);
 
 		search.addActionListener(e -> searchAction());
@@ -100,7 +102,6 @@ public class View implements Observer {
 			calibracion.setNumero(numeroCalibracion);
 			calibracion.setNumeroDeMediciones(Integer.valueOf(mediciones.getText()));
 			calibracion.setFecha(Utiles.parseDate(fecha.getText()));
-
 			if (instrumentoSeleccionado == null) {
 				showError("Debe seleccionar un instrumento");
 				return;
@@ -120,6 +121,7 @@ public class View implements Observer {
 		list.clearSelection();
 		save.setEnabled(true);
 		numero.setEnabled(false);
+		medicionesListContainer.setVisible(false);
 	}
 
 	private void searchAction() {
@@ -169,10 +171,16 @@ public class View implements Observer {
 			numero.setText(String.valueOf(currentCalibracion.getNumero()));
 			fecha.setText(currentCalibracion.getFecha().toString());
 			mediciones.setText(String.valueOf(currentCalibracion.getNumeroDeMediciones()));
-
 			boolean enableEdit = currentCalibracion.getNumero().isEmpty() || model.getList().isEmpty();
 			save.setEnabled(enableEdit);
 			numero.setEnabled(false);
+			// mostrar la lista de mediciones
+			int[] cols = {MedicionesTableModel.NUMERO, MedicionesTableModel.REFERENCIA, MedicionesTableModel.MEDICION};
+			medicionesList.setModel(new MedicionesTableModel(cols, currentCalibracion.getMediciones()));
+			medicionesList.setRowHeight(30);
+			TableColumnModel columnModel = medicionesList.getColumnModel();
+			columnModel.getColumn(2).setPreferredWidth(200);
+			medicionesListContainer.setVisible(!enableEdit);
 		}
 		panel.revalidate();
 	}
