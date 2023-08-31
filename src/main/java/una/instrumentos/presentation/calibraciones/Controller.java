@@ -1,6 +1,7 @@
 package una.instrumentos.presentation.calibraciones;
 
 import una.instrumentos.logic.Instrumento;
+import una.instrumentos.logic.Medicion;
 import una.instrumentos.logic.Service;
 import una.instrumentos.logic.Calibracion;
 import una.utiles.Utiles;
@@ -20,7 +21,6 @@ public class Controller {
 	}
 
 	private void initializeComponents() {
-		System.out.println("CONTROLLER CALIBRACIONES " + Service.instance().search(new Calibracion()).size());
 		model.init(Service.instance().search(new Calibracion()));
 	}
 
@@ -49,28 +49,17 @@ public class Controller {
 		}
 	}
 
-	public void edit(Calibracion e) {
+	public void edit(Calibracion e, Medicion medicion) {
 		try {
 			Calibracion current = Service.instance().read(e);
-			String fecha = view.getFecha();
-			if (!fecha.isEmpty()) {
-				current.setFecha(Utiles.parseDate(fecha));
+			// buscar la medicion y remplazarla con los nuevos datos
+			for (int i = 0; i < current.getMediciones().size(); i++) {
+				if ( current.getMediciones().get(i).getNumero() == medicion.getNumero() ) {	// si el numero de la medicion es igual al numero de la medicion que se quiere editar
+					current.getMediciones().set(i, medicion);
+					break;
+				}
 			}
 
-			String mediciones = view.getMediciones();
-			if (!mediciones.isEmpty()) {
-				current.setNumeroDeMediciones(Integer.parseInt(mediciones));
-			}
-
-			try {
-				Service.instance().update(current);
-			} catch (Exception ex) {
-				ex.printStackTrace();
-				// TO-DO: Manejar correctamente la excepción
-			}
-
-			model.setCurrent(current);
-			model.commit();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -94,6 +83,8 @@ public class Controller {
 			view.showError("La fecha no es válida");
 			return 0;
 		}
+
+		calibracion.agregarMediciones(calibracion.getNumeroDeMediciones(), instrumentoSeleccionado.getMinimo(), instrumentoSeleccionado.getMaximo());
 
 		instrumentoSeleccionado.agregarCalibracion(calibracion);
 		calibracion.setInstrumento(instrumentoSeleccionado);

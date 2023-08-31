@@ -2,15 +2,14 @@ package una.instrumentos.presentation.calibraciones;
 
 import una.instrumentos.logic.Calibracion;
 import una.instrumentos.logic.Instrumento;
+import una.instrumentos.logic.Medicion;
 import una.utiles.Utiles;
 
 import javax.swing.*;
 import javax.swing.table.TableColumnModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.time.LocalDate;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.*;
 
 public class View implements Observer {
 	private JPanel panel;
@@ -30,12 +29,15 @@ public class View implements Observer {
 	private JButton edit;
 	private JButton report;
 	private JLabel instrumentoLbl;
+	private JTable medicionesList;
+	private JScrollPane medicionesListContainer;
 
 	private Controller controller;
 	private Model model;
 	private Instrumento instrumentoSeleccionado;
 
 	public View() {
+		medicionesListContainer.setVisible(false);
 		list.getTableHeader().setReorderingAllowed(false);
 
 		search.addActionListener(e -> searchAction());
@@ -54,7 +56,8 @@ public class View implements Observer {
 		save.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				saveAction();
+				if (save.isEnabled())
+					saveAction();
 			}
 		});
 		delete.addMouseListener(new MouseAdapter() {
@@ -74,7 +77,15 @@ public class View implements Observer {
 	private void editAction() {
 		try {
 			Calibracion calibracion = model.getCurrent();
-			controller.edit(calibracion);
+			// recuperar la medicion seleccionada
+			int row = medicionesList.getSelectedRow();
+			if (row == -1) {
+				showError("Debe seleccionar una medición");
+				return;
+			}
+			Medicion medicion = calibracion.getMediciones().get(row);
+			System.out.println(medicion.getReferencia());
+			controller.edit(calibracion, medicion);
 			clearAction();
 		} catch (Exception ex) {
 			showError(ex.getMessage());
@@ -94,10 +105,11 @@ public class View implements Observer {
 	private void saveAction() {
 		try {
 			Calibracion calibracion = new Calibracion();
-			calibracion.setNumero(numero.getText());
+			String numeroCalibracion = this.generateNumero();
+			this.numero.setText(numeroCalibracion);
+			calibracion.setNumero(numeroCalibracion);
 			calibracion.setNumeroDeMediciones(Integer.valueOf(mediciones.getText()));
 			calibracion.setFecha(Utiles.parseDate(fecha.getText()));
-
 			if (instrumentoSeleccionado == null) {
 				showError("Debe seleccionar un instrumento");
 				return;
@@ -116,7 +128,8 @@ public class View implements Observer {
 		fecha.setText("0");
 		list.clearSelection();
 		save.setEnabled(true);
-		numero.setEnabled(true);
+		numero.setEnabled(false);
+		medicionesListContainer.setVisible(false);
 	}
 
 	private void searchAction() {
@@ -151,27 +164,45 @@ public class View implements Observer {
 		model.addObserver(this);
 	}
 
-	@Override
 	public void update(Observable updatedModel, Object properties) {
 		int changedProps = (int) properties;
-		if ((changedProps & Model.LIST) == Model.LIST) {
-			int[] cols = {TableModel.NUMERO, TableModel.FECHA, TableModel.MEDICIONES};
-			list.setModel(new TableModel(cols, model.getList()));
-			list.setRowHeight(30);
-			TableColumnModel columnModel = list.getColumnModel();
-			columnModel.getColumn(2).setPreferredWidth(200);
-		}
-		if ((changedProps & Model.CURRENT) == Model.CURRENT) {
-			Calibracion currentCalibracion = model.getCurrent();
-			numero.setText(String.valueOf(currentCalibracion.getNumero()));
-			fecha.setText(currentCalibracion.getFecha().toString());
-			mediciones.setText(String.valueOf(currentCalibracion.getNumeroDeMediciones()));
 
-			boolean enableEdit = currentCalibracion.getNumero().isEmpty() || model.getList().isEmpty();
-			save.setEnabled(enableEdit);
-			numero.setEnabled(enableEdit);
+		if ((changedProps & Model.LIST) == Model.LIST) {
+			updateCalibracionList();
 		}
+
+		if ((changedProps & Model.CURRENT) == Model.CURRENT) {
+			updateCurrentCalibracion();
+		}
+
 		panel.revalidate();
+	}
+
+	private void updateCalibracionList() {
+		int[] cols = {TableModel.NUMERO, TableModel.FECHA, TableModel.MEDICIONES};
+		list.setModel(new TableModel(cols, model.getList()));
+		list.setRowHeight(30);
+		TableColumnModel columnModel = list.getColumnModel();
+		columnModel.getColumn(2).setPreferredWidth(200);
+	}
+
+	private void updateCurrentCalibracion() {
+		Calibracion currentCalibracion = model.getCurrent();
+		numero.setText(String.valueOf(currentCalibracion.getNumero()));
+		fecha.setText(currentCalibracion.getFecha().toString());
+		mediciones.setText(String.valueOf(currentCalibracion.getNumeroDeMediciones()));
+
+		boolean enableEdit = currentCalibracion.getNumero().isEmpty() || model.getList().isEmpty();
+		save.setEnabled(enableEdit);
+		numero.setEnabled(false);
+
+		int[] cols = {MedicionesTableModel.NUMERO, MedicionesTableModel.REFERENCIA, MedicionesTableModel.MEDICION};
+		List<Boolean> editables = Arrays.asList(false, true, true);
+		medicionesList.setModel(new MedicionesTableModel(cols, currentCalibracion.getMediciones(), editables));
+		medicionesList.setRowHeight(30);
+		TableColumnModel columnModel = medicionesList.getColumnModel();
+		columnModel.getColumn(2).setPreferredWidth(200);
+		medicionesListContainer.setVisible(!enableEdit);
 	}
 
 	public void setInstrumentoSeleccionado(Instrumento instrumento) {
@@ -198,6 +229,11 @@ public class View implements Observer {
 				fecha.requestFocus();
 				break;
 		}
+	}
+
+	// Generar número de calibración aleatorio
+	private String generateNumero() {
+		return String.valueOf((int) (Math.random() * 1000000));
 	}
 
 	public String getNumero() {
