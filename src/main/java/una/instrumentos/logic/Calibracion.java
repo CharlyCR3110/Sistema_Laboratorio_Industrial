@@ -55,10 +55,12 @@ public class Calibracion {
 	}
 	public void agregarMediciones(int numeroDeMediciones, int minimo, int maximo) {
 		for (int i = 0; i < numeroDeMediciones; i++) {
-			// lectura es un numero aleatorio entre minimo y maximo
+			int rangoReferencia = maximo / numeroDeMediciones;
+			int referencia = i * rangoReferencia;
 
-			int referencia = maximo / (numeroDeMediciones - i);
-			int lectura = (int) (Math.random() * (maximo - minimo + 1) + minimo);
+			int maxLecturaVariation = (referencia == 0) ? 5 : 5;
+			int lecturaVariation = (int) (Math.random() * (2 * maxLecturaVariation + 1)) - maxLecturaVariation;
+			int lectura = referencia + lecturaVariation;
 
 			this.mediciones.add(new Medicion(i + 1, referencia, lectura));
 		}
