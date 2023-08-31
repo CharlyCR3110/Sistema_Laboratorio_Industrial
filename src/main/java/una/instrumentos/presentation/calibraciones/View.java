@@ -54,7 +54,8 @@ public class View implements Observer {
 		save.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				saveAction();
+				if (save.isEnabled())
+					saveAction();
 			}
 		});
 		delete.addMouseListener(new MouseAdapter() {
@@ -94,7 +95,9 @@ public class View implements Observer {
 	private void saveAction() {
 		try {
 			Calibracion calibracion = new Calibracion();
-			calibracion.setNumero(numero.getText());
+			String numeroCalibracion = this.generateNumero();
+			this.numero.setText(numeroCalibracion);
+			calibracion.setNumero(numeroCalibracion);
 			calibracion.setNumeroDeMediciones(Integer.valueOf(mediciones.getText()));
 			calibracion.setFecha(Utiles.parseDate(fecha.getText()));
 
@@ -116,7 +119,7 @@ public class View implements Observer {
 		fecha.setText("0");
 		list.clearSelection();
 		save.setEnabled(true);
-		numero.setEnabled(true);
+		numero.setEnabled(false);
 	}
 
 	private void searchAction() {
@@ -169,7 +172,7 @@ public class View implements Observer {
 
 			boolean enableEdit = currentCalibracion.getNumero().isEmpty() || model.getList().isEmpty();
 			save.setEnabled(enableEdit);
-			numero.setEnabled(enableEdit);
+			numero.setEnabled(false);
 		}
 		panel.revalidate();
 	}
@@ -198,6 +201,11 @@ public class View implements Observer {
 				fecha.requestFocus();
 				break;
 		}
+	}
+
+	// Generar número de calibración aleatorio
+	private String generateNumero() {
+		return String.valueOf((int) (Math.random() * 1000000));
 	}
 
 	public String getNumero() {
