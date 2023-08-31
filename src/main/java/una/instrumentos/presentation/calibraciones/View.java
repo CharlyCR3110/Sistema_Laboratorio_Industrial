@@ -99,8 +99,7 @@ public class View implements Observer {
 				showError("Debe seleccionar un instrumento");
 				return;
 			}
-			controller.save(calibracion);
-			instrumentoSeleccionado.agregarCalibracion(calibracion);
+			controller.save(calibracion, instrumentoSeleccionado);
 			clearAction();
 		} catch (Exception ex) {
 			JOptionPane.showMessageDialog(panel, ex.getMessage(), "Información", JOptionPane.INFORMATION_MESSAGE);
