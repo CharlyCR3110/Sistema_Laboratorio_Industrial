@@ -1,8 +1,14 @@
 package una.instrumentos.presentation.tipos;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import una.instrumentos.logic.TipoInstrumento;
 import una.instrumentos.logic.Service;
 
+import java.io.FileOutputStream;
 import java.util.List;
 
 public class Controller {
@@ -115,5 +121,44 @@ public class Controller {
 
 	public View getView() {
 		return view;
+	}
+
+	public void generateReport() {
+		Document document = new Document();
+
+		try {
+			// Especifica la ruta y el nombre del archivo PDF que se generará
+			String filePath = "src/main/java/una/reportes/tipos_instrumentos.pdf";
+			PdfWriter.getInstance(document, new FileOutputStream(filePath));
+
+			document.open();
+
+			// Agrega el título al documento
+			Paragraph title = new Paragraph("Reporte de Tipos de Instrumentos");
+			title.setAlignment(Element.ALIGN_CENTER);
+			document.add(title);
+
+			// Agrega la lista de tipos de instrumentos al documento
+			PdfPTable table = new PdfPTable(3); // 3 columnas para código, nombre y unidad
+			table.setWidthPercentage(100);
+			table.addCell("Código");
+			table.addCell("Nombre");
+			table.addCell("Unidad");
+
+			for (TipoInstrumento tipo : model.getList()) {
+				table.addCell(tipo.getCodigo());
+				table.addCell(tipo.getNombre());
+				table.addCell(tipo.getUnidad());
+			}
+
+			document.add(table);
+
+			// Cierra el documento
+			document.close();
+
+			System.out.println("Reporte generado exitosamente en: " + filePath);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

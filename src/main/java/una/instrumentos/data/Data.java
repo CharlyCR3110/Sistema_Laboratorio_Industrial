@@ -18,14 +18,22 @@ public class Data {
 		instrumentos = new ArrayList<>();
 		calibraciones = new ArrayList<>();
 
-		tipos.add(new TipoInstrumento("TER","Termómetro","Grados Celcius") );
+
+		// TODO: Remove this dummy data
+		tipos.add(new TipoInstrumento("TER","Termómetro","Grados Celcius"));
 		tipos.add(new TipoInstrumento("BAR","Barómetro","PSI") );
 
-		instrumentos.add(new Instrumento("123","Termómetro de mercurio", 0, 100, 5, "TIPO 1"));
-		instrumentos.add(new Instrumento("456","Barómetro de mercurio", 0, 100, 5, "TIPO 2"));
+		Instrumento instrumento1 = new Instrumento("123","Termómetro de mercurio", 0, 100, 5, "TIPO 1");
+		Instrumento instrumento2 = new Instrumento("456","Barómetro de mercurio", 0, 100, 5, "TIPO 2");
 
-		calibraciones.add(new Calibracion("1",LocalDate.now(), 3, null));
-		calibraciones.add(new Calibracion("2",LocalDate.now(), 3, null));
+		instrumentos.add(instrumento1);
+		instrumentos.add(instrumento2);
+
+		calibraciones.add(new Calibracion("1",LocalDate.now(), 3, instrumento1));
+		calibraciones.add(new Calibracion("2",LocalDate.now(), 3, instrumento2));
+
+		calibraciones.get(0).agregarMediciones(3, 0, 100);
+		calibraciones.get(1).agregarMediciones(5, 0, 100);
 	}
 
 	public List<TipoInstrumento> getTipos() {

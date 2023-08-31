@@ -72,6 +72,16 @@ public class View implements Observer {
 				editAction();
 			}
 		});
+		report.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				generateReport();
+			}
+		});
+	}
+
+	private void generateReport() {
+		controller.generateReport();
 	}
 
 	private void editAction() {
