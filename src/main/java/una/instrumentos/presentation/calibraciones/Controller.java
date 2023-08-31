@@ -1,11 +1,17 @@
 package una.instrumentos.presentation.calibraciones;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import una.instrumentos.logic.Instrumento;
 import una.instrumentos.logic.Medicion;
 import una.instrumentos.logic.Service;
 import una.instrumentos.logic.Calibracion;
 import una.utiles.Utiles;
 
+import java.io.FileOutputStream;
 import java.util.List;
 
 public class Controller {
@@ -137,5 +143,46 @@ public class Controller {
 
 	public View getView() {
 		return this.view;
+	}
+
+	public void generateReport() {
+		Document document = new Document();
+
+		try {
+			// Especifica la ruta y el nombre del archivo PDF que se generará
+			String filePath = "src/main/java/una/reportes/calibraciones_report.pdf";
+			PdfWriter.getInstance(document, new FileOutputStream(filePath));
+
+			document.open();
+
+			// Agrega el título al documento
+			Paragraph title = new Paragraph("Reporte de Calibraciones");
+			title.setAlignment(Element.ALIGN_CENTER);
+			document.add(title);
+
+			// Agrega la lista de calibraciones al documento
+			PdfPTable table = new PdfPTable(4); // 4 columnas para número, fecha, mediciones y instrumento
+			table.setWidthPercentage(100);
+			table.addCell("Número");
+			table.addCell("Fecha");
+			table.addCell("Mediciones");
+			table.addCell("Instrumento");
+
+			for (Calibracion calibracion : model.getList()) {
+				table.addCell(calibracion.getNumero());
+				table.addCell(Utiles.formatDate(calibracion.getFecha())); // Asumiendo que tienes un método para formatear la fecha
+				table.addCell(String.valueOf(calibracion.getMediciones().size()));
+				table.addCell(calibracion.getInstrumento().getDescripcion()); // Suponiendo que puedes obtener la descripción del instrumento
+			}
+
+			document.add(table);
+
+			// Cierra el documento
+			document.close();
+
+			System.out.println("Reporte de calibraciones generado exitosamente en: " + filePath);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
