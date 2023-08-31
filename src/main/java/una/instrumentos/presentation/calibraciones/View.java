@@ -99,7 +99,7 @@ public class View implements Observer {
 			controller.save(calibracion, instrumentoSeleccionado);
 			clearAction();
 		} catch (Exception ex) {
-			JOptionPane.showMessageDialog(panel, ex.getMessage(), "Información", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(panel, "El formato de la fecha no es valido", "Información", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
 	private void clearAction() {
