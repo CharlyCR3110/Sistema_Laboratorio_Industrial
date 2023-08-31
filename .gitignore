@@ -40,3 +40,6 @@ build/
 
 ### Test ###
 src/main/java/una/proyecto/tests/
+
+### Reportes ###
+src/main/java/una/reportes/*
