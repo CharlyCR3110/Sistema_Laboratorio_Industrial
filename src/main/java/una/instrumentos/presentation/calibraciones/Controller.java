@@ -95,6 +95,8 @@ public class Controller {
 			return 0;
 		}
 
+		calibracion.agregarMediciones(calibracion.getNumeroDeMediciones(), instrumentoSeleccionado.getMinimo(), instrumentoSeleccionado.getMaximo());
+
 		instrumentoSeleccionado.agregarCalibracion(calibracion);
 		calibracion.setInstrumento(instrumentoSeleccionado);
 
