@@ -1,45 +1,53 @@
 package una.instrumentos.presentation.instrumentos;
 
 import una.instrumentos.logic.Instrumento;
-
 import java.util.List;
+import java.util.Observable;
 import java.util.Observer;
 
-public class Model extends java.util.Observable {
-	@Override
-	public void addObserver(Observer o) {	// Para que el modelo notifique a la vista de los cambios
+public class Model extends Observable {
+	private List<Instrumento> list;
+	private Instrumento current;
+	private int changedProps = NONE;
+
+	public static final int NONE = 0;
+	public static final int LIST = 1;
+	public static final int CURRENT = 2;
+
+	public void addObserver(Observer o) {
 		super.addObserver(o);
 		commit();
 	}
-	public void commit() {	// Para que el modelo notifique a la vista de los cambios
+
+	public void commit() {
 		setChanged();
 		notifyObservers(changedProps);
 		changedProps = NONE;
 	}
+
 	public Model() {
 	}
-	public void init(List<Instrumento> list) {	// Inicializa el modelo con una lista de instrumentos
+
+	public void init(List<Instrumento> list) {
 		setList(list);
 		setCurrent(new Instrumento());
 	}
-	public List<Instrumento> getList() {	// Devuelve la lista de instrumentos
+
+	public List<Instrumento> getList() {
 		return list;
 	}
-	public void setList(List<Instrumento> list) {	// Establece la lista de instrumentos
+
+	public void setList(List<Instrumento> list) {
 		this.list = list;
-		changedProps += LIST;
+		changedProps |= LIST;
 	}
-	public Instrumento getCurrent() {	// Devuelve el instrumento actual
+
+	public Instrumento getCurrent() {
 		return current;
 	}
-	public void setCurrent(Instrumento current) {	// Establece el instrumento actual
-		changedProps += CURRENT;
+
+	public void setCurrent(Instrumento current) {
+		changedProps |= CURRENT;
 		this.current = current;
 	}
-	List<Instrumento> list;	// Lista de instrumentos
-	Instrumento current;	// Instrumento actual
-	int changedProps = NONE;	// Propiedades que han cambiado
-	public static int NONE = 0;	// Ninguna propiedad ha cambiado
-	public static int LIST = 1;	// La lista de instrumentos ha cambiado
-	public static int CURRENT = 2;	// El instrumento actual ha cambiado
 }
