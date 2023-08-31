@@ -21,7 +21,6 @@ public class Controller {
 	}
 
 	private void initializeComponents() {
-		System.out.println("CONTROLLER CALIBRACIONES " + Service.instance().search(new Calibracion()).size());
 		model.init(Service.instance().search(new Calibracion()));
 	}
 

@@ -40,7 +40,6 @@ public class Model extends Observable {
 	public void setList(List<Calibracion> list) {
 		this.list = list;
 		changedProps |= LIST;  // Usar operador de bits para combinar las propiedades cambiadas
-		System.out.println("Model.setList: " + list.size());
 	}
 
 	public Calibracion getCurrent() {
