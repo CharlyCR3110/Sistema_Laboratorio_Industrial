@@ -53,12 +53,12 @@ public class View implements Observer {
 				saveAction();
 			}
 		});
-//		delete.addMouseListener(new MouseAdapter() {
-//			@Override
-//			public void mouseClicked(MouseEvent e) {
-//				deleteAction();
-//			}
-//		});
+		delete.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				deleteAction();
+			}
+		});
 //		edit.addMouseListener(new MouseAdapter() {
 //			@Override
 //			public void mouseClicked(MouseEvent e) {
@@ -66,29 +66,16 @@ public class View implements Observer {
 //			}
 //		});
 	}
-//	private void editAction() {
-//		// Se obtiene el elemento seleccionado de la lista
-//		int row = list.getSelectedRow();
-//		try {
-//			Calibracion calibracion = model.getList().get(row);
-//			controller.edit(tipoInstrumento);
-//		} catch (IndexOutOfBoundsException e) {
-//			showErrorMessageBox("Debe seleccionar un elemento de la lista");
-//		}
-//		// Se llama al controlador para editar el elemento
-//		clearAction();
-//	}
-//
-//	private void deleteAction() {
-//		try {
-//			int row = list.getSelectedRow();
-//			TipoInstrumento tipoInstrumento = model.getList().get(row);
-//			controller.delete(tipoInstrumento);
-//			clearAction();
-//		} catch (IndexOutOfBoundsException e) {
-//			showErrorMessageBox("Debe seleccionar un elemento de la lista");
-//		}
-//	}
+	private void deleteAction() {
+		try {
+			// Se obtiene la calibracion seleccionada desde la lista
+			Calibracion calibracion = model.getCurrent();
+			controller.delete(calibracion);
+			clearAction();
+		} catch (Exception ex) {
+			JOptionPane.showMessageDialog(panel, ex.getMessage(), "Información", JOptionPane.INFORMATION_MESSAGE);
+		}
+	}
 	private void saveAction() {
 		try {
 			Calibracion calibracion = new Calibracion();
