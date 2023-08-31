@@ -1,5 +1,7 @@
 package una.instrumentos.logic;
 
+import java.util.Objects;
+
 public class Medicion {
 	private int numero;
 	private int referencia;
@@ -36,5 +38,18 @@ public class Medicion {
 
 	public void setMedicion(int medicion) {
 		this.medicion = medicion;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+		Medicion medicion1 = (Medicion) o;
+		return numero == medicion1.numero && referencia == medicion1.referencia && medicion == medicion1.medicion;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(numero, referencia, medicion);
 	}
 }
