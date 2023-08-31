@@ -104,4 +104,8 @@ public class Controller{
 			e.printStackTrace();
 		}
 	}
+
+	public View getView() {
+		return this.view;
+	}
 }

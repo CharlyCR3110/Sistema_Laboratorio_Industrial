@@ -116,4 +116,8 @@ public class Controller{
 	}
 	View view;
 	Model model;
+
+	public View getView() {
+		return this.view;
+	}
 }
