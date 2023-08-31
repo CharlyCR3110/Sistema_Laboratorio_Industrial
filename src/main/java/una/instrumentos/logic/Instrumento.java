@@ -66,6 +66,15 @@ public class Instrumento {
 	public void setTolerancia(Integer tolerancia) {
 		this.tolerancia = tolerancia;
 	}
+
+	public List<Calibracion> getCalibraciones() {
+		return calibraciones;
+	}
+
+	public void setCalibraciones(List<Calibracion> calibraciones) {
+		this.calibraciones = calibraciones;
+	}
+
 	public void agregarCalibracion(Calibracion calibracion) {
 		calibraciones.add(calibracion);
 	}
