@@ -5,13 +5,14 @@ import java.util.Objects;
 
 public class Calibracion {
 	public Calibracion() {
-		this("", LocalDate.now(), 0);
+		this("", LocalDate.now(), 0, null);
 	}
 
-	public Calibracion(String numero, LocalDate fecha, Integer numeroDeMediciones) {
+	public Calibracion(String numero, LocalDate fecha, Integer numeroDeMediciones, Instrumento instrumento) {
 		this.numero = numero;
 		this.fecha = fecha;
 		this.numeroDeMediciones = numeroDeMediciones;
+		this.instrumento = instrumento;
 	}
 
 	public String getNumero() {
@@ -34,6 +35,14 @@ public class Calibracion {
 		return numeroDeMediciones;
 	}
 
+	public Instrumento getInstrumento() {
+		return instrumento;
+	}
+
+	public void setInstrumento(Instrumento instrumento) {
+		this.instrumento = instrumento;
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) return true;
@@ -53,4 +62,5 @@ public class Calibracion {
 	private String numero;	// numero de calibracion
 	private LocalDate fecha;	// fecha de calibracion
 	private Integer numeroDeMediciones;	// numero de mediciones
+	private Instrumento instrumento;	// instrumento calibrado
 }
