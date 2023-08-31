@@ -77,7 +77,7 @@ public class Controller {
 	}
 
 	public int save(Calibracion calibracion, Instrumento instrumentoSeleccionado) {
-		if (!validateAndHandleEmptyField(calibracion.getNumero(), "número") ||
+		if (!validateAndHandleEmptyField(calibracion.getNumero(), "numero") ||
 				!validateAndHandleEmptyField(calibracion.getFecha().toString(), "fecha") ||
 				!validateAndHandleEmptyField(calibracion.getNumeroDeMediciones().toString(), "mediciones")) {
 			return 0;
