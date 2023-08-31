@@ -36,9 +36,7 @@ public class View implements Observer {
 	private JTextField minimo;
 
 	public View() {
-		// Para que no se pueda editar la tabla
 		list.getTableHeader().setReorderingAllowed(false);
-		// Eventos
 		search.addActionListener(e -> searchAction());
 		list.addMouseListener(new MouseAdapter() {
 			@Override
@@ -71,8 +69,8 @@ public class View implements Observer {
 			}
 		});
 	}
+
 	private void editAction() {
-		// Se obtiene el elemento seleccionado de la lista
 		int row = list.getSelectedRow();
 		try {
 			Instrumento instrumento = model.getList().get(row);
@@ -80,9 +78,9 @@ public class View implements Observer {
 		} catch (IndexOutOfBoundsException e) {
 			showErrorMessageBox("Debe seleccionar un elemento de la lista");
 		}
-		// Se llama al controlador para editar el elemento
 		clearAction();
 	}
+
 	private void deleteAction() {
 		try {
 			int row = list.getSelectedRow();
@@ -97,6 +95,7 @@ public class View implements Observer {
 			showErrorMessageBox("Debe seleccionar un elemento de la lista");
 		}
 	}
+
 	private void saveAction() {
 		try {
 			Instrumento instrumento = new Instrumento();
@@ -110,39 +109,40 @@ public class View implements Observer {
 				clearAction();
 			}
 		} catch (Exception ex) {
-			JOptionPane.showMessageDialog(panel, ex.getMessage(), "Información", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(panel, ex.getMessage(), "Informacion", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
+
 	private void clearAction() {
-		// Se limpian los campos (o sea, se ponen en blanco)
 		serie.setText("");
 		descripcion.setText("");
 		minimo.setText("0");
 		maximo.setText("0");
 		tolerancia.setText("0");
 		tipo.setSelectedIndex(0);
-		// Ademas de limpiar los campos, se deselecciona la lista
 		list.clearSelection();
-		// Reactivar el boton de guardar
 		save.setEnabled(true);
 		serie.setEnabled(true);
 		System.out.println("clearAction");
 	}
+
 	private void searchAction() {
 		try {
 			Instrumento filter = new Instrumento();
 			filter.setDescripcion(searchDescripcion.getText());
 			controller.search(filter);
 		} catch (Exception ex) {
-			JOptionPane.showMessageDialog(panel, ex.getMessage(), "Información", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(panel, ex.getMessage(), "Informacion", JOptionPane.INFORMATION_MESSAGE);
 		}
 	}
+
 	private void handleListClick() {
 		int row = list.getSelectedRow();
-		controller.edit(row);   // Se envia la fila seleccionada al controlador
+		controller.edit(row);
 	}
+
 	private void showErrorMessageBox(String message) {
-		JOptionPane.showMessageDialog(panel, message, "Información", JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(panel, message, "Informacion", JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	public JPanel getPanel() {
@@ -178,7 +178,6 @@ public class View implements Observer {
 			maximo.setText(String.valueOf(model.getCurrent().getMaximo()));
 			tolerancia.setText(String.valueOf(model.getCurrent().getTolerancia()));
 			tipo.setSelectedItem(model.getCurrent().getTipo());
-			// Se deshabilitan el boton Guardar y el campo de codigo
 			if (model.getCurrent().getSerie().equals("")) {
 				save.setEnabled(true);
 				serie.setEnabled(true);
@@ -189,9 +188,11 @@ public class View implements Observer {
 		}
 		this.panel.revalidate();
 	}
+
 	public void showError(String message) {
 		JOptionPane.showMessageDialog(panel, message, "Error", JOptionPane.ERROR_MESSAGE);
 	}
+
 	public void highlightEmptyField(String fieldName) {
 		switch (fieldName) {
 			case "serie":
@@ -215,27 +216,30 @@ public class View implements Observer {
 		}
 	}
 
-	// metodos para obtener los valores de los campos de texto
 	public String getSerie() {
 		return serie.getText();
 	}
+
 	public String getDescripcion() {
 		return descripcion.getText();
 	}
+
 	public String getMinimo() {
 		return minimo.getText();
 	}
+
 	public String getMaximo() {
 		return maximo.getText();
 	}
+
 	public String getTolerancia() {
 		return tolerancia.getText();
 	}
+
 	public String getTipo() {
 		return tipo.getSelectedItem().toString();
 	}
 
-	// test
 	private Instrumento getInstrumento() {
 		Instrumento instrumento = new Instrumento();
 		instrumento.setSerie(serie.getText());
