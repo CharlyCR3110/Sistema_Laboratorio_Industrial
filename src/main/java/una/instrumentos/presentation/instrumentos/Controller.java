@@ -1,8 +1,14 @@
 package una.instrumentos.presentation.instrumentos;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import una.instrumentos.logic.Service;
 import una.instrumentos.logic.Instrumento;
 
+import java.io.FileOutputStream;
 import java.util.List;
 
 public class Controller {
@@ -131,5 +137,48 @@ public class Controller {
 
 	public View getView() {
 		return this.view;
+	}
+
+	public void generateReport() {
+		Document document = new Document();
+
+		try {
+			// Especifica la ruta y el nombre del archivo PDF que se generará
+			String filePath = "src/main/java/una/reportes/instrumentos_report.pdf";
+			PdfWriter.getInstance(document, new FileOutputStream(filePath));
+
+			document.open();
+
+			// Agrega el título al documento
+			Paragraph title = new Paragraph("Reporte de Instrumentos");
+			title.setAlignment(Element.ALIGN_CENTER);
+			document.add(title);
+
+			// Agrega la lista de instrumentos al documento
+			PdfPTable table = new PdfPTable(5); // 5 columnas para serie, descripción, mínimo, máximo y tolerancia
+			table.setWidthPercentage(100);
+			table.addCell("Serie");
+			table.addCell("Descripción");
+			table.addCell("Mínimo");
+			table.addCell("Máximo");
+			table.addCell("Tolerancia");
+
+			for (Instrumento instrumento : model.getList()) {
+				table.addCell(instrumento.getSerie());
+				table.addCell(instrumento.getDescripcion());
+				table.addCell(String.valueOf(instrumento.getMinimo()));
+				table.addCell(String.valueOf(instrumento.getMaximo()));
+				table.addCell(String.valueOf(instrumento.getTolerancia()));
+			}
+
+			document.add(table);
+
+			// Cierra el documento
+			document.close();
+
+			System.out.println("Reporte de instrumentos generado exitosamente en: " + filePath);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
