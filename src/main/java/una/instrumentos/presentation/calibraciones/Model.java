@@ -1,6 +1,9 @@
 package una.instrumentos.presentation.calibraciones;
 
 import una.instrumentos.logic.Calibracion;
+import una.instrumentos.logic.Instrumento;
+import una.instrumentos.logic.Service;
+
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -49,5 +52,16 @@ public class Model extends Observable {
 	public void setCurrent(Calibracion current) {
 		changedProps |= CURRENT;  // Usar operador de bits para combinar las propiedades cambiadas
 		this.current = current;
+	}
+
+	public void loadList(List<Calibracion> calibracionList) {
+		try {
+			Service.instance().loadCalibracionList(calibracionList);
+			setList(calibracionList);
+			setCurrent(new Calibracion());
+			commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
