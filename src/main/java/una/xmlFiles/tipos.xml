@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<java version="17.0.8" class="java.beans.XMLDecoder">
+ <object class="java.util.ArrayList">
+  <void method="add">
+   <object class="una.instrumentos.logic.TipoInstrumento">
+    <void property="codigo">
+     <string>BAR</string>
+    </void>
+    <void property="nombre">
+     <string>Barómetro</string>
+    </void>
+    <void property="unidad">
+     <string>PSI</string>
+    </void>
+   </object>
+  </void>
+  <void method="add">
+   <object class="una.instrumentos.logic.TipoInstrumento">
+    <void property="codigo">
+     <string>TER</string>
+    </void>
+    <void property="nombre">
+     <string>Termómetro</string>
+    </void>
+    <void property="unidad">
+     <string>Grados Ccelcius</string>
+    </void>
+   </object>
+  </void>
+ </object>
+</java>
