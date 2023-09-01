@@ -1,4 +1,6 @@
 import una.instrumentos.logic.Instrumento;
+import una.instrumentos.logic.Service;
+
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -12,14 +14,16 @@ public class Application {
 	private static una.instrumentos.presentation.calibraciones.Controller calibracionesController;
 
 	public static void main(String[] args) {
+		Service service = Service.instance();
 		setLookAndFeel();
 
 		initializeComponents();
 		setupControllers();
+		loadData();
 		setupTabs();
 		setupWindow();
-
 		tabbedPane.addChangeListener(createTabChangeListener());
+
 
 		// Guarda los datos en archivos XML
 		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
@@ -93,6 +97,16 @@ public class Application {
 		}
 	}
 
+	private static void loadData() {
+		try {
+			tiposController.getModel().loadList(una.utiles.XMLDataManager.loadFromXML("src/main/java/una/xmlFiles/tipos.xml"));
+			instrumentosController.getModel().loadList(una.utiles.XMLDataManager.loadFromXML("src/main/java/una/xmlFiles/instrumentos.xml"));
+			calibracionesController.getModel().loadList(una.utiles.XMLDataManager.loadFromXML("src/main/java/una/xmlFiles/calibraciones.xml"));
+			System.out.println("Datos cargados");
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+	}
 
 	private static void setupWindow() {
 		window.setSize(900, 400);
