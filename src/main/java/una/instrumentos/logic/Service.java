@@ -16,6 +16,20 @@ public class Service {
 	private Service(){
 		data = new Data();
 	}
+
+	public void loadTipoList(List<TipoInstrumento> list ) throws Exception {
+		data.setTipos(list);
+		data.setInstrumentos(data.getInstrumentos());
+	}
+
+	public void loadInstrumentoList(List<Instrumento> list ) throws Exception {
+		data.setInstrumentos(list);
+		data.setInstrumentos(data.getInstrumentos());
+	}
+	public void loadCalibracionList(List<Calibracion> calibracionList) {
+		data.setCalibraciones(calibracionList);
+		data.setCalibraciones(data.getCalibraciones());
+	}
 	// CREATE
 		// TIPO INSTRUMENTO
 	public void create(TipoInstrumento e) throws Exception{
@@ -135,5 +149,9 @@ public class Service {
 	public TipoInstrumento get(TipoInstrumento e) {
 		return data.getTipos().stream()
 				.filter(i->i.getCodigo().equals(e.getCodigo())).findFirst().orElse(null);
+	}
+
+	public Service getInstance() {
+		return theInstance;
 	}
 }
