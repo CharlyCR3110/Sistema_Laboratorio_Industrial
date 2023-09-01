@@ -16,7 +16,7 @@ public class Data implements java.io.Serializable {
 	public Data() {
 		tipos = new ArrayList<>();
 		instrumentos = new ArrayList<>();
-		calibraciones = new ArrayList<>();calibraciones.get(1).agregarMediciones(5, 0, 100);
+		calibraciones = new ArrayList<>();
 	}
 
 	public void setTipos(List<TipoInstrumento> tipos) {
