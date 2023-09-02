@@ -79,9 +79,9 @@ public class View implements Observer {
 			}
 		});
 		list.getSelectionModel().addListSelectionListener(e -> {
-			// Llama a la función para actualizar el estado del botón "delete".
 			updateDeleteButtonState();
 			updateEditButtonState();
+			updateSaveState();
 		});
 	}
 
@@ -197,13 +197,6 @@ public class View implements Observer {
 			maximo.setText(String.valueOf(model.getCurrent().getMaximo()));
 			tolerancia.setText(String.valueOf(model.getCurrent().getTolerancia()));
 			tipo.setSelectedItem(model.getCurrent().getTipo());
-			if (model.getCurrent().getSerie().equals("")) {
-				save.setEnabled(true);
-				serie.setEnabled(true);
-			} else {
-				save.setEnabled(false);
-				serie.setEnabled(false);
-			}
 		}
 		this.panel.revalidate();
 	}
@@ -243,6 +236,12 @@ public class View implements Observer {
 	private void updateEditButtonState() {
 		int selectedRowCount = list.getSelectedRowCount();
 		edit.setEnabled(selectedRowCount > 0);
+	}
+
+	private void updateSaveState() {
+		int selectedRowCount = list.getSelectedRowCount();
+		save.setEnabled(selectedRowCount == 0);
+		serie.setEnabled(selectedRowCount == 0);
 	}
 
 	public String getSerie() {
