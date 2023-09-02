@@ -7,6 +7,7 @@ import javax.swing.*;
 import javax.swing.table.TableColumnModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -255,6 +256,19 @@ public class View implements Observer {
 		int selectedRowCount = list.getSelectedRowCount();
 		save.setEnabled(selectedRowCount == 0);
 		serie.setEnabled(selectedRowCount == 0);
+	}
+
+	private List<TipoInstrumento> getTipos() {
+		return controller.getTipos();
+	}
+
+	public void setTipos() {
+		List<TipoInstrumento> tipos = getTipos();
+		tipo.removeAllItems();
+		tipo.addItem("");
+		for (TipoInstrumento tipo : tipos) {
+			this.tipo.addItem(tipo.getNombre());
+		}
 	}
 
 	public String getSerie() {
