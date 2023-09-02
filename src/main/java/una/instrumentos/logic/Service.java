@@ -111,10 +111,18 @@ public class Service {
 	// DELETE
 		// Tipo Instrumento
 	public void delete(TipoInstrumento e) throws Exception{
+		// Verificar que no existan instrumentos con ese tipo
+		if (data.getInstrumentos().stream().anyMatch(i->i.getTipo().equals(e))) {
+			throw new Exception("Parece que hay instrumentos con este tipo asociado");
+		}
 		data.getTipos().remove(e);
 	}
 		// Instrumento
 	public void delete(Instrumento e) throws Exception {
+		// Verificar que no existan calibraciones con ese instrumento
+		if (data.getCalibraciones().stream().anyMatch(i->i.getInstrumento().equals(e))) {
+			throw new Exception("Parece que hay calibraciones asociadas a este instrumento");
+		}
 		data.getInstrumentos().remove(e);
 	}
 		// Calibracion
