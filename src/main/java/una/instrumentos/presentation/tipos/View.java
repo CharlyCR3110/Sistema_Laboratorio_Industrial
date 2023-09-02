@@ -113,6 +113,8 @@ public class View implements Observer {
             clearAction();
         } catch (IndexOutOfBoundsException e) {
             showErrorMessageBox("Debe seleccionar un elemento de la lista");
+        } catch (Exception e) {
+            showErrorMessageBox(e.getMessage());
         }
     }
 
