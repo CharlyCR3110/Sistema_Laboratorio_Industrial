@@ -2,37 +2,78 @@
 <java version="17.0.8" class="java.beans.XMLDecoder">
  <object class="java.util.ArrayList">
   <void method="add">
-   <object class="una.instrumentos.logic.Instrumento">
+   <object class="una.instrumentos.logic.Instrumento" id="Instrumento0">
     <void property="descripcion">
-     <string>Barómetro de mercurio</string>
+     <string>Barómetro de mesa Harrison</string>
     </void>
     <void property="maximo">
      <int>100</int>
     </void>
+    <void property="minimo">
+     <int>50</int>
+    </void>
     <void property="serie">
-     <string>456</string>
+     <string>2598652</string>
     </void>
     <void property="tipo">
-     <string>TIPO 2</string>
+     <void property="codigo">
+      <string>BAR</string>
+     </void>
+     <void property="nombre">
+      <string>Barómetro</string>
+     </void>
+     <void property="unidad">
+      <string>PSI</string>
+     </void>
     </void>
     <void property="tolerancia">
-     <int>5</int>
+     <int>100</int>
     </void>
    </object>
   </void>
   <void method="add">
-   <object class="una.instrumentos.logic.Instrumento" id="Instrumento0">
+   <object class="una.instrumentos.logic.Instrumento" id="Instrumento1">
+    <void property="descripcion">
+     <string>Termómetro industrial Beck</string>
+    </void>
+    <void property="maximo">
+     <int>120</int>
+    </void>
+    <void property="minimo">
+     <int>-20</int>
+    </void>
+    <void property="serie">
+     <string>1784216</string>
+    </void>
+    <void id="TipoInstrumento0" property="tipo">
+     <void property="codigo">
+      <string>TER</string>
+     </void>
+     <void property="nombre">
+      <string>Termómetro</string>
+     </void>
+     <void property="unidad">
+      <string>Grados Celsius</string>
+     </void>
+    </void>
+    <void property="tolerancia">
+     <int>120</int>
+    </void>
+   </object>
+  </void>
+  <void method="add">
+   <object class="una.instrumentos.logic.Instrumento" id="Instrumento2">
     <void property="calibraciones">
      <void method="add">
       <object class="una.instrumentos.logic.Calibracion" id="Calibracion0">
        <void property="instrumento">
-        <object idref="Instrumento0"/>
+        <object idref="Instrumento2"/>
        </void>
        <void property="mediciones">
         <void method="add">
          <object class="una.instrumentos.logic.Medicion">
           <void property="medicion">
-           <int>-1</int>
+           <int>3</int>
           </void>
           <void property="numero">
            <int>1</int>
@@ -42,79 +83,53 @@
         <void method="add">
          <object class="una.instrumentos.logic.Medicion">
           <void property="medicion">
-           <int>20</int>
+           <int>32</int>
           </void>
           <void property="numero">
            <int>2</int>
           </void>
           <void property="referencia">
-           <int>20</int>
+           <int>30</int>
           </void>
          </object>
         </void>
         <void method="add">
          <object class="una.instrumentos.logic.Medicion">
           <void property="medicion">
-           <int>38</int>
+           <int>63</int>
           </void>
           <void property="numero">
            <int>3</int>
-          </void>
-          <void property="referencia">
-           <int>40</int>
-          </void>
-         </object>
-        </void>
-        <void method="add">
-         <object class="una.instrumentos.logic.Medicion">
-          <void property="medicion">
-           <int>55</int>
-          </void>
-          <void property="numero">
-           <int>4</int>
           </void>
           <void property="referencia">
            <int>60</int>
           </void>
          </object>
         </void>
-        <void method="add">
-         <object class="una.instrumentos.logic.Medicion">
-          <void property="medicion">
-           <int>80</int>
-          </void>
-          <void property="numero">
-           <int>5</int>
-          </void>
-          <void property="referencia">
-           <int>80</int>
-          </void>
-         </object>
-        </void>
        </void>
        <void property="numero">
-        <string>530199</string>
+        <string>785576</string>
        </void>
        <void property="numeroDeMediciones">
-        <int>5</int>
+        <int>3</int>
        </void>
       </object>
      </void>
     </void>
     <void property="descripcion">
-     <string>Termómetro de mercurio</string>
+     <string>Termómetro manual marca Hush</string>
     </void>
     <void property="maximo">
-     <int>100</int>
+     <int>90</int>
     </void>
     <void property="serie">
-     <string>123</string>
+     <string>1546715</string>
     </void>
     <void property="tipo">
-     <string>TIPO 1</string>
+     <object idref="TipoInstrumento0"/>
     </void>
     <void property="tolerancia">
-     <int>5</int>
+     <int>90</int>
     </void>
    </object>
   </void>
