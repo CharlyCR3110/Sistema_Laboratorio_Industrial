@@ -118,14 +118,12 @@ public class View implements Observer {
 		try {
 			int row = list.getSelectedRow();
 			Instrumento instrumento = model.getList().get(row);
-			if (instrumento.hasCalibraciones()) {
-				showErrorMessageBox("No se puede eliminar un instrumento que tiene calibraciones");
-				return;
-			}
 			controller.delete(instrumento);
 			clearAction();
 		} catch (IndexOutOfBoundsException ex) {
 			showErrorMessageBox("Debe seleccionar un elemento de la lista");
+		} catch (Exception ex) {
+			showErrorMessageBox(ex.getMessage());
 		}
 	}
 
