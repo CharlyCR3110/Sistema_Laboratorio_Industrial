@@ -82,7 +82,8 @@ public class Controller {
 
 	public int save(String serie, String descripcion,Integer minimo, Integer maximo, Integer tolerancia,  String tipo) {
 		if (!validateAndHandleEmptyField(serie, "serie") ||
-				!validateAndHandleEmptyField(descripcion, "descripcion")) {
+				!validateAndHandleEmptyField(descripcion, "descripcion") ||
+				tipo == null || tipo.isEmpty()) {
 			return 0;
 		}
 
