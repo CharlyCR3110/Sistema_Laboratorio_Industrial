@@ -132,6 +132,8 @@ public class View implements Observer {
 			// Se pasan los datos del formulario al controlador
 			if (controller.save(serie.getText(), descripcion.getText(), Integer.parseInt(minimo.getText()), Integer.parseInt(maximo.getText()), Integer.parseInt(maximo.getText()), tipo.getSelectedItem().toString()) == 1) {
 				clearAction();
+			} else {
+				showErrorMessageBox("Debe llenar todos los campos");
 			}
 		} catch (Exception ex) {
 			JOptionPane.showMessageDialog(panel, ex.getMessage(), "Informacion", JOptionPane.INFORMATION_MESSAGE);
