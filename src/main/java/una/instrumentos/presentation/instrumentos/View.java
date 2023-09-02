@@ -36,11 +36,18 @@ public class View implements Observer {
 	private JTextField minimo;
 
 	public View() {
+		initializeUI();
+		setupEventHandlers();
+		initializeButtonStates();
+	}
+
+	private void initializeUI() {
 		list.getTableHeader().setReorderingAllowed(false);
-		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // No permite selección múltiple
-		// Se inicializan los botones "delete" y "edit" en deshabilitado
-		updateDeleteButtonState();	
-		updateEditButtonState();
+		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		initializeButtonStates();
+	}
+
+	private void setupEventHandlers() {
 		search.addActionListener(e -> searchAction());
 		list.addMouseListener(new MouseAdapter() {
 			@Override
@@ -83,6 +90,12 @@ public class View implements Observer {
 			updateEditButtonState();
 			updateSaveState();
 		});
+	}
+
+	private void initializeButtonStates() {
+		updateDeleteButtonState();
+		updateEditButtonState();
+		updateSaveState();
 	}
 
 	private void generateReport() {
