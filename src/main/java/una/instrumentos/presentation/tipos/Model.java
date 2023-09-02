@@ -1,5 +1,6 @@
 package una.instrumentos.presentation.tipos;
 
+import una.instrumentos.logic.Service;
 import una.instrumentos.logic.TipoInstrumento;
 import java.util.List;
 import java.util.Observable;
@@ -49,5 +50,20 @@ public class Model extends Observable {
 	public void setCurrent(TipoInstrumento current) {
 		changedProps |= CURRENT;
 		this.current = current;
+	}
+
+	public Service getService() {
+		return Service.instance();
+	}
+
+	public void loadList(List<TipoInstrumento> tipoInstrumentoList) {
+		try {
+			Service.instance().loadTipoList(tipoInstrumentoList);
+			setList(tipoInstrumentoList);
+			setCurrent(new TipoInstrumento());
+			commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

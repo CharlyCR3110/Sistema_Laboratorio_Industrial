@@ -1,6 +1,9 @@
 package una.instrumentos.presentation.instrumentos;
 
 import una.instrumentos.logic.Instrumento;
+import una.instrumentos.logic.Service;
+import una.instrumentos.logic.TipoInstrumento;
+
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -49,5 +52,16 @@ public class Model extends Observable {
 	public void setCurrent(Instrumento current) {
 		changedProps |= CURRENT;
 		this.current = current;
+	}
+
+	public void loadList(List<Instrumento> instrumentosList) {
+		try {
+			Service.instance().loadInstrumentoList(instrumentosList);
+			setList(instrumentosList);
+			setCurrent(new Instrumento());
+			commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }

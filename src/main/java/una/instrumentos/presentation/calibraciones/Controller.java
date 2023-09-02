@@ -26,6 +26,10 @@ public class Controller {
 		view.setModel(model);
 	}
 
+	public Model getModel() {
+		return model;
+	}
+
 	private void initializeComponents() {
 		model.init(Service.instance().search(new Calibracion()));
 	}
