@@ -29,12 +29,17 @@ public class View implements Observer {
     private JButton edit;
 
     public View() {
-        list.getTableHeader().setReorderingAllowed(false);  // No permite mover las columnas
-        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // No permite selección múltiple
+        initializeUI();
+        setupEventHandlers();
+        initializeButtonStates();
+    }
 
-        updateDeleteButtonState();  // Inicializa el estado del botón "delete" en deshabilitado
-        updateEditButtonState();  // Inicializa el estado del botón "edit" en deshabilitado
+    private void initializeUI() {
+        list.getTableHeader().setReorderingAllowed(false);
+        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    }
 
+    private void setupEventHandlers() {
         search.addActionListener(e -> searchAction());
         list.addMouseListener(new MouseAdapter() {
             @Override
@@ -79,6 +84,12 @@ public class View implements Observer {
         });
     }
 
+    private void initializeButtonStates() {
+        updateDeleteButtonState();
+        updateEditButtonState();
+        updateSaveState();
+    }
+    
     private void generateReport() {
         controller.generateReport();
     }
