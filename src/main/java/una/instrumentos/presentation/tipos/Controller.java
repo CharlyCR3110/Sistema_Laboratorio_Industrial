@@ -119,7 +119,7 @@ public class Controller {
 			model.setCurrent(new TipoInstrumento());
 			model.commit();
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
 		}
 	}
 
