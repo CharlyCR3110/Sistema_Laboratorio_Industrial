@@ -37,12 +37,19 @@ public class View implements Observer {
 	private Instrumento instrumentoSeleccionado;
 
 	public View() {
+		initializeUI();
+		setupEventHandlers();
+		initializeButtonStates();
+	}
+
+	private void initializeUI() {
 		medicionesListContainer.setVisible(false);
 		list.getTableHeader().setReorderingAllowed(false);
-		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // No permite selección múltiple
-		// Se inicializan los botones "delete" y "edit" en deshabilitado
-		updateDeleteButtonState();
-		updateEditButtonState();
+		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		medicionesList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	}
+
+	private void setupEventHandlers() {
 		search.addActionListener(e -> searchAction());
 		list.addMouseListener(new MouseAdapter() {
 			@Override
@@ -59,8 +66,9 @@ public class View implements Observer {
 		save.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (save.isEnabled())
+				if (save.isEnabled()) {
 					saveAction();
+				}
 			}
 		});
 		delete.addMouseListener(new MouseAdapter() {
@@ -82,11 +90,16 @@ public class View implements Observer {
 			}
 		});
 		list.getSelectionModel().addListSelectionListener(e -> {
-			// Llama a la función para actualizar el estado del botón "delete".
 			updateDeleteButtonState();
 			updateEditButtonState();
 			updateSaveState();
 		});
+	}
+
+	private void initializeButtonStates() {
+		updateDeleteButtonState();
+		updateEditButtonState();
+		updateSaveState();
 	}
 
 	private void generateReport() {
