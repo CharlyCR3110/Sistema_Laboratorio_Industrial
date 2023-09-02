@@ -73,9 +73,9 @@ public class View implements Observer {
             }
         });
         list.getSelectionModel().addListSelectionListener(e -> {
-            // Llama a la función para actualizar el estado del botón "delete".
             updateDeleteButtonState();
             updateEditButtonState();
+            updateSaveState();
         });
     }
 
@@ -178,13 +178,6 @@ public class View implements Observer {
             codigo.setText(model.getCurrent().getCodigo());
             nombre.setText(model.getCurrent().getNombre());
             unidad.setText(model.getCurrent().getUnidad());
-            if (model.getCurrent().getCodigo().equals("")) {
-                save.setEnabled(true);
-                codigo.setEnabled(true);
-            } else {
-                save.setEnabled(false);
-                codigo.setEnabled(false);
-            }
         }
         this.panel.revalidate();
     }
@@ -215,6 +208,12 @@ public class View implements Observer {
     private void updateEditButtonState() {
         int selectedRowCount = list.getSelectedRowCount();
         edit.setEnabled(selectedRowCount > 0);
+    }
+
+    private void updateSaveState() {
+        int selectedRowCount = list.getSelectedRowCount();
+        save.setEnabled(selectedRowCount == 0);
+        codigo.setEnabled(selectedRowCount == 0);
     }
 
     public String getCodigo() {
