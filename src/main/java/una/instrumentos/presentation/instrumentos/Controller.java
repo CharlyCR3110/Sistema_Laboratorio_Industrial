@@ -137,7 +137,7 @@ public class Controller {
 			model.setCurrent(new Instrumento());
 			model.commit();
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
 		}
 	}
 
