@@ -85,6 +85,7 @@ public class View implements Observer {
 			// Llama a la función para actualizar el estado del botón "delete".
 			updateDeleteButtonState();
 			updateEditButtonState();
+			updateSaveState();
 		});
 	}
 
@@ -211,7 +212,6 @@ public class View implements Observer {
 		mediciones.setText(String.valueOf(currentCalibracion.getNumeroDeMediciones()));
 
 		boolean enableEdit = currentCalibracion.getNumero().isEmpty() || model.getList().isEmpty();
-		save.setEnabled(enableEdit);
 		numero.setEnabled(false);
 
 		int[] cols = {MedicionesTableModel.NUMERO, MedicionesTableModel.REFERENCIA, MedicionesTableModel.MEDICION};
@@ -258,6 +258,11 @@ public class View implements Observer {
 	private void updateEditButtonState() {
 		int selectedRowCount = list.getSelectedRowCount();
 		edit.setEnabled(selectedRowCount > 0);
+	}
+
+	private void updateSaveState() {
+		int selectedRowCount = list.getSelectedRowCount();
+		save.setEnabled(selectedRowCount == 0);
 	}
 
 	// Generar número de calibración aleatorio
