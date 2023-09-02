@@ -80,16 +80,16 @@ public class Controller {
 		}
 	}
 
-	public int save(Instrumento instrumento) {
-		if (!validateAndHandleEmptyField(instrumento.getSerie(), "serie") ||
-				!validateAndHandleEmptyField(instrumento.getDescripcion(), "descripcion")) {
+	public int save(String serie, String descripcion,Integer minimo, Integer maximo, Integer tolerancia,  String tipo) {
+		if (!validateAndHandleEmptyField(serie, "serie") ||
+				!validateAndHandleEmptyField(descripcion, "descripcion")) {
 			return 0;
 		}
 
 		try {
 			Service service = Service.instance();
 			try {
-				service.create(instrumento);
+				service.create(new Instrumento(serie, descripcion, minimo, maximo, tolerancia, stringToTipo(tipo)));
 			} catch (Exception e) {
 				view.showError("Ya existe un instrumento con esa serie");
 			}
@@ -99,6 +99,15 @@ public class Controller {
 		}
 
 		return 1;
+	}
+
+	private TipoInstrumento stringToTipo(String tipo) {
+		for (TipoInstrumento tipoInstrumento : getTipos()) {
+			if (tipoInstrumento.getNombre().equals(tipo)) {
+				return tipoInstrumento;
+			}
+		}
+		return null;
 	}
 
 	private boolean validateAndHandleEmptyField(String value, String fieldName) {
