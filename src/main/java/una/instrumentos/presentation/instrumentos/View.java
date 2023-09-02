@@ -131,14 +131,8 @@ public class View implements Observer {
 
 	private void saveAction() {
 		try {
-			Instrumento instrumento = new Instrumento();
-			instrumento.setSerie(serie.getText());
-			instrumento.setDescripcion(descripcion.getText());
-			instrumento.setMinimo(Integer.parseInt(minimo.getText()));
-			instrumento.setMaximo(Integer.parseInt(maximo.getText()));
-			instrumento.setTolerancia(Integer.parseInt(tolerancia.getText()));
-			instrumento.setTipo(tipo.getSelectedItem().toString());
-			if (controller.save(instrumento) == 1) {
+			// Se pasan los datos del formulario al controlador
+			if (controller.save(serie.getText(), descripcion.getText(), Integer.parseInt(minimo.getText()), Integer.parseInt(maximo.getText()), Integer.parseInt(maximo.getText()), tipo.getSelectedItem().toString()) == 1) {
 				clearAction();
 			}
 		} catch (Exception ex) {
@@ -291,18 +285,18 @@ public class View implements Observer {
 		return tolerancia.getText();
 	}
 
-	public String getTipo() {
-		return tipo.getSelectedItem().toString();
+	public TipoInstrumento getTipoSeleccionado() {
+		return controller.getTipoSeleccionado(tipo.getSelectedItem().toString());
 	}
 
-	private Instrumento getInstrumento() {
+	private Instrumento createInstrumentoFromView() {
 		Instrumento instrumento = new Instrumento();
 		instrumento.setSerie(serie.getText());
 		instrumento.setDescripcion(descripcion.getText());
 		instrumento.setMinimo(Integer.parseInt(minimo.getText()));
 		instrumento.setMaximo(Integer.parseInt(maximo.getText()));
 		instrumento.setTolerancia(Integer.parseInt(tolerancia.getText()));
-		instrumento.setTipo(tipo.getSelectedItem().toString());
+		instrumento.setTipo(getTipoSeleccionado());
 		return instrumento;
 	}
 
