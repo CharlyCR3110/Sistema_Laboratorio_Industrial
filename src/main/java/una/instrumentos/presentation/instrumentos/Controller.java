@@ -64,7 +64,7 @@ public class Controller {
 			current.setMinimo(Integer.valueOf(view.getMinimo()));
 			current.setMaximo(Integer.valueOf(view.getMaximo()));
 			current.setTolerancia(Integer.valueOf(view.getTolerancia()));
-			current.setTipo(view.getTipo());
+			current.setTipo(view.getTipoSeleccionado());
 
 			try {
 				Service.instance().update(current);
@@ -198,5 +198,9 @@ public class Controller {
 
 	public List<TipoInstrumento> getTipos() {
 		return Service.instance().getTipos();
+	}
+
+	public TipoInstrumento getTipoSeleccionado(String tipo) {
+		return Service.instance().getTipoSeleccionado(tipo);
 	}
 }
