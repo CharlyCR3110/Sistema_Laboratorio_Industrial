@@ -158,4 +158,13 @@ public class Service {
 	public List<TipoInstrumento> getTipos() {
 		return data.getTipos();
 	}
+
+	public TipoInstrumento getTipoSeleccionado(String tipo) {
+		for (TipoInstrumento tipoInstrumento : getTipos()) {
+			if (tipoInstrumento.getNombre().equals(tipo)) {
+				return tipoInstrumento;
+			}
+		}
+		return null;
+	}
 }
