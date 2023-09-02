@@ -154,4 +154,8 @@ public class Service {
 	public Service getInstance() {
 		return theInstance;
 	}
+
+	public List<TipoInstrumento> getTipos() {
+		return data.getTipos();
+	}
 }
