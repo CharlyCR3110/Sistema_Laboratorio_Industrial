@@ -37,6 +37,10 @@ public class View implements Observer {
 
 	public View() {
 		list.getTableHeader().setReorderingAllowed(false);
+		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION); // No permite selección múltiple
+		// Se inicializan los botones "delete" y "edit" en deshabilitado
+		updateDeleteButtonState();	
+		updateEditButtonState();
 		search.addActionListener(e -> searchAction());
 		list.addMouseListener(new MouseAdapter() {
 			@Override
@@ -73,6 +77,11 @@ public class View implements Observer {
 			public void mouseClicked(MouseEvent e) {
 				generateReport();
 			}
+		});
+		list.getSelectionModel().addListSelectionListener(e -> {
+			// Llama a la función para actualizar el estado del botón "delete".
+			updateDeleteButtonState();
+			updateEditButtonState();
 		});
 	}
 
@@ -224,6 +233,16 @@ public class View implements Observer {
 				tipo.requestFocus();
 				break;
 		}
+	}
+
+	private void updateDeleteButtonState() {
+		int selectedRowCount = list.getSelectedRowCount();
+		delete.setEnabled(selectedRowCount > 0);
+	}
+
+	private void updateEditButtonState() {
+		int selectedRowCount = list.getSelectedRowCount();
+		edit.setEnabled(selectedRowCount > 0);
 	}
 
 	public String getSerie() {
