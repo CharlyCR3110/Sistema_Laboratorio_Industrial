@@ -229,4 +229,14 @@ public class Controller {
 		calibracion.setNumeroDeMediciones(numeroDeMediciones);
 		save(calibracion, instrumentoSeleccionado);
 	}
+
+	public void handleEditAction(int selectedRow) {
+		if (selectedRow < 0) {
+			view.showError("Debe seleccionar una calibración");
+			return;
+		}
+
+		Calibracion calibracion = model.getList().get(selectedRow);
+		edit(selectedRow);
+	}
 }
