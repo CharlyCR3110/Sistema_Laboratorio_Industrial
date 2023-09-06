@@ -35,6 +35,9 @@ public class View implements Observer {
     }
 
     private void initializeUI() {
+        if (list == null) {
+            list = new JTable();
+        }
         list.getTableHeader().setReorderingAllowed(false);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
@@ -62,7 +65,7 @@ public class View implements Observer {
         delete.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                deleteAction();
+                controller.handleDeleteAction(list.getSelectedRow());
             }
         });
         edit.addMouseListener(new MouseAdapter() {
@@ -103,19 +106,6 @@ public class View implements Observer {
             showErrorMessageBox("Debe seleccionar un elemento de la lista");
         }
         clearAction();
-    }
-
-    private void deleteAction() {
-        try {
-            int row = list.getSelectedRow();
-            TipoInstrumento tipoInstrumento = model.getList().get(row);
-            controller.delete(tipoInstrumento);
-            clearAction();
-        } catch (IndexOutOfBoundsException e) {
-            showErrorMessageBox("Debe seleccionar un elemento de la lista");
-        } catch (Exception e) {
-            showErrorMessageBox(e.getMessage());
-        }
     }
 
     private void saveAction() {
