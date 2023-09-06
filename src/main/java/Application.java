@@ -114,9 +114,9 @@ public class Application {
 
 	private static void loadData() {
 		try {
-			tiposController.getModel().loadList(una.utiles.XMLDataManager.loadFromXML("src/main/java/una/xmlFiles/tipos.xml"));
-			instrumentosController.getModel().loadList(una.utiles.XMLDataManager.loadFromXML("src/main/java/una/xmlFiles/instrumentos.xml"));
-			calibracionesController.getModel().loadList(una.utiles.XMLDataManager.loadFromXML("src/main/java/una/xmlFiles/calibraciones.xml"));
+			tiposController.loadList(una.utiles.XMLDataManager.loadFromXML("src/main/java/una/xmlFiles/tipos.xml"));
+			instrumentosController.loadList(una.utiles.XMLDataManager.loadFromXML("src/main/java/una/xmlFiles/instrumentos.xml"));
+			calibracionesController.loadList(una.utiles.XMLDataManager.loadFromXML("src/main/java/una/xmlFiles/calibraciones.xml"));
 			System.out.println("Datos cargados");
 		} catch (Exception ex) {
 			ex.printStackTrace();
