@@ -12,6 +12,7 @@ import una.instrumentos.logic.Service;
 import una.utiles.Utiles;
 
 import java.io.FileOutputStream;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -219,5 +220,13 @@ public class Controller {
 
 		Calibracion calibracion = model.getList().get(selectedRow);
 		delete(calibracion);
+	}
+
+	public void handleSaveAction(String numero, LocalDate fecha, Integer numeroDeMediciones  , Instrumento instrumentoSeleccionado) {
+		Calibracion calibracion = new Calibracion();
+		calibracion.setNumero(numero);
+		calibracion.setFecha(fecha);
+		calibracion.setNumeroDeMediciones(numeroDeMediciones);
+		save(calibracion, instrumentoSeleccionado);
 	}
 }
