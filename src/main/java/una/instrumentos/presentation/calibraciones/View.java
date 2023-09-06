@@ -81,7 +81,7 @@ public class View implements Observer {
 		edit.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				editAction();
+				controller.handleEditAction(list.getSelectedRow());
 			}
 		});
 		report.addMouseListener(new MouseAdapter() {
@@ -107,23 +107,6 @@ public class View implements Observer {
 		controller.generateReport();
 	}
 
-	private void editAction() {
-		try {
-			Calibracion calibracion = model.getCurrent();
-			// recuperar la medicion seleccionada
-			int row = medicionesList.getSelectedRow();
-			if (row == -1) {
-				showError("Debe seleccionar una medición");
-				return;
-			}
-			Medicion medicion = calibracion.getMediciones().get(row);
-			System.out.println(medicion.getReferencia());
-			controller.edit(calibracion, medicion);
-			clearAction();
-		} catch (Exception ex) {
-			showError(ex.getMessage());
-		}
-	}
 	private void clearAction() {
 		numero.setText("");
 		mediciones.setText("0");
