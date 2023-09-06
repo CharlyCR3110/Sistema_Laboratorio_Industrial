@@ -17,4 +17,8 @@ public class Utiles {
 		table.addCell(fecha.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
 		return table;
 	}
+
+	public static String generateRandomStringNumber() {
+		return String.valueOf((int) (Math.random() * 1000000));
+	}
 }
