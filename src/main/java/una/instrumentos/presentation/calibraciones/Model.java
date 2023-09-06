@@ -53,15 +53,4 @@ public class Model extends Observable {
 		changedProps |= CURRENT;  // Usar operador de bits para combinar las propiedades cambiadas
 		this.current = current;
 	}
-
-	public void loadList(List<Calibracion> calibracionList) {
-		try {
-			Service.instance().loadCalibracionList(calibracionList);
-			setList(calibracionList);
-			setCurrent(new Calibracion());
-			commit();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 }

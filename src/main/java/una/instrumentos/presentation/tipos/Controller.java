@@ -165,4 +165,15 @@ public class Controller {
 			e.printStackTrace();
 		}
 	}
+
+	public void loadList(List<TipoInstrumento> tipoInstrumentoList) {
+		try {
+			Service.instance().loadTipoList(tipoInstrumentoList);
+			model.setList(tipoInstrumentoList);
+			model.setCurrent(new TipoInstrumento());
+			model.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

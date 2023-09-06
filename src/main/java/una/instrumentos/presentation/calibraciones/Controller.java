@@ -189,4 +189,15 @@ public class Controller {
 			e.printStackTrace();
 		}
 	}
+
+	public void loadList(List<Calibracion> calibracionList) {
+		try {
+			Service.instance().loadCalibracionList(calibracionList);
+			model.setList(calibracionList);
+			model.setCurrent(new Calibracion());
+			model.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }

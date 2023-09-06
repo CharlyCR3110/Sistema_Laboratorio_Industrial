@@ -51,19 +51,4 @@ public class Model extends Observable {
 		changedProps |= CURRENT;
 		this.current = current;
 	}
-
-	public Service getService() {
-		return Service.instance();
-	}
-
-	public void loadList(List<TipoInstrumento> tipoInstrumentoList) {
-		try {
-			Service.instance().loadTipoList(tipoInstrumentoList);
-			setList(tipoInstrumentoList);
-			setCurrent(new TipoInstrumento());
-			commit();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 }

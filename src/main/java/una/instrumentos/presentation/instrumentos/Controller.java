@@ -204,4 +204,15 @@ public class Controller {
 	public TipoInstrumento getTipoSeleccionado(String tipo) {
 		return Service.instance().getTipoSeleccionado(tipo);
 	}
+
+	public void loadList(List<Instrumento> instrumentoList) {
+		try {
+			Service.instance().loadInstrumentoList(instrumentoList);
+			model.setList(instrumentoList);
+			model.setCurrent(new Instrumento());
+			model.commit();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 }
