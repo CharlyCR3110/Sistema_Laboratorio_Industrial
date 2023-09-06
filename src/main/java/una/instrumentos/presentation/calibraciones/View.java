@@ -67,7 +67,8 @@ public class View implements Observer {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (save.isEnabled()) {
-					saveAction();
+					numero.setText(Utiles.generateRandomStringNumber());
+					controller.handleSaveAction(numero.getText(), Utiles.parseDate(fecha.getText()), Integer.parseInt(mediciones.getText()), instrumentoSeleccionado);
 				}
 			}
 		});
@@ -123,27 +124,6 @@ public class View implements Observer {
 			showError(ex.getMessage());
 		}
 	}
-
-	private void saveAction() {
-		try {
-			Calibracion calibracion = new Calibracion();
-			String numeroCalibracion = this.generateNumero();
-			this.numero.setText(numeroCalibracion);
-			calibracion.setNumero(numeroCalibracion);
-			calibracion.setNumeroDeMediciones(Integer.valueOf(mediciones.getText()));
-			calibracion.setFecha(Utiles.parseDate(fecha.getText()));
-			if (instrumentoSeleccionado == null) {
-				showError("Debe seleccionar un instrumento");
-				return;
-			}
-
-			controller.save(calibracion, instrumentoSeleccionado);
-			clearAction();
-		} catch (Exception ex) {
-			showError("El formato de la fecha no es válido");
-		}
-	}
-
 	private void clearAction() {
 		numero.setText("");
 		mediciones.setText("0");
@@ -304,11 +284,6 @@ public class View implements Observer {
 	private void updateSaveState() {
 		int selectedRowCount = list.getSelectedRowCount();
 		save.setEnabled(selectedRowCount == 0);
-	}
-
-	// Generar número de calibración aleatorio
-	private String generateNumero() {
-		return String.valueOf((int) (Math.random() * 1000000));
 	}
 
 	public String getNumero() {
