@@ -114,6 +114,8 @@ public class View implements Observer {
 		list.clearSelection();
 		save.setEnabled(true);
 		numero.setEnabled(false);
+		mediciones.setEnabled(true);
+		fecha.setEnabled(true);
 		medicionesListContainer.setVisible(false);
 	}
 
@@ -142,6 +144,11 @@ public class View implements Observer {
 
 	private void handleListClick() {
 		int row = list.getSelectedRow();
+		if (row > 0) {
+			// actualizar el permiso de edicion
+			mediciones.setEnabled(false);
+			fecha.setEnabled(false);
+		}
 		controller.edit(row);
 	}
 
