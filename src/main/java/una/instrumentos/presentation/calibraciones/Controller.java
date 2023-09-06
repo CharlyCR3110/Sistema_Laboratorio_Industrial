@@ -210,4 +210,14 @@ public class Controller {
 	public void setList(ArrayList<Calibracion> list) {
 		model.setList(list);
 	}
+
+	public void handleDeleteAction(int selectedRow) {
+		if (selectedRow < 0) {
+			view.showError("Debe seleccionar una calibración");
+			return;
+		}
+
+		Calibracion calibracion = model.getList().get(selectedRow);
+		delete(calibracion);
+	}
 }
