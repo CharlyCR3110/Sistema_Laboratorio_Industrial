@@ -176,4 +176,17 @@ public class Controller {
 			e.printStackTrace();
 		}
 	}
+
+	public void handleDeleteAction(int selectedRow) {
+		if (selectedRow < 0) {
+			view.showError("Debe seleccionar un elemento de la lista");
+			return;
+		}
+		TipoInstrumento tipoInstrumento = model.getList().get(selectedRow);
+		try {
+			delete(tipoInstrumento);
+		} catch (Exception e) {
+			view.showError(e.getMessage());
+		}
+	}
 }
