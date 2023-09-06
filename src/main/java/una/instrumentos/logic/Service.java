@@ -120,7 +120,7 @@ public class Service {
 		// Instrumento
 	public void delete(Instrumento e) throws Exception {
 		// Verificar que no existan calibraciones con ese instrumento
-		if (data.getCalibraciones().stream().anyMatch(i->i.getInstrumento().equals(e))) {
+		if (e.hasCalibraciones()) {
 			throw new Exception("Parece que hay calibraciones asociadas a este instrumento");
 		}
 		data.getInstrumentos().remove(e);
