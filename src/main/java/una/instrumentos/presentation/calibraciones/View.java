@@ -74,7 +74,7 @@ public class View implements Observer {
 		delete.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				deleteAction();
+				controller.handleDeleteAction(list.getSelectedRow());
 			}
 		});
 		edit.addMouseListener(new MouseAdapter() {
@@ -118,16 +118,6 @@ public class View implements Observer {
 			Medicion medicion = calibracion.getMediciones().get(row);
 			System.out.println(medicion.getReferencia());
 			controller.edit(calibracion, medicion);
-			clearAction();
-		} catch (Exception ex) {
-			showError(ex.getMessage());
-		}
-	}
-
-	private void deleteAction() {
-		try {
-			Calibracion calibracion = model.getCurrent();
-			controller.delete(calibracion);
 			clearAction();
 		} catch (Exception ex) {
 			showError(ex.getMessage());
