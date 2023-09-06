@@ -1,4 +1,5 @@
 import una.instrumentos.logic.Instrumento;
+import una.instrumentos.logic.Mediator;
 import una.instrumentos.logic.Service;
 
 import javax.swing.*;
@@ -12,6 +13,8 @@ public class Application {
 	private static una.instrumentos.presentation.tipos.Controller tiposController;
 	private static una.instrumentos.presentation.instrumentos.Controller instrumentosController;
 	private static una.instrumentos.presentation.calibraciones.Controller calibracionesController;
+
+	private static Mediator mediator;
 
 	public static void main(String[] args) {
 		Service service = Service.instance();
@@ -62,6 +65,8 @@ public class Application {
 				new una.instrumentos.presentation.calibraciones.View(),
 				new una.instrumentos.presentation.calibraciones.Model()
 		);
+
+		mediator = new Mediator(instrumentosController, calibracionesController);
 	}
 
 	private static void setupTabs() {
@@ -78,8 +83,7 @@ public class Application {
 				int selectedIndex = tabbedPane.getSelectedIndex();
 				if (selectedIndex == 2) { // Índice 2 corresponde a la pestaña de Calibraciones
 					tabbedPane.setSelectedIndex(selectedIndex);
-					instrumentoSeleccionado = instrumentosController.getSelected();
-					calibracionesController.getView().setInstrumentoSeleccionado(instrumentoSeleccionado);
+					mediator.setInstrumentoSeleccionado();
 				}
 			}
 		};
@@ -103,9 +107,10 @@ public class Application {
 	// Guarda los datos en archivos XML
 	private static void saveData() {
 		try {
-			una.utiles.XMLDataManager.saveToXML(tiposController.getModel().getList(), "src/main/java/una/xmlFiles/tipos.xml");
-			una.utiles.XMLDataManager.saveToXML(instrumentosController.getModel().getList(), "src/main/java/una/xmlFiles/instrumentos.xml");
-			una.utiles.XMLDataManager.saveToXML(calibracionesController.getModel().getList(), "src/main/java/una/xmlFiles/calibraciones.xml");
+			// TODO: Descomentar estas líneas para guardar los datos en archivos XML
+			// una.utiles.XMLDataManager.saveToXML(tiposController.getModel().getList(), "src/main/java/una/xmlFiles/tipos.xml");
+			//una.utiles.XMLDataManager.saveToXML(instrumentosController.getModel().getList(), "src/main/java/una/xmlFiles/instrumentos.xml");
+			// una.utiles.XMLDataManager.saveToXML(calibracionesController.getModel().getList(), "src/main/java/una/xmlFiles/calibraciones.xml");
 			System.out.println("Datos guardados");
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -116,7 +121,7 @@ public class Application {
 		try {
 			tiposController.loadList(una.utiles.XMLDataManager.loadFromXML("src/main/java/una/xmlFiles/tipos.xml"));
 			instrumentosController.loadList(una.utiles.XMLDataManager.loadFromXML("src/main/java/una/xmlFiles/instrumentos.xml"));
-			calibracionesController.loadList(una.utiles.XMLDataManager.loadFromXML("src/main/java/una/xmlFiles/calibraciones.xml"));
+			// calibracionesController.loadList(una.utiles.XMLDataManager.loadFromXML("src/main/java/una/xmlFiles/calibraciones.xml"));
 			System.out.println("Datos cargados");
 		} catch (Exception ex) {
 			ex.printStackTrace();
