@@ -7,6 +7,7 @@ import javax.swing.*;
 import javax.swing.table.TableColumnModel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -36,7 +37,18 @@ public class View implements Observer {
 	private JTextField minimo;
 
 	public View() {
+		initializeUI();
+		setupEventHandlers();
+		initializeButtonStates();
+	}
+
+	private void initializeUI() {
 		list.getTableHeader().setReorderingAllowed(false);
+		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		initializeButtonStates();
+	}
+
+	private void setupEventHandlers() {
 		search.addActionListener(e -> searchAction());
 		list.addMouseListener(new MouseAdapter() {
 			@Override
@@ -74,6 +86,17 @@ public class View implements Observer {
 				generateReport();
 			}
 		});
+		list.getSelectionModel().addListSelectionListener(e -> {
+			updateDeleteButtonState();
+			updateEditButtonState();
+			updateSaveState();
+		});
+	}
+
+	private void initializeButtonStates() {
+		updateDeleteButtonState();
+		updateEditButtonState();
+		updateSaveState();
 	}
 
 	private void generateReport() {
@@ -95,28 +118,22 @@ public class View implements Observer {
 		try {
 			int row = list.getSelectedRow();
 			Instrumento instrumento = model.getList().get(row);
-			if (instrumento.hasCalibraciones()) {
-				showErrorMessageBox("No se puede eliminar un instrumento que tiene calibraciones");
-				return;
-			}
 			controller.delete(instrumento);
 			clearAction();
 		} catch (IndexOutOfBoundsException ex) {
 			showErrorMessageBox("Debe seleccionar un elemento de la lista");
+		} catch (Exception ex) {
+			showErrorMessageBox(ex.getMessage());
 		}
 	}
 
 	private void saveAction() {
 		try {
-			Instrumento instrumento = new Instrumento();
-			instrumento.setSerie(serie.getText());
-			instrumento.setDescripcion(descripcion.getText());
-			instrumento.setMinimo(Integer.parseInt(minimo.getText()));
-			instrumento.setMaximo(Integer.parseInt(maximo.getText()));
-			instrumento.setTolerancia(Integer.parseInt(tolerancia.getText()));
-			instrumento.setTipo(tipo.getSelectedItem().toString());
-			if (controller.save(instrumento) == 1) {
+			// Se pasan los datos del formulario al controlador
+			if (controller.save(serie.getText(), descripcion.getText(), Integer.parseInt(minimo.getText()), Integer.parseInt(maximo.getText()), Integer.parseInt(maximo.getText()), tipo.getSelectedItem().toString()) == 1) {
 				clearAction();
+			} else {
+				showErrorMessageBox("Debe llenar todos los campos");
 			}
 		} catch (Exception ex) {
 			JOptionPane.showMessageDialog(panel, ex.getMessage(), "Informacion", JOptionPane.INFORMATION_MESSAGE);
@@ -188,13 +205,6 @@ public class View implements Observer {
 			maximo.setText(String.valueOf(model.getCurrent().getMaximo()));
 			tolerancia.setText(String.valueOf(model.getCurrent().getTolerancia()));
 			tipo.setSelectedItem(model.getCurrent().getTipo());
-			if (model.getCurrent().getSerie().equals("")) {
-				save.setEnabled(true);
-				serie.setEnabled(true);
-			} else {
-				save.setEnabled(false);
-				serie.setEnabled(false);
-			}
 		}
 		this.panel.revalidate();
 	}
@@ -226,6 +236,35 @@ public class View implements Observer {
 		}
 	}
 
+	private void updateDeleteButtonState() {
+		int selectedRowCount = list.getSelectedRowCount();
+		delete.setEnabled(selectedRowCount > 0);
+	}
+
+	private void updateEditButtonState() {
+		int selectedRowCount = list.getSelectedRowCount();
+		edit.setEnabled(selectedRowCount > 0);
+	}
+
+	private void updateSaveState() {
+		int selectedRowCount = list.getSelectedRowCount();
+		save.setEnabled(selectedRowCount == 0);
+		serie.setEnabled(selectedRowCount == 0);
+	}
+
+	private List<TipoInstrumento> getTipos() {
+		return controller.getTipos();
+	}
+
+	public void setTipos() {
+		List<TipoInstrumento> tipos = getTipos();
+		tipo.removeAllItems();
+		tipo.addItem("");
+		for (TipoInstrumento tipo : tipos) {
+			this.tipo.addItem(tipo.getNombre());
+		}
+	}
+
 	public String getSerie() {
 		return serie.getText();
 	}
@@ -246,18 +285,18 @@ public class View implements Observer {
 		return tolerancia.getText();
 	}
 
-	public String getTipo() {
-		return tipo.getSelectedItem().toString();
+	public TipoInstrumento getTipoSeleccionado() {
+		return controller.getTipoSeleccionado(tipo.getSelectedItem().toString());
 	}
 
-	private Instrumento getInstrumento() {
+	private Instrumento createInstrumentoFromView() {
 		Instrumento instrumento = new Instrumento();
 		instrumento.setSerie(serie.getText());
 		instrumento.setDescripcion(descripcion.getText());
 		instrumento.setMinimo(Integer.parseInt(minimo.getText()));
 		instrumento.setMaximo(Integer.parseInt(maximo.getText()));
 		instrumento.setTolerancia(Integer.parseInt(tolerancia.getText()));
-		instrumento.setTipo(tipo.getSelectedItem().toString());
+		instrumento.setTipo(getTipoSeleccionado());
 		return instrumento;
 	}
 

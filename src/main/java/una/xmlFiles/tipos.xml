@@ -23,7 +23,7 @@
      <string>Termómetro</string>
     </void>
     <void property="unidad">
-     <string>Grados Ccelcius</string>
+     <string>Grados Celsius</string>
     </void>
    </object>
   </void>

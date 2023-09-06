@@ -7,6 +7,7 @@ import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import una.instrumentos.logic.Service;
 import una.instrumentos.logic.Instrumento;
+import una.instrumentos.logic.TipoInstrumento;
 
 import java.io.FileOutputStream;
 import java.util.List;
@@ -63,7 +64,7 @@ public class Controller {
 			current.setMinimo(Integer.valueOf(view.getMinimo()));
 			current.setMaximo(Integer.valueOf(view.getMaximo()));
 			current.setTolerancia(Integer.valueOf(view.getTolerancia()));
-			current.setTipo(view.getTipo());
+			current.setTipo(view.getTipoSeleccionado());
 
 			try {
 				Service.instance().update(current);
@@ -79,16 +80,17 @@ public class Controller {
 		}
 	}
 
-	public int save(Instrumento instrumento) {
-		if (!validateAndHandleEmptyField(instrumento.getSerie(), "serie") ||
-				!validateAndHandleEmptyField(instrumento.getDescripcion(), "descripcion")) {
+	public int save(String serie, String descripcion,Integer minimo, Integer maximo, Integer tolerancia,  String tipo) {
+		if (!validateAndHandleEmptyField(serie, "serie") ||
+				!validateAndHandleEmptyField(descripcion, "descripcion") ||
+				tipo == null || tipo.isEmpty()) {
 			return 0;
 		}
 
 		try {
 			Service service = Service.instance();
 			try {
-				service.create(instrumento);
+				service.create(new Instrumento(serie, descripcion, minimo, maximo, tolerancia, stringToTipo(tipo)));
 			} catch (Exception e) {
 				view.showError("Ya existe un instrumento con esa serie");
 			}
@@ -98,6 +100,15 @@ public class Controller {
 		}
 
 		return 1;
+	}
+
+	private TipoInstrumento stringToTipo(String tipo) {
+		for (TipoInstrumento tipoInstrumento : getTipos()) {
+			if (tipoInstrumento.getNombre().equals(tipo)) {
+				return tipoInstrumento;
+			}
+		}
+		return null;
 	}
 
 	private boolean validateAndHandleEmptyField(String value, String fieldName) {
@@ -127,7 +138,7 @@ public class Controller {
 			model.setCurrent(new Instrumento());
 			model.commit();
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
 		}
 	}
 
@@ -184,5 +195,13 @@ public class Controller {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public List<TipoInstrumento> getTipos() {
+		return Service.instance().getTipos();
+	}
+
+	public TipoInstrumento getTipoSeleccionado(String tipo) {
+		return Service.instance().getTipoSeleccionado(tipo);
 	}
 }

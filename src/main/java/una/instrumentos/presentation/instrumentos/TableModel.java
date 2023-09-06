@@ -57,7 +57,7 @@ public class TableModel extends AbstractTableModel {
 			case TOLERANCIA:
 				return instrumento.getTolerancia();
 			case TIPO:
-				return instrumento.getTipo();
+				return instrumento.getTipo().getNombre();
 			default:
 				return "";
 		}

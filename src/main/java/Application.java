@@ -23,7 +23,7 @@ public class Application {
 		setupTabs();
 		setupWindow();
 		tabbedPane.addChangeListener(createTabChangeListener());
-
+		tabbedPane.addChangeListener(createTipoInstrumentoChangeListener());
 
 		// Guarda los datos en archivos XML
 		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
@@ -80,6 +80,21 @@ public class Application {
 					tabbedPane.setSelectedIndex(selectedIndex);
 					instrumentoSeleccionado = instrumentosController.getSelected();
 					calibracionesController.getView().setInstrumentoSeleccionado(instrumentoSeleccionado);
+				}
+			}
+		};
+	}
+
+	// change listener para cargar los tipos de instrumento en el combo box de la ventana de instrumentos
+	public static ChangeListener createTipoInstrumentoChangeListener() {
+		return new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent e) {
+				int selectedIndex = tabbedPane.getSelectedIndex();
+				if (selectedIndex == 1) { // Índice 1 corresponde a la pestaña de Instrumentos
+					tabbedPane.setSelectedIndex(selectedIndex);
+					System.out.println("Cargando tipos de instrumento");
+					instrumentosController.getView().setTipos();
 				}
 			}
 		};

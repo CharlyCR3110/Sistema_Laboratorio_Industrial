@@ -37,9 +37,19 @@ public class View implements Observer {
 	private Instrumento instrumentoSeleccionado;
 
 	public View() {
+		initializeUI();
+		setupEventHandlers();
+		initializeButtonStates();
+	}
+
+	private void initializeUI() {
 		medicionesListContainer.setVisible(false);
 		list.getTableHeader().setReorderingAllowed(false);
+		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		medicionesList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+	}
 
+	private void setupEventHandlers() {
 		search.addActionListener(e -> searchAction());
 		list.addMouseListener(new MouseAdapter() {
 			@Override
@@ -56,8 +66,9 @@ public class View implements Observer {
 		save.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				if (save.isEnabled())
+				if (save.isEnabled()) {
 					saveAction();
+				}
 			}
 		});
 		delete.addMouseListener(new MouseAdapter() {
@@ -78,6 +89,17 @@ public class View implements Observer {
 				generateReport();
 			}
 		});
+		list.getSelectionModel().addListSelectionListener(e -> {
+			updateDeleteButtonState();
+			updateEditButtonState();
+			updateSaveState();
+		});
+	}
+
+	private void initializeButtonStates() {
+		updateDeleteButtonState();
+		updateEditButtonState();
+		updateSaveState();
 	}
 
 	private void generateReport() {
@@ -203,7 +225,6 @@ public class View implements Observer {
 		mediciones.setText(String.valueOf(currentCalibracion.getNumeroDeMediciones()));
 
 		boolean enableEdit = currentCalibracion.getNumero().isEmpty() || model.getList().isEmpty();
-		save.setEnabled(enableEdit);
 		numero.setEnabled(false);
 
 		int[] cols = {MedicionesTableModel.NUMERO, MedicionesTableModel.REFERENCIA, MedicionesTableModel.MEDICION};
@@ -239,6 +260,22 @@ public class View implements Observer {
 				fecha.requestFocus();
 				break;
 		}
+	}
+
+
+	private void updateDeleteButtonState() {
+		int selectedRowCount = list.getSelectedRowCount();
+		delete.setEnabled(selectedRowCount > 0);
+	}
+
+	private void updateEditButtonState() {
+		int selectedRowCount = list.getSelectedRowCount();
+		edit.setEnabled(selectedRowCount > 0);
+	}
+
+	private void updateSaveState() {
+		int selectedRowCount = list.getSelectedRowCount();
+		save.setEnabled(selectedRowCount == 0);
 	}
 
 	// Generar número de calibración aleatorio

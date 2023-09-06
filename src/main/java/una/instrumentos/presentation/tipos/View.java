@@ -29,7 +29,17 @@ public class View implements Observer {
     private JButton edit;
 
     public View() {
+        initializeUI();
+        setupEventHandlers();
+        initializeButtonStates();
+    }
+
+    private void initializeUI() {
         list.getTableHeader().setReorderingAllowed(false);
+        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    }
+
+    private void setupEventHandlers() {
         search.addActionListener(e -> searchAction());
         list.addMouseListener(new MouseAdapter() {
             @Override
@@ -67,8 +77,19 @@ public class View implements Observer {
                 generateReport();
             }
         });
+        list.getSelectionModel().addListSelectionListener(e -> {
+            updateDeleteButtonState();
+            updateEditButtonState();
+            updateSaveState();
+        });
     }
 
+    private void initializeButtonStates() {
+        updateDeleteButtonState();
+        updateEditButtonState();
+        updateSaveState();
+    }
+    
     private void generateReport() {
         controller.generateReport();
     }
@@ -92,6 +113,8 @@ public class View implements Observer {
             clearAction();
         } catch (IndexOutOfBoundsException e) {
             showErrorMessageBox("Debe seleccionar un elemento de la lista");
+        } catch (Exception e) {
+            showErrorMessageBox(e.getMessage());
         }
     }
 
@@ -168,13 +191,6 @@ public class View implements Observer {
             codigo.setText(model.getCurrent().getCodigo());
             nombre.setText(model.getCurrent().getNombre());
             unidad.setText(model.getCurrent().getUnidad());
-            if (model.getCurrent().getCodigo().equals("")) {
-                save.setEnabled(true);
-                codigo.setEnabled(true);
-            } else {
-                save.setEnabled(false);
-                codigo.setEnabled(false);
-            }
         }
         this.panel.revalidate();
     }
@@ -195,6 +211,22 @@ public class View implements Observer {
                 unidad.requestFocus();
                 break;
         }
+    }
+
+    private void updateDeleteButtonState() {
+        int selectedRowCount = list.getSelectedRowCount();
+        delete.setEnabled(selectedRowCount > 0);
+    }
+
+    private void updateEditButtonState() {
+        int selectedRowCount = list.getSelectedRowCount();
+        edit.setEnabled(selectedRowCount > 0);
+    }
+
+    private void updateSaveState() {
+        int selectedRowCount = list.getSelectedRowCount();
+        save.setEnabled(selectedRowCount == 0);
+        codigo.setEnabled(selectedRowCount == 0);
     }
 
     public String getCodigo() {

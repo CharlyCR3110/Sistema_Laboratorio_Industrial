@@ -130,7 +130,7 @@
                 </constraints>
                 <properties>
                   <horizontalAlignment value="0"/>
-                  <text value="Editar"/>
+                  <text value="Modificar"/>
                 </properties>
               </component>
             </children>

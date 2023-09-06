@@ -6,10 +6,10 @@ import java.util.Objects;
 
 public class Instrumento {
 	public Instrumento() {
-		this("","",0,0,0,"");
+		this("","",0,0,0,new TipoInstrumento());
 		this.calibraciones = new ArrayList<Calibracion>();
 	}
-	public Instrumento(String serie, String descripcion, Integer minimo, Integer maximo, Integer tolerancia, String tipo) {
+	public Instrumento(String serie, String descripcion, Integer minimo, Integer maximo, Integer tolerancia, TipoInstrumento tipo) {
 		this.serie = serie;
 		this.descripcion = descripcion;
 		this.tipo = tipo;
@@ -35,11 +35,11 @@ public class Instrumento {
 		this.descripcion = descripcion;
 	}
 
-	public String getTipo() {
+	public TipoInstrumento getTipo() {
 		return tipo;
 	}
 
-	public void setTipo(String tipo) {
+	public void setTipo(TipoInstrumento tipo) {
 		this.tipo = tipo;
 	}
 
@@ -97,7 +97,7 @@ public class Instrumento {
 
 	String serie;
 	String descripcion;
-	String tipo;	// Combo box
+	TipoInstrumento tipo;	// Combo box
 	Integer minimo;
 	Integer maximo;
 	Integer tolerancia;
