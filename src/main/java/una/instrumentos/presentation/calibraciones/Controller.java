@@ -5,13 +5,14 @@ import com.itextpdf.text.Element;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import una.instrumentos.logic.Calibracion;
 import una.instrumentos.logic.Instrumento;
 import una.instrumentos.logic.Medicion;
 import una.instrumentos.logic.Service;
-import una.instrumentos.logic.Calibracion;
 import una.utiles.Utiles;
 
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Controller {
@@ -37,9 +38,6 @@ public class Controller {
 	public void search(Calibracion filter) {
 		try {
 			List<Calibracion> rows = Service.instance().search(filter);
-			if (rows.isEmpty()) {
-				throw new Exception("NINGUN REGISTRO COINCIDE");
-			}
 			model.setList(rows);
 			model.setCurrent(new Calibracion());
 			model.commit();
@@ -64,7 +62,7 @@ public class Controller {
 			Calibracion current = Service.instance().read(e);
 			// buscar la medicion y remplazarla con los nuevos datos
 			for (int i = 0; i < current.getMediciones().size(); i++) {
-				if ( current.getMediciones().get(i).getNumero() == medicion.getNumero() ) {	// si el numero de la medicion es igual al numero de la medicion que se quiere editar
+				if (current.getMediciones().get(i).getNumero() == medicion.getNumero()) {    // si el numero de la medicion es igual al numero de la medicion que se quiere editar
 					current.getMediciones().set(i, medicion);
 					break;
 				}
@@ -99,17 +97,7 @@ public class Controller {
 		instrumentoSeleccionado.agregarCalibracion(calibracion);
 		calibracion.setInstrumento(instrumentoSeleccionado);
 
-		try {
-			Service service = Service.instance();
-			try {
-				service.create(calibracion);
-			} catch (Exception e) {
-				view.showError("Ya existe una calibración con ese número");
-			}
-			updateModelAfterSave(service);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		updateModelAfterSave(Service.instance());
 		return 1;
 	}
 
@@ -199,5 +187,27 @@ public class Controller {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void instrumentoSeleccionadoCambiado(Instrumento instrumento) {
+		// TODO: Eliminar este metodo y mover su contenido a la clase Mediator
+		// TODO: Eliminar los System.out.println
+		if (instrumento == null) {
+			System.out.println("CONTROLLER-No hay instrumento seleccionado");
+		} else {
+			System.out.println("CONTROLLER-Instrumento seleccionado: " + instrumento.getDescripcion());
+		}
+
+		view.setInstrumentoSeleccionado(instrumento);
+		view.mostrarInformacionInstrumento(instrumento);
+		if (instrumento == null) {
+			return;
+		}
+		// recargar la lista de calibraciones
+		loadList(instrumento.getCalibraciones());
+	}
+
+	public void setList(ArrayList<Calibracion> list) {
+		model.setList(list);
 	}
 }
