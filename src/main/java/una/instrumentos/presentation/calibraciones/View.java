@@ -167,8 +167,21 @@ public class View implements Observer {
 	private void searchAction() {
 		try {
 			Calibracion filter = new Calibracion();
-			filter.setNumero(searchNumero.getText());
-			controller.search(filter);
+			String searchTerm = searchNumero.getText();
+
+			if (instrumentoSeleccionado == null) {
+				// Si el instrumento seleccionado es NULL, muestra la tabla vacía
+				model.setList(new ArrayList<>());
+			} else if (!searchTerm.isEmpty()) {
+				// Si se ingresó un término de búsqueda, filtra las calibraciones por instrumento y término
+				filter.setInstrumento(instrumentoSeleccionado);
+				filter.setNumero(searchTerm);
+				controller.search(filter);
+			} else {
+				// Si no se ingresó un término de búsqueda, muestra todas las calibraciones del instrumento
+				filter.setInstrumento(instrumentoSeleccionado);
+				controller.search(filter);
+			}
 		} catch (Exception ex) {
 			showError(ex.getMessage());
 		}
@@ -237,14 +250,39 @@ public class View implements Observer {
 	}
 
 	public void setInstrumentoSeleccionado(Instrumento instrumento) {
+		try {
+			instrumentoSeleccionado = instrumento;
+			Calibracion filter = new Calibracion();
+			String searchTerm = searchNumero.getText();
+
+			if (instrumentoSeleccionado == null) {
+				// Si el instrumento seleccionado es NULL, muestra la tabla vacía
+				controller.setList(new ArrayList<>());	// este metodo llama al setList del model
+				System.out.println("instrumento seleccionado es null");
+			} else if (!searchTerm.isEmpty()) {
+				// Si se ingresó un término de búsqueda, filtra las calibraciones por instrumento y término
+				filter.setInstrumento(instrumentoSeleccionado);
+				filter.setNumero(searchTerm);
+				controller.search(filter);
+				System.out.println("instrumento seleccionado no es null, pero se ingreso un termino de busqueda");
+			} else {
+				// Si no se ingresó un término de búsqueda, muestra todas las calibraciones del instrumento
+				filter.setInstrumento(instrumentoSeleccionado);
+				controller.search(filter);
+				System.out.println("instrumento seleccionado no es null, y no se ingreso un termino de busqueda");
+			}
+		} catch (Exception ex) {
+			showError(ex.getMessage());
+		}
+	}
+
+	public void mostrarInformacionInstrumento(Instrumento instrumento) {
 		if (instrumento == null) {
 			instrumentoLbl.setText("No hay ningún instrumento seleccionado");
-			instrumentoSeleccionado = null;
 		} else {
 			String labelText = String.format("%s - %s (%s - %s)",
 					instrumento.getSerie(), instrumento.getDescripcion(), instrumento.getMinimo(), instrumento.getMaximo());
 			instrumentoLbl.setText(labelText);
-			instrumentoSeleccionado = instrumento;
 		}
 	}
 
