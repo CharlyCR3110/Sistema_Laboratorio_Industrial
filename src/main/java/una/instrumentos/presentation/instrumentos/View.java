@@ -36,6 +36,9 @@ public class View implements Observer {
 	private JLabel tipoLbl;
 	private JTextField minimo;
 
+	Controller controller;
+	Model model;
+
 	public View() {
 		initializeUI();
 		setupEventHandlers();
@@ -120,9 +123,6 @@ public class View implements Observer {
 	public JPanel getPanel() {
 		return panel;
 	}
-
-	Controller controller;
-	Model model;
 
 	public void setController(Controller controller) {
 		this.controller = controller;
