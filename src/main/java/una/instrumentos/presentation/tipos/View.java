@@ -158,6 +158,10 @@ public class View implements Observer {
         JOptionPane.showMessageDialog(panel, message, "Error", JOptionPane.ERROR_MESSAGE);
     }
 
+    public void showMessage(String message) {
+        JOptionPane.showMessageDialog(panel, message, "Informacion", JOptionPane.INFORMATION_MESSAGE);
+    }
+
     public void highlightEmptyField(String fieldName) {
         switch (fieldName) {
             case "codigo":
