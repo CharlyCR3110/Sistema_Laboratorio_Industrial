@@ -233,4 +233,13 @@ public class Controller {
 			view.showError("Exception: No se pudo guardar el instrumento");
 		}
 	}
+
+	public void handleDeleteAction(int selectedRow) {
+		try {
+			delete(model.getList().get(selectedRow));
+//			view.showSuccess("Instrumento eliminado exitosamente");
+		} catch (Exception e) {
+			view.showError("No se pudo eliminar el instrumento");
+		}
+	}
 }
