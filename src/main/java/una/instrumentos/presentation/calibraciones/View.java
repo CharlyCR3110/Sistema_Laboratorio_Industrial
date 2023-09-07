@@ -213,7 +213,7 @@ public class View implements Observer {
 
 			if (instrumentoSeleccionado == null) {
 				// Si el instrumento seleccionado es NULL, muestra la tabla vacía
-				controller.setList(new ArrayList<>());	// este metodo llama al setList del model
+				controller.noInstrumentSelected();
 				System.out.println("instrumento seleccionado es null");
 			} else if (!searchTerm.isEmpty()) {
 				// Si se ingresó un término de búsqueda, filtra las calibraciones por instrumento y término
