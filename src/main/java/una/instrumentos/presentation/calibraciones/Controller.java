@@ -39,6 +39,11 @@ public class Controller {
 	public void search(Calibracion filter) {
 		try {
 			List<Calibracion> rows = Service.instance().search(filter);
+			// se tira la excepcion despues, porque
+			if (rows.isEmpty()) {
+				// Tirar una excepcion que no se encontro
+				throw new Exception("Ninguna calibración coincide con el criterio de busqueda");
+			}
 			model.setList(rows);
 			model.setCurrent(new Calibracion());
 			model.commit();
