@@ -83,7 +83,7 @@ public class View implements Observer {
 		report.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				generateReport();
+				controller.generateReport();
 			}
 		});
 		list.getSelectionModel().addListSelectionListener(e -> {
@@ -97,10 +97,6 @@ public class View implements Observer {
 		updateDeleteButtonState();
 		updateEditButtonState();
 		updateSaveState();
-	}
-
-	private void generateReport() {
-		controller.generateReport();
 	}
 
 	public void clearAction() {
