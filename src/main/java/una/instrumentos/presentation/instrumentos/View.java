@@ -168,7 +168,7 @@ public class View implements Observer {
 			minimo.setText(String.valueOf(model.getCurrent().getMinimo()));
 			maximo.setText(String.valueOf(model.getCurrent().getMaximo()));
 			tolerancia.setText(String.valueOf(model.getCurrent().getTolerancia()));
-			tipo.setSelectedItem(model.getCurrent().getTipo());
+			tipo.setSelectedItem(model.getCurrent().getTipo().getNombre());
 		}
 		this.panel.revalidate();
 	}
