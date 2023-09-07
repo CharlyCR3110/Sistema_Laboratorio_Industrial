@@ -112,10 +112,6 @@ public class View implements Observer {
         controller.edit(row);
     }
 
-    private void showErrorMessageBox(String message) {
-        JOptionPane.showMessageDialog(panel, message, "Informacion", JOptionPane.INFORMATION_MESSAGE);
-    }
-
     public JPanel getPanel() {
         return panel;
     }
