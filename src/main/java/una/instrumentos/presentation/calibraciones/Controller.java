@@ -43,7 +43,7 @@ public class Controller {
 			model.setCurrent(new Calibracion());
 			model.commit();
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			throw new RuntimeException(ex.getMessage());
 		}
 	}
 
@@ -243,5 +243,15 @@ public class Controller {
 
 		Calibracion calibracion = model.getList().get(selectedRow);
 		edit(selectedRow);
+	}
+
+	public void handleSearchAction(String searchNumero) {
+		try {
+			Calibracion filter = new Calibracion();
+			filter.setNumero(searchNumero);
+			search(filter);
+		} catch (Exception e) {
+			view.showError(e.getMessage());
+		}
 	}
 }
