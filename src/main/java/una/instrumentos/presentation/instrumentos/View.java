@@ -49,7 +49,7 @@ public class View implements Observer {
 	}
 
 	private void setupEventHandlers() {
-		search.addActionListener(e -> searchAction());
+		search.addActionListener(e -> controller.handleSearchAction(searchDescripcion.getText()) );
 		list.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -125,16 +125,6 @@ public class View implements Observer {
 		save.setEnabled(true);
 		serie.setEnabled(true);
 		System.out.println("clearAction");
-	}
-
-	private void searchAction() {
-		try {
-			Instrumento filter = new Instrumento();
-			filter.setDescripcion(searchDescripcion.getText());
-			controller.search(filter);
-		} catch (Exception ex) {
-			JOptionPane.showMessageDialog(panel, ex.getMessage(), "Informacion", JOptionPane.INFORMATION_MESSAGE);
-		}
 	}
 
 	private void handleListClick() {
