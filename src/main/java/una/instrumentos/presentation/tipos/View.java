@@ -44,7 +44,7 @@ public class View implements Observer {
     }
 
     private void setupEventHandlers() {
-        search.addActionListener(e -> searchAction());
+        search.addActionListener(e -> controller.handleSearchAction(searchNombre.getText()));
         list.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -105,10 +105,6 @@ public class View implements Observer {
         list.clearSelection();
         save.setEnabled(true);
         codigo.setEnabled(true);
-    }
-
-    private void searchAction() {
-        controller.handleSearchAction(searchNombre.getText());
     }
 
     private void handleListClick() {
