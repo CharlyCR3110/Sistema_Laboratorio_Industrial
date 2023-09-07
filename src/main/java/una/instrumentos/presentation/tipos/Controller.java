@@ -35,13 +35,13 @@ public class Controller {
 		try {
 			List<TipoInstrumento> rows = Service.instance().search(filter);
 			if (rows.isEmpty()) {
-				throw new Exception("NINGUN REGISTRO COINCIDE");
+				throw new Exception("Ningún tipo de instrumento coincide con los criterios de búsqueda");
 			}
 			model.setList(rows);
 			model.setCurrent(new TipoInstrumento());
 			model.commit();
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			throw new RuntimeException(ex.getMessage());
 		}
 	}
 
@@ -221,6 +221,10 @@ public class Controller {
 	public void handleSearchAction(String searchNombre) {
 		TipoInstrumento tipoInstrumento = new TipoInstrumento();
 		tipoInstrumento.setNombre(searchNombre);
-		search(tipoInstrumento);
+		try {
+			search(tipoInstrumento);
+		} catch (Exception e) {
+			view.showError(e.getMessage());
+		}
 	}
 }
