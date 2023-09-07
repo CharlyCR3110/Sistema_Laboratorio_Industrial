@@ -48,7 +48,7 @@ public class View implements Observer {
         list.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                handleListClick();
+                controller.edit(list.getSelectedRow());
             }
         });
         clear.addMouseListener(new MouseAdapter() {
@@ -105,11 +105,6 @@ public class View implements Observer {
         list.clearSelection();
         save.setEnabled(true);
         codigo.setEnabled(true);
-    }
-
-    private void handleListClick() {
-        int row = list.getSelectedRow();
-        controller.edit(row);
     }
 
     public JPanel getPanel() {
