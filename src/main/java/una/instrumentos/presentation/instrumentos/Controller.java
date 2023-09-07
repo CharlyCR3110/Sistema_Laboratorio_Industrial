@@ -66,18 +66,16 @@ public class Controller {
 			current.setMaximo(Integer.valueOf(view.getMaximo()));
 			current.setTolerancia(Integer.valueOf(view.getTolerancia()));
 			current.setTipo(view.getTipoSeleccionado());
-
 			try {
 				Service.instance().update(current);
+				view.showMessage("Instrumento actualizado exitosamente");
+				view.clearAction();
 			} catch (Exception ex) {
-				ex.printStackTrace();
-				// TO-DO: Manejar correctamente la excepción
+				view.showError("No se pudo actualizar el instrumento");
 			}
 
-			model.setCurrent(current);
-			model.commit();
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			view.showError("No se pudo actualizar el instrumento");
 		}
 	}
 
@@ -251,6 +249,17 @@ public class Controller {
 			search(filter);
 		} catch (Exception e) {
 			view.showError(e.getMessage());
+		}
+	}
+
+	public void handleEditAction(int selectedRow) {
+		try {
+			Instrumento instrumento = model.getList().get(selectedRow);
+			edit(instrumento);
+		} catch (IndexOutOfBoundsException e) {
+			view.showError("Debe seleccionar un elemento de la lista");
+		}catch (Exception e) {
+			view.showError("No se pudo editar el instrumento");
 		}
 	}
 }
