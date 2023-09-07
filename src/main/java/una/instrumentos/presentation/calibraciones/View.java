@@ -117,11 +117,6 @@ public class View implements Observer {
 
 	private void handleListClick() {
 		int row = list.getSelectedRow();
-		if (row > 0) {
-			// actualizar el permiso de edicion
-			mediciones.setEnabled(false);
-			fecha.setEnabled(false);
-		}
 		controller.edit(row);
 	}
 
@@ -241,7 +236,9 @@ public class View implements Observer {
 
 	private void updateEditButtonState() {
 		int selectedRowCount = list.getSelectedRowCount();
-		edit.setEnabled(selectedRowCount > 0);
+		edit.setEnabled(selectedRowCount > 0);	// Si hay una fila seleccionada, se activa el boton para modificar
+		mediciones.setEnabled(selectedRowCount <= 0);	// Si hay una fila seleccionada, se desactiva el campo de mediciones
+		fecha.setEnabled(selectedRowCount <= 0);	// Si hay una fila seleccionada, se desactiva el campo de fecha
 	}
 
 	private void updateSaveState() {
