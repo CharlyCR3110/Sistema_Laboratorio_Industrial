@@ -73,7 +73,6 @@ public class Controller {
 			} catch (Exception ex) {
 				view.showError("No se pudo actualizar el instrumento");
 			}
-
 		} catch (Exception ex) {
 			view.showError("No se pudo actualizar el instrumento");
 		}
@@ -252,9 +251,47 @@ public class Controller {
 		}
 	}
 
+	private boolean isValidEditInput() {
+		System.out.println("VALIDANDO");
+		boolean isValid = true;
+
+		if (view.getDescripcion().isEmpty()) {
+			view.showError("La descripción no puede estar vacía");
+			isValid = false;
+		}
+		if (view.getTipoSeleccionado() == null) {
+			view.showError("Debe seleccionar un tipo");
+			isValid = false;
+		}
+
+		int minimo = Integer.valueOf(view.getMinimo());
+		int maximo = Integer.valueOf(view.getMaximo());
+
+		if (minimo > maximo) {
+			view.showError("El valor mínimo no puede ser mayor que el valor máximo");
+			isValid = false;
+		}
+
+		int tolerancia = Integer.valueOf(view.getTolerancia());
+
+		if (tolerancia < 0) {
+			view.showError("La tolerancia no puede ser un valor negativo");
+			isValid = false;
+		}
+		
+		return isValid;
+	}
+
 	public void handleEditAction(int selectedRow) {
 		try {
 			Instrumento instrumento = model.getList().get(selectedRow);
+			if (instrumento == null) {
+				view.showError("Debe seleccionar un elemento de la lista");
+				return;
+			}
+			if (!isValidEditInput()) {
+				throw new Exception("No se pudo actualizar el instrumento");
+			}
 			edit(instrumento);
 		} catch (IndexOutOfBoundsException e) {
 			view.showError("Debe seleccionar un elemento de la lista");
