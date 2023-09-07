@@ -36,13 +36,14 @@ public class Controller {
 		try {
 			List<Instrumento> rows = Service.instance().search(filter);
 			if (rows.isEmpty()) {
-				throw new Exception("NINGUN REGISTRO COINCIDE");
+				// Tirar una excepcion que no se encontro
+				throw new Exception("Ningun instrumento coincide con el criterio de busqueda");
 			}
 			model.setList(rows);
 			model.setCurrent(new Instrumento());
 			model.commit();
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			throw new RuntimeException(ex.getMessage());
 		}
 	}
 
@@ -240,6 +241,16 @@ public class Controller {
 			view.showMessage("Instrumento eliminado exitosamente");
 		} catch (Exception e) {
 			view.showError("No se pudo eliminar el instrumento");
+		}
+	}
+
+	public void handleSearchAction(String searchDesc) {
+		try {
+			Instrumento filter = new Instrumento();
+			filter.setDescripcion(searchDesc);
+			search(filter);
+		} catch (Exception e) {
+			view.showError(e.getMessage());
 		}
 	}
 }
