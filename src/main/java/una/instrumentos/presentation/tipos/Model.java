@@ -1,6 +1,5 @@
 package una.instrumentos.presentation.tipos;
 
-import una.instrumentos.logic.Service;
 import una.instrumentos.logic.TipoInstrumento;
 import java.util.List;
 import java.util.Observable;
