@@ -189,4 +189,17 @@ public class Controller {
 			view.showError(e.getMessage());
 		}
 	}
+
+	public void handleSaveAction(String codigo, String nombre, String unidad) {
+		TipoInstrumento tipoInstrumento = new TipoInstrumento();
+		tipoInstrumento.setCodigo(codigo);
+		tipoInstrumento.setNombre(nombre);
+		tipoInstrumento.setUnidad(unidad);
+
+		int result = save(tipoInstrumento);
+		if (result == 1) {
+			System.out.println("Tipo de instrumento guardado exitosamente");
+//			view.showMessage("Tipo de instrumento guardado exitosamente");
+		}
+	}
 }
