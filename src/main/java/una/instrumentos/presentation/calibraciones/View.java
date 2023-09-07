@@ -50,7 +50,7 @@ public class View implements Observer {
 	}
 
 	private void setupEventHandlers() {
-		search.addActionListener(e -> searchAction());
+		search.addActionListener(e -> controller.handleSearchAction(searchNumero.getText()) );
 		list.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -113,29 +113,6 @@ public class View implements Observer {
 		mediciones.setEnabled(true);
 		fecha.setEnabled(true);
 		medicionesListContainer.setVisible(false);
-	}
-
-	private void searchAction() {
-		try {
-			Calibracion filter = new Calibracion();
-			String searchTerm = searchNumero.getText();
-
-			if (instrumentoSeleccionado == null) {
-				// Si el instrumento seleccionado es NULL, muestra la tabla vacía
-				model.setList(new ArrayList<>());
-			} else if (!searchTerm.isEmpty()) {
-				// Si se ingresó un término de búsqueda, filtra las calibraciones por instrumento y término
-				filter.setInstrumento(instrumentoSeleccionado);
-				filter.setNumero(searchTerm);
-				controller.search(filter);
-			} else {
-				// Si no se ingresó un término de búsqueda, muestra todas las calibraciones del instrumento
-				filter.setInstrumento(instrumentoSeleccionado);
-				controller.search(filter);
-			}
-		} catch (Exception ex) {
-			showError(ex.getMessage());
-		}
 	}
 
 	private void handleListClick() {
