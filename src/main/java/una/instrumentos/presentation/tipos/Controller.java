@@ -217,4 +217,10 @@ public class Controller {
 			view.showError(e.getMessage());
 		}
 	}
+
+	public void handleSearchAction(String searchNombre) {
+		TipoInstrumento tipoInstrumento = new TipoInstrumento();
+		tipoInstrumento.setNombre(searchNombre);
+		search(tipoInstrumento);
+	}
 }
