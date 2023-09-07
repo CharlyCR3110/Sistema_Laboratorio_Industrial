@@ -59,7 +59,7 @@ public class View implements Observer {
         save.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                saveAction();
+                controller.handleSaveAction(codigo.getText(), nombre.getText(), unidad.getText());
             }
         });
         delete.addMouseListener(new MouseAdapter() {
@@ -106,21 +106,6 @@ public class View implements Observer {
             showErrorMessageBox("Debe seleccionar un elemento de la lista");
         }
         clearAction();
-    }
-
-    private void saveAction() {
-        try {
-            TipoInstrumento tipoInstrumento = new TipoInstrumento();
-            tipoInstrumento.setCodigo(codigo.getText());
-            tipoInstrumento.setNombre(nombre.getText());
-            tipoInstrumento.setUnidad(unidad.getText());
-            if (controller.save(tipoInstrumento) == 0) {
-                return;
-            }
-            clearAction();
-        } catch (Exception ex) {
-            showErrorMessageBox(ex.getMessage());
-        }
     }
 
     private void clearAction() {
