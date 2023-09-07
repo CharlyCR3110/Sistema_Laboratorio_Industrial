@@ -65,6 +65,7 @@ public class Controller {
 			Service.instance().update(current);
 			model.setCurrent(current);
 			model.commit();
+			search(new TipoInstrumento());	// Para refrescar la lista
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -200,6 +201,20 @@ public class Controller {
 		if (result == 1) {
 			System.out.println("Tipo de instrumento guardado exitosamente");
 //			view.showMessage("Tipo de instrumento guardado exitosamente");
+		}
+	}
+
+	public void handleEditAction(int selectedRow) {
+		if (selectedRow < 0) {
+			view.showError("Debe seleccionar un elemento de la lista");
+			return;
+		}
+		try {
+			TipoInstrumento tipoInstrumento = model.getList().get(selectedRow);
+			edit(tipoInstrumento);
+//			view.showMessage("Tipo de instrumento editado exitosamente");
+		} catch (Exception e) {
+			view.showError(e.getMessage());
 		}
 	}
 }
