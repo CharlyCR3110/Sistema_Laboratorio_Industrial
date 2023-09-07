@@ -54,7 +54,7 @@ public class View implements Observer {
 		list.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				handleListClick();
+				controller.handleListClick(list.getSelectedRow());
 			}
 		});
 		clear.addMouseListener(new MouseAdapter() {
@@ -113,11 +113,6 @@ public class View implements Observer {
 		mediciones.setEnabled(true);
 		fecha.setEnabled(true);
 		medicionesListContainer.setVisible(false);
-	}
-
-	private void handleListClick() {
-		int row = list.getSelectedRow();
-		controller.edit(row);
 	}
 
 	public void showError(String message) {
