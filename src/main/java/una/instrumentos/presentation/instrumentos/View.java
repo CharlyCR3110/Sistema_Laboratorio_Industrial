@@ -56,7 +56,7 @@ public class View implements Observer {
 		list.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				handleListClick();
+				controller.edit(list.getSelectedRow());
 			}
 		});
 		clear.addMouseListener(new MouseAdapter() {
@@ -113,11 +113,6 @@ public class View implements Observer {
 		save.setEnabled(true);
 		serie.setEnabled(true);
 		System.out.println("clearAction");
-	}
-
-	private void handleListClick() {
-		int row = list.getSelectedRow();
-		controller.edit(row);
 	}
 
 	public JPanel getPanel() {
