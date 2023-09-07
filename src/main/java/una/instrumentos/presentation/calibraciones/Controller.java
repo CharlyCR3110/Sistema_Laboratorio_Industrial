@@ -208,6 +208,11 @@ public class Controller {
 		loadList(instrumento.getCalibraciones());
 	}
 
+	public void noInstrumentSelected() {
+		model.setList(new ArrayList<>());
+		model.commit();
+	}
+
 	public void setList(ArrayList<Calibracion> list) {
 		model.setList(list);
 	}
