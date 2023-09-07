@@ -19,6 +19,14 @@ public class Instrumento {
 		this.calibraciones = new ArrayList<Calibracion>();
 	}
 
+	public void updateInfo(Instrumento instrumento) {
+		this.descripcion = instrumento.getDescripcion();
+		this.tipo = instrumento.getTipo();
+		this.minimo = instrumento.getMinimo();
+		this.maximo = instrumento.getMaximo();
+		this.tolerancia = instrumento.getTolerancia();
+	}
+
 	public String getSerie() {
 		return serie;
 	}
