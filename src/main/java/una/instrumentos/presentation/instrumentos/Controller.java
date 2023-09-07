@@ -96,7 +96,7 @@ public class Controller {
 			}
 			updateModelAfterSave(service);
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
 		}
 
 		return 1;
@@ -213,6 +213,18 @@ public class Controller {
 			model.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	public void handleSaveAction(String serie, String descripcion, int minimo, int maximo, int tolerancia, String tipo) {
+		try {
+			if (save(serie, descripcion, minimo, maximo, tolerancia, tipo) == 1) {
+//			view.showSuccess("Instrumento guardado exitosamente");
+			} else {
+				view.showError("No se pudo guardar el instrumento");
+			}
+		} catch (Exception e) {
+			view.showError("Exception: No se pudo guardar el instrumento");
 		}
 	}
 }
