@@ -225,7 +225,7 @@ public class Controller {
 	public void handleSaveAction(String serie, String descripcion, int minimo, int maximo, int tolerancia, String tipo) {
 		try {
 			if (save(serie, descripcion, minimo, maximo, tolerancia, tipo) == 1) {
-//			view.showSuccess("Instrumento guardado exitosamente");
+				view.showMessage("Instrumento guardado exitosamente");
 			} else {
 				view.showError("No se pudo guardar el instrumento");
 			}
@@ -237,7 +237,7 @@ public class Controller {
 	public void handleDeleteAction(int selectedRow) {
 		try {
 			delete(model.getList().get(selectedRow));
-//			view.showSuccess("Instrumento eliminado exitosamente");
+			view.showMessage("Instrumento eliminado exitosamente");
 		} catch (Exception e) {
 			view.showError("No se pudo eliminar el instrumento");
 		}
