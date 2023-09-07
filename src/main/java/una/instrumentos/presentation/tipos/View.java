@@ -7,6 +7,7 @@ import javax.swing.border.Border;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -71,7 +72,7 @@ public class View implements Observer {
         edit.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                editAction();
+                controller.handleEditAction(list.getSelectedRow());
             }
         });
         report.addMouseListener(new MouseAdapter() {
@@ -95,17 +96,6 @@ public class View implements Observer {
     
     private void generateReport() {
         controller.generateReport();
-    }
-
-    private void editAction() {
-        int row = list.getSelectedRow();
-        try {
-            TipoInstrumento tipoInstrumento = model.getList().get(row);
-            controller.edit(tipoInstrumento);
-        } catch (IndexOutOfBoundsException e) {
-            showErrorMessageBox("Debe seleccionar un elemento de la lista");
-        }
-        clearAction();
     }
 
     private void clearAction() {
