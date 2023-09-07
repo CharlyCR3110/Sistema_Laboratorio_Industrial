@@ -71,7 +71,7 @@ public class View implements Observer {
 		delete.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				deleteAction();
+				controller.handleDeleteAction(list.getSelectedRow());
 			}
 		});
 		edit.addMouseListener(new MouseAdapter() {
@@ -112,19 +112,6 @@ public class View implements Observer {
 			showErrorMessageBox("Debe seleccionar un elemento de la lista");
 		}
 		clearAction();
-	}
-
-	private void deleteAction() {
-		try {
-			int row = list.getSelectedRow();
-			Instrumento instrumento = model.getList().get(row);
-			controller.delete(instrumento);
-			clearAction();
-		} catch (IndexOutOfBoundsException ex) {
-			showErrorMessageBox("Debe seleccionar un elemento de la lista");
-		} catch (Exception ex) {
-			showErrorMessageBox(ex.getMessage());
-		}
 	}
 
 	private void clearAction() {
