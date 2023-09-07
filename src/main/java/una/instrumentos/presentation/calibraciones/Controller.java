@@ -59,7 +59,7 @@ public class Controller {
 			model.setCurrent(current);
 			model.commit();
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			throw new RuntimeException(ex.getMessage());
 		}
 	}
 
@@ -259,4 +259,16 @@ public class Controller {
 			view.showError(e.getMessage());
 		}
 	}
+
+	public void handleListClick(int selectedRow) {
+		if (selectedRow < 0) {
+			return;
+		}
+		try {
+			edit(selectedRow);
+		} catch (Exception e) {
+			view.showError("Parece que hubo un error al seleccionar la calibración");
+		}
+	}
+
 }
