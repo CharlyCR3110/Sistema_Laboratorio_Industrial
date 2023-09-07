@@ -186,6 +186,7 @@ public class Controller {
 		TipoInstrumento tipoInstrumento = model.getList().get(selectedRow);
 		try {
 			delete(tipoInstrumento);
+			view.showMessage("El instrumento codigo " + tipoInstrumento.getCodigo() + " ha sido eliminado exitosamente");
 		} catch (Exception e) {
 			view.showError(e.getMessage());
 		}
@@ -199,8 +200,7 @@ public class Controller {
 
 		int result = save(tipoInstrumento);
 		if (result == 1) {
-			System.out.println("Tipo de instrumento guardado exitosamente");
-//			view.showMessage("Tipo de instrumento guardado exitosamente");
+			view.showMessage("Instrumento codigo " + codigo + " guardado exitosamente");
 		}
 	}
 
@@ -212,7 +212,7 @@ public class Controller {
 		try {
 			TipoInstrumento tipoInstrumento = model.getList().get(selectedRow);
 			edit(tipoInstrumento);
-//			view.showMessage("Tipo de instrumento editado exitosamente");
+			view.showMessage("El instrumento codigo " + tipoInstrumento.getCodigo() + " ha sido editado exitosamente");
 		} catch (Exception e) {
 			view.showError(e.getMessage());
 		}
