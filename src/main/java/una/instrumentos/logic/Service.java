@@ -88,14 +88,11 @@ public class Service {
 	}
 		// Instrumento
 	public void update(Instrumento e) throws Exception {
-		Instrumento result;
-		try{
-			result = this.read(e);
-			data.getInstrumentos().remove(result);
-			data.getInstrumentos().add(e);
-		}catch (Exception ex) {
+		if (e == null || !data.getInstrumentos().contains(e)) {
 			throw new Exception("Instrumento no existe");
 		}
+		// Si el instrumento existe, se actualiza la información
+		search(e).get(0).updateInfo(e);
 	}
 		// Calibracion
 	public void update (Calibracion e) throws Exception {
