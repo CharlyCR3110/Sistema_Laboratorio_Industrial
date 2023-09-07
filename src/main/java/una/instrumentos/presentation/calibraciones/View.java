@@ -185,17 +185,18 @@ public class View implements Observer {
 	public void setInstrumentoSeleccionado(Instrumento instrumento) {
 		try {
 			instrumentoSeleccionado = instrumento;
-			Calibracion filter = new Calibracion();
-			String searchTerm = searchNumero.getText();
-
+			
 			if (instrumentoSeleccionado == null) {
 				// Si el instrumento seleccionado es NULL, muestra la tabla vacía
 				controller.noInstrumentSelected();
 				System.out.println("instrumento seleccionado es null");
 			} else {
-				// Si se ingresó un término de búsqueda, filtra las calibraciones por instrumento y término
+				Calibracion filter = new Calibracion();
+				String searchTerm = searchNumero.getText();
+
 				filter.setInstrumento(instrumentoSeleccionado);
-				filter.setNumero(searchTerm);
+				filter.setNumero(searchTerm);	// da igual si esta vacio, porque el metodo search() lo ignora
+
 				try {
 					controller.search(filter);
 				} catch (Exception ex) {
