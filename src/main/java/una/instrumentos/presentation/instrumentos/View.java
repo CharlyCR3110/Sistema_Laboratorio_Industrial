@@ -238,17 +238,6 @@ public class View implements Observer {
 		return controller.getTipoSeleccionado(tipo.getSelectedItem().toString());
 	}
 
-	private Instrumento createInstrumentoFromView() {
-		Instrumento instrumento = new Instrumento();
-		instrumento.setSerie(serie.getText());
-		instrumento.setDescripcion(descripcion.getText());
-		instrumento.setMinimo(Integer.parseInt(minimo.getText()));
-		instrumento.setMaximo(Integer.parseInt(maximo.getText()));
-		instrumento.setTolerancia(Integer.parseInt(tolerancia.getText()));
-		instrumento.setTipo(getTipoSeleccionado());
-		return instrumento;
-	}
-
 	public int getSelectedRow() {
 		return list.getSelectedRow();
 	}
