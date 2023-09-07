@@ -77,7 +77,7 @@ public class View implements Observer {
 		edit.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				editAction();
+				controller.handleEditAction(list.getSelectedRow());
 			}
 		});
 		report.addMouseListener(new MouseAdapter() {
@@ -103,18 +103,7 @@ public class View implements Observer {
 		controller.generateReport();
 	}
 
-	private void editAction() {
-		int row = list.getSelectedRow();
-		try {
-			Instrumento instrumento = model.getList().get(row);
-			controller.edit(instrumento);
-		} catch (IndexOutOfBoundsException e) {
-			showErrorMessageBox("Debe seleccionar un elemento de la lista");
-		}
-		clearAction();
-	}
-
-	private void clearAction() {
+	public void clearAction() {
 		serie.setText("");
 		descripcion.setText("");
 		minimo.setText("0");
