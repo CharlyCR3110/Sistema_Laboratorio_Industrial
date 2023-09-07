@@ -192,17 +192,16 @@ public class View implements Observer {
 				// Si el instrumento seleccionado es NULL, muestra la tabla vacía
 				controller.noInstrumentSelected();
 				System.out.println("instrumento seleccionado es null");
-			} else if (!searchTerm.isEmpty()) {
+			} else {
 				// Si se ingresó un término de búsqueda, filtra las calibraciones por instrumento y término
 				filter.setInstrumento(instrumentoSeleccionado);
 				filter.setNumero(searchTerm);
-				controller.search(filter);
+				try {
+					controller.search(filter);
+				} catch (Exception ex) {
+					// No se hace nada porque esto se ejecuta cuando se entra a esta pantalla
+				}
 				System.out.println("instrumento seleccionado no es null, pero se ingreso un termino de busqueda");
-			} else {
-				// Si no se ingresó un término de búsqueda, muestra todas las calibraciones del instrumento
-				filter.setInstrumento(instrumentoSeleccionado);
-				controller.search(filter);
-				System.out.println("instrumento seleccionado no es null, y no se ingreso un termino de busqueda");
 			}
 		} catch (Exception ex) {
 			showError(ex.getMessage());
