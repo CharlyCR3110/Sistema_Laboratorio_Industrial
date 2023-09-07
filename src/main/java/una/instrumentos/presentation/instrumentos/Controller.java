@@ -87,6 +87,12 @@ public class Controller {
 			return 0;
 		}
 
+		// validar que el mínimo sea menor que el máximo
+		if (minimo > maximo) {
+			view.showError("El mínimo no puede ser mayor que el máximo");
+			return 0;
+		}
+
 		try {
 			Service service = Service.instance();
 			try {
