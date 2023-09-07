@@ -108,13 +108,7 @@ public class View implements Observer {
     }
 
     private void searchAction() {
-        try {
-            TipoInstrumento filter = new TipoInstrumento();
-            filter.setNombre(searchNombre.getText());
-            controller.search(filter);
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(panel, ex.getMessage(), "Informacion", JOptionPane.INFORMATION_MESSAGE);
-        }
+        controller.handleSearchAction(searchNombre.getText());
     }
 
     private void handleListClick() {
