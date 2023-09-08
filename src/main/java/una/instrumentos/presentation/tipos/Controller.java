@@ -52,7 +52,7 @@ public class Controller {
 		try {
 			List<TipoInstrumento> rows = Service.instance().search(filter);
 			if (rows.isEmpty()) {
-				throw new Exception("Ningún tipo de instrumento coincide con los criterios de búsqueda");
+				throw new RuntimeException("Ningún tipo de instrumento coincide con los criterios de búsqueda");
 			}
 			setListCurrentAndCommit(rows, new TipoInstrumento());
 		} catch (Exception ex) {
