@@ -35,6 +35,11 @@ public class Controller {
 		view.setModel(model);
 	}
 
+	public void setListCurrentAndCommit(List<TipoInstrumento> list, TipoInstrumento current) {
+		model.setList(list);
+		model.setCurrent(current);
+		model.commit();
+	}
 
 	/**
 	 * Realiza una búsqueda de tipos de instrumentos basada en un filtro y actualiza el modelo.
@@ -47,9 +52,7 @@ public class Controller {
 			if (rows.isEmpty()) {
 				throw new Exception("Ningún tipo de instrumento coincide con los criterios de búsqueda");
 			}
-			model.setList(rows);
-			model.setCurrent(new TipoInstrumento());
-			model.commit();
+			setListCurrentAndCommit(rows, new TipoInstrumento());
 		} catch (Exception ex) {
 			throw new RuntimeException(ex.getMessage());
 		}
@@ -123,11 +126,9 @@ public class Controller {
 	}
 
 	private void updateModelAfterSave(Service service) {
-		TipoInstrumento emptySearch = new TipoInstrumento();
 		try {
-			model.setList(service.search(emptySearch));
-			model.setCurrent(new TipoInstrumento());
-			model.commit();
+			TipoInstrumento emptySearch = new TipoInstrumento();
+			setListCurrentAndCommit(service.search(emptySearch), new TipoInstrumento());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -136,9 +137,7 @@ public class Controller {
 	public void delete(TipoInstrumento tipoInstrumento) {
 		try {
 			Service.instance().delete(tipoInstrumento);
-			model.setList(Service.instance().search(new TipoInstrumento()));
-			model.setCurrent(new TipoInstrumento());
-			model.commit();
+			setListCurrentAndCommit(Service.instance().search(new TipoInstrumento()), new TipoInstrumento());
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
 		}
@@ -190,9 +189,7 @@ public class Controller {
 	public void loadList(List<TipoInstrumento> tipoInstrumentoList) {
 		try {
 			Service.instance().loadTipoList(tipoInstrumentoList);
-			model.setList(tipoInstrumentoList);
-			model.setCurrent(new TipoInstrumento());
-			model.commit();
+			setListCurrentAndCommit(tipoInstrumentoList, new TipoInstrumento());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
