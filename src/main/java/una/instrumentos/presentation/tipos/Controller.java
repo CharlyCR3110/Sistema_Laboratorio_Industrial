@@ -94,9 +94,9 @@ public class Controller {
 	}
 
 	public int save(TipoInstrumento tipoInstrumento) {
-		if (!validateAndHandleEmptyField(tipoInstrumento.getCodigo(), "codigo") ||
-				!validateAndHandleEmptyField(tipoInstrumento.getNombre(), "nombre") ||
-				!validateAndHandleEmptyField(tipoInstrumento.getUnidad(), "unidad")) {
+		if (!validateNonEmptyField(tipoInstrumento.getCodigo(), "codigo") ||
+				!validateNonEmptyField(tipoInstrumento.getNombre(), "nombre") ||
+				!validateNonEmptyField(tipoInstrumento.getUnidad(), "unidad")) {
 			return 0;
 		}
 
@@ -106,16 +106,18 @@ public class Controller {
 				service.create(tipoInstrumento);
 			} catch (Exception e) {
 				view.showError("Ya existe un tipo de instrumento con ese código");
+				view.highlightEmptyField("codigo");
+				return 0;
 			}
 			updateModelAfterSave(service);
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
 		}
 
 		return 1;
 	}
 
-	private boolean validateAndHandleEmptyField(String value, String fieldName) {
+	private boolean validateNonEmptyField(String value, String fieldName) {
 		if (value.isEmpty()) {
 			view.showError("El " + fieldName + " no puede estar vacío");
 			view.highlightEmptyField(fieldName);
