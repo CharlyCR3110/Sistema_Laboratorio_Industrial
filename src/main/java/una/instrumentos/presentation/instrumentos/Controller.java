@@ -35,6 +35,14 @@ public class Controller {
 		view.setModel(model);
 	}
 
+	private void setListCurrentAndCommit(List<Instrumento> list, Instrumento current) {
+		if (list != null) {	// esta condicion permite llamar al metodo sin actualizar la lista (ej: edit)
+			model.setList(list);
+		}
+		model.setCurrent(current);
+		model.commit();
+	}
+
 	/**
 	 * Realiza una búsqueda de instrumentos basada en un filtro y actualiza el modelo.
 	 *
@@ -47,9 +55,7 @@ public class Controller {
 				// Tirar una excepcion que no se encontro
 				throw new Exception("Ningun instrumento coincide con el criterio de busqueda");
 			}
-			model.setList(rows);
-			model.setCurrent(new Instrumento());
-			model.commit();
+			setListCurrentAndCommit(rows, new Instrumento());
 		} catch (Exception ex) {
 			throw new RuntimeException(ex.getMessage());
 		}
@@ -67,8 +73,7 @@ public class Controller {
 			// Se obtiene el instrumento actualizado desde la base de datos
 			Instrumento current = Service.instance().read(e);
 			// Se actualiza el modelo
-			model.setCurrent(current);
-			model.commit();
+			setListCurrentAndCommit(null, current);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -174,9 +179,7 @@ public class Controller {
 	private void updateModelAfterSave(Service service) {
 		Instrumento emptySearch = new Instrumento();
 		try {
-			model.setList(service.search(emptySearch));
-			model.setCurrent(new Instrumento());
-			model.commit();
+			setListCurrentAndCommit(service.search(emptySearch), new Instrumento());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -190,9 +193,7 @@ public class Controller {
 	public void delete(Instrumento instrumento) {
 		try {
 			Service.instance().delete(instrumento);
-			model.setList(Service.instance().search(new Instrumento()));
-			model.setCurrent(new Instrumento());
-			model.commit();
+			setListCurrentAndCommit(Service.instance().search(new Instrumento()), new Instrumento());
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
 		}
@@ -271,9 +272,7 @@ public class Controller {
 	public void loadList(List<Instrumento> instrumentoList) {
 		try {
 			Service.instance().loadInstrumentoList(instrumentoList);
-			model.setList(instrumentoList);
-			model.setCurrent(new Instrumento());
-			model.commit();
+			setListCurrentAndCommit(instrumentoList, new Instrumento());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
