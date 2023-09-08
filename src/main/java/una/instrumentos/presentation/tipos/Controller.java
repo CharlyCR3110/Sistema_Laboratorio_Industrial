@@ -73,19 +73,20 @@ public class Controller {
 	}
 
 	public void edit(TipoInstrumento e) {
-		// Se lee el elemento desde la base de datos (Data)
 		try {
+			// Se lee el elemento desde la base de datos (Data)
 			TipoInstrumento current = Service.instance().read(e);
 
 			// Se setean los valores desde el view
 			current.setNombre(view.getNombre());
 			current.setUnidad(view.getUnidad());
 
-			// Se actualiza el elemento en la base de datos
+			// Se actualiza el objeto en la base de datos
 			Service.instance().update(current);
+			// Se establece la lista actual y se confirma la transacción
 			setListCurrentAndCommit(null, current);
 
-			// Se actualiza la vista
+			// Se actualiza la vista para reflejar los cambios
 			search(new TipoInstrumento());
 		} catch (Exception ex) {
 			ex.printStackTrace();
