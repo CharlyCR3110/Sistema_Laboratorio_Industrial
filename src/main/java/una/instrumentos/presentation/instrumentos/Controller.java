@@ -132,25 +132,34 @@ public class Controller {
 	 * @param tipo
 	 * @return 1 si se guardó correctamente, 0 si no.
 	 */
-
-	public int save(String serie, String descripcion,Integer minimo, Integer maximo, Integer tolerancia,  String tipo) {
-		// validar que los campos no estén vacíos
-		if (!validateAndHandleEmptyField(serie, "serie") ||
-				!validateAndHandleEmptyField(descripcion, "descripcion") ||
-				tipo == null || tipo.isEmpty()) {
+	public int save(String serie, String descripcion, Integer minimo, Integer maximo, Integer tolerancia, String tipo) {
+		// Validar que los campos no estén vacíos
+		if (isEmptyField(serie, "serie") || isEmptyField(descripcion, "descripcion") || isEmptyField(tipo, "tipo")) {
 			return 0;
 		}
 
-		// validar que el mínimo sea menor que el máximo
+		// Validar que el mínimo sea menor que el máximo
 		if (minimo > maximo) {
 			view.showError("El mínimo no puede ser mayor que el máximo");
+			return 0;
+		}
+
+		// Validar que la tolerancia no sea negativa
+		if (tolerancia < 0) {
+			view.showError("La tolerancia no puede ser un valor negativo");
 			return 0;
 		}
 
 		try {
 			Service service = Service.instance();
 			try {
-				service.create(new Instrumento(serie, descripcion, minimo, maximo, tolerancia, stringToTipo(tipo)));
+				TipoInstrumento tipoInstrumento = stringToTipo(tipo);
+				if (tipoInstrumento == null) {
+					view.showError("Tipo de instrumento no válido");
+					return 0;
+				}
+
+				service.create(new Instrumento(serie, descripcion, minimo, maximo, tolerancia, tipoInstrumento));
 			} catch (Exception e) {
 				view.showError("Ya existe un instrumento con esa serie");
 			}
@@ -173,14 +182,15 @@ public class Controller {
 	}
 
 	// Método auxiliar para validar que un campo no esté vacío
-	private boolean validateAndHandleEmptyField(String value, String fieldName) {
+	private boolean isEmptyField(String value, String fieldName) {
 		if (value.isEmpty()) {
 			view.showError("El " + fieldName + " no puede estar vacío");
 			view.highlightEmptyField(fieldName);
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 	}
+
 
 	/**
 	 * 
@@ -302,13 +312,15 @@ public class Controller {
 	 * @param tipo 		 Tipo del instrumento.
 	 * 
 	 */
-	public void handleSaveAction(String serie, String descripcion, int minimo, int maximo, int tolerancia, String tipo) {
+	public void handleSaveAction(String serie, String descripcion, String minimo, String maximo, String tolerancia, String tipo) {
 		try {
-			if (save(serie, descripcion, minimo, maximo, tolerancia, tipo) == 1) {
+			if (save(serie, descripcion, parseToInt(minimo), parseToInt(maximo), parseToInt(tolerancia), tipo) == 1) {
 				view.showMessage("Instrumento guardado exitosamente");
 			} else {
 				view.showError("No se pudo guardar el instrumento");
 			}
+		} catch (NumberFormatException e) {
+			view.showError("Los valores de mínimo, máximo y tolerancia deben ser números enteros");
 		} catch (Exception e) {
 			view.showError("Exception: No se pudo guardar el instrumento");
 		}
