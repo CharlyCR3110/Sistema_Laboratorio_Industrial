@@ -36,7 +36,9 @@ public class Controller {
 	}
 
 	public void setListCurrentAndCommit(List<TipoInstrumento> list, TipoInstrumento current) {
-		model.setList(list);
+		if (list != null) {	// esta condicion permite llamar al metodo sin actualizar la lista (ej: edit)
+			model.setList(list);
+		}
 		model.setCurrent(current);
 		model.commit();
 	}
@@ -64,10 +66,7 @@ public class Controller {
 		try {
 			// Lee el elemento desde la base de datos (Data)
 			TipoInstrumento current = Service.instance().read(e);
-			// Setea el elemento seleccionado en el modelo
-			model.setCurrent(current);
-			// Se hace commit para que se actualice la vista
-			model.commit();
+			setListCurrentAndCommit(null, current);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -84,8 +83,7 @@ public class Controller {
 
 			// Se actualiza el elemento en la base de datos
 			Service.instance().update(current);
-			model.setCurrent(current);
-			model.commit();
+			setListCurrentAndCommit(null, current);
 
 			// Se actualiza la vista
 			search(new TipoInstrumento());
