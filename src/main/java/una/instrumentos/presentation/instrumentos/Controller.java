@@ -12,6 +12,9 @@ import una.instrumentos.logic.TipoInstrumento;
 import java.io.FileOutputStream;
 import java.util.List;
 
+/**
+ * Controlador que maneja la lógica de la interfaz de usuario para la gestión de instrumentos.
+ */
 public class Controller {
 	private final View view;
 	private final Model model;
@@ -32,6 +35,11 @@ public class Controller {
 		view.setModel(model);
 	}
 
+	/**
+	 * Realiza una búsqueda de instrumentos basada en un filtro y actualiza el modelo.
+	 *
+	 * @param filter El filtro de búsqueda.
+	 */
 	public void search(Instrumento filter) {
 		try {
 			List<Instrumento> rows = Service.instance().search(filter);
@@ -46,11 +54,19 @@ public class Controller {
 			throw new RuntimeException(ex.getMessage());
 		}
 	}
-
+	
+	/**
+	 * Carga los datos de un instrumento en el modelo.
+	 * 
+	 * @param row
+	 */
 	public void edit(int row) {
+		// Se obtiene el instrumento seleccionado
 		Instrumento e = model.getList().get(row);
 		try {
+			// Se obtiene el instrumento actualizado desde la base de datos
 			Instrumento current = Service.instance().read(e);
+			// Se actualiza el modelo
 			model.setCurrent(current);
 			model.commit();
 		} catch (Exception ex) {
@@ -58,15 +74,24 @@ public class Controller {
 		}
 	}
 
+
+	/**
+	 * Actualiza los datos de un instrumento en la base de datos.
+	 * 
+	 * @param e
+	 */
 	public void edit(Instrumento e) {
 		try {
+			// Se obtiene el instrumento actualizado desde la base de datos
 			Instrumento current = Service.instance().read(e);
+			// Se actualiza el modelo
 			current.setDescripcion(view.getDescripcion());
 			current.setMinimo(Integer.valueOf(view.getMinimo()));
 			current.setMaximo(Integer.valueOf(view.getMaximo()));
 			current.setTolerancia(Integer.valueOf(view.getTolerancia()));
 			current.setTipo(view.getTipoSeleccionado());
 			try {
+				// Se actualiza el instrumento en la base de datos
 				Service.instance().update(current);
 				view.showMessage("Instrumento actualizado exitosamente");
 				view.clearAction();
@@ -78,7 +103,21 @@ public class Controller {
 		}
 	}
 
+	/**
+	 * 
+	 * Guarda un instrumento en la base de datos.
+	 * 
+	 * @param serie
+	 * @param descripcion
+	 * @param minimo
+	 * @param maximo
+	 * @param tolerancia
+	 * @param tipo
+	 * @return 1 si se guardó correctamente, 0 si no.
+	 */
+
 	public int save(String serie, String descripcion,Integer minimo, Integer maximo, Integer tolerancia,  String tipo) {
+		// validar que los campos no estén vacíos
 		if (!validateAndHandleEmptyField(serie, "serie") ||
 				!validateAndHandleEmptyField(descripcion, "descripcion") ||
 				tipo == null || tipo.isEmpty()) {
@@ -106,6 +145,7 @@ public class Controller {
 		return 1;
 	}
 
+	// Método auxiliar para convertir un string a un tipo de instrumento
 	private TipoInstrumento stringToTipo(String tipo) {
 		for (TipoInstrumento tipoInstrumento : getTipos()) {
 			if (tipoInstrumento.getNombre().equals(tipo)) {
@@ -115,6 +155,7 @@ public class Controller {
 		return null;
 	}
 
+	// Método auxiliar para validar que un campo no esté vacío
 	private boolean validateAndHandleEmptyField(String value, String fieldName) {
 		if (value.isEmpty()) {
 			view.showError("El " + fieldName + " no puede estar vacío");
@@ -124,6 +165,12 @@ public class Controller {
 		return true;
 	}
 
+	/**
+	 * 
+	 * Actualiza el modelo después de guardar un instrumento.
+	 * 
+	 * @param service
+	 */
 	private void updateModelAfterSave(Service service) {
 		Instrumento emptySearch = new Instrumento();
 		try {
@@ -135,6 +182,11 @@ public class Controller {
 		}
 	}
 
+	/**
+	 * Elimina un instrumento de la base de datos.
+	 * 
+	 * @param instrumento
+	 */
 	public void delete(Instrumento instrumento) {
 		try {
 			Service.instance().delete(instrumento);
@@ -146,6 +198,7 @@ public class Controller {
 		}
 	}
 
+	// Método para obtener el instrumento seleccionado en la tabla
 	public Instrumento getSelected() {
 		int selectedRow = view.getSelectedRow();
 		if (selectedRow < 0) {
@@ -209,6 +262,12 @@ public class Controller {
 		return Service.instance().getTipoSeleccionado(tipo);
 	}
 
+	/**
+	 * 
+	 * Carga una lista de instrumentos en el modelo.
+	 * 
+	 * @param instrumentoList
+	 */
 	public void loadList(List<Instrumento> instrumentoList) {
 		try {
 			Service.instance().loadInstrumentoList(instrumentoList);
@@ -220,6 +279,18 @@ public class Controller {
 		}
 	}
 
+	/**
+	 * 
+	 * Metodo encargadodo de guardar un instrumento en la base de datos.
+	 * 
+	 * @param serie 	 Serie del instrumento.
+	 * @param descripcion Descripcion del instrumento.
+	 * @param minimo 	 Valor minimo del instrumento.
+	 * @param maximo 	 Valor maximo del instrumento.
+	 * @param tolerancia Tolerancia del instrumento.
+	 * @param tipo 		 Tipo del instrumento.
+	 * 
+	 */
 	public void handleSaveAction(String serie, String descripcion, int minimo, int maximo, int tolerancia, String tipo) {
 		try {
 			if (save(serie, descripcion, minimo, maximo, tolerancia, tipo) == 1) {
@@ -232,6 +303,14 @@ public class Controller {
 		}
 	}
 
+
+	/**
+	 * 
+	 * Metodo encargado de eliminar un instrumento de la base de datos.
+	 * 
+	 * @param selectedRow
+	 */
+
 	public void handleDeleteAction(int selectedRow) {
 		try {
 			delete(model.getList().get(selectedRow));
@@ -241,6 +320,13 @@ public class Controller {
 		}
 	}
 
+
+	/**
+	 * 
+	 * Metodo encargado de buscar un instrumento en la base de datos.
+	 * 
+	 * @param searchDesc
+	 */
 	public void handleSearchAction(String searchDesc) {
 		try {
 			Instrumento filter = new Instrumento();
@@ -251,6 +337,7 @@ public class Controller {
 		}
 	}
 
+	// metodo auxiliar para validar los campos de edicion
 	private boolean isValidEditInput() {
 		System.out.println("VALIDANDO");
 		boolean isValid = true;
@@ -282,6 +369,12 @@ public class Controller {
 		return isValid;
 	}
 
+	/**
+	 * 
+	 * Metodo encargado de editar un instrumento en la base de datos.
+	 * 
+	 * @param selectedRow
+	 */
 	public void handleEditAction(int selectedRow) {
 		try {
 			Instrumento instrumento = model.getList().get(selectedRow);
