@@ -87,26 +87,38 @@ public class Controller {
 	 */
 	public void edit(Instrumento e) {
 		try {
-			// Se obtiene el instrumento actualizado desde la base de datos
+			// Obtener el instrumento actualizado desde la base de datos
 			Instrumento current = Service.instance().read(e);
-			// Se actualiza el modelo
+
+			// Actualizar el modelo con los valores de la vista
 			current.setDescripcion(view.getDescripcion());
-			current.setMinimo(Integer.valueOf(view.getMinimo()));
-			current.setMaximo(Integer.valueOf(view.getMaximo()));
-			current.setTolerancia(Integer.valueOf(view.getTolerancia()));
+			current.setMinimo(parseToInt(view.getMinimo()));
+			current.setMaximo(parseToInt(view.getMaximo()));
+			current.setTolerancia(parseToInt(view.getTolerancia()));
 			current.setTipo(view.getTipoSeleccionado());
-			try {
-				// Se actualiza el instrumento en la base de datos
-				Service.instance().update(current);
-				view.showMessage("Instrumento actualizado exitosamente");
-				view.clearAction();
-			} catch (Exception ex) {
-				view.showError("No se pudo actualizar el instrumento");
-			}
-		} catch (Exception ex) {
-			view.showError("No se pudo actualizar el instrumento");
+
+			// Actualizar el instrumento en la base de datos
+			Service.instance().update(current);
+			view.showMessage("Instrumento actualizado exitosamente");
+			view.clearAction();
+		} catch (NumberFormatException ex) {
+			throw new RuntimeException("Los valores de mínimo, máximo y tolerancia deben ser números enteros");
+		}
+		catch (Exception ex) {
+			throw new RuntimeException("No se pudo actualizar el instrumento");
 		}
 	}
+
+	// Método de utilidad para parsear un valor String a Integer de manera segura
+	private Integer parseToInt(String value) {
+		try {
+			return Integer.valueOf(value);
+		} catch (NumberFormatException ex) {
+			// Manejar la excepción si no se puede parsear el valor
+			throw new NumberFormatException();
+		}
+	}
+
 
 	/**
 	 * 
@@ -387,7 +399,9 @@ public class Controller {
 			edit(instrumento);
 		} catch (IndexOutOfBoundsException e) {
 			view.showError("Debe seleccionar un elemento de la lista");
-		}catch (Exception e) {
+		} catch (NumberFormatException e) {
+			view.showError("Los valores de mínimo, máximo y tolerancia deben ser números enteros");
+		} catch (Exception e) {
 			view.showError("No se pudo editar el instrumento");
 		}
 	}
