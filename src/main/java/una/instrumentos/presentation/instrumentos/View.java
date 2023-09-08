@@ -68,7 +68,7 @@ public class View implements Observer {
 		save.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				controller.handleSaveAction(serie.getText(), descripcion.getText(), Integer.parseInt(minimo.getText()), Integer.parseInt(maximo.getText()), Integer.parseInt(maximo.getText()), tipo.getSelectedItem().toString());
+				controller.handleSaveAction(serie.getText(), descripcion.getText(), minimo.getText(), maximo.getText(), tolerancia.getText(), tipo.getSelectedItem().toString());
 			}
 		});
 		delete.addMouseListener(new MouseAdapter() {
