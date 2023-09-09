@@ -315,7 +315,7 @@ public class Controller {
 	public void handleSaveAction(String serie, String descripcion, String minimo, String maximo, String tolerancia, String tipo) {
 		try {
 			if (save(serie, descripcion, parseToInt(minimo), parseToInt(maximo), parseToInt(tolerancia), tipo) == 1) {
-				view.showMessage("Instrumento guardado exitosamente");
+				view.showMessage("El instrumento con serie " + serie + " se guardó exitosamente");
 			} else {
 				view.showError("No se pudo guardar el instrumento");
 			}
