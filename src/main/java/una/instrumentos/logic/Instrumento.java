@@ -1,10 +1,29 @@
 package una.instrumentos.logic;
 
+import jakarta.xml.bind.annotation.*;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+
+@XmlAccessorType(XmlAccessType.FIELD)
 public class Instrumento {
+	@XmlID
+	String serie;
+	String descripcion;
+	@XmlIDREF
+	@XmlElement(name = "tipoDelInstrumento")
+	TipoInstrumento tipo;	// Combo box
+	Integer minimo;
+	Integer maximo;
+	Integer tolerancia;
+	//Lista de calibraciones
+	@XmlIDREF
+	@XmlElementWrapper(name = "calibracions")
+	@XmlElement(name = "calibracion")
+	List<Calibracion> calibraciones;
+
 	public Instrumento() {
 		this("","",0,0,0,new TipoInstrumento());
 		this.calibraciones = new ArrayList<Calibracion>();
@@ -102,13 +121,4 @@ public class Instrumento {
 	public int hashCode() {
 		return Objects.hash(serie, descripcion, tipo, minimo, maximo, tolerancia);
 	}
-
-	String serie;
-	String descripcion;
-	TipoInstrumento tipo;	// Combo box
-	Integer minimo;
-	Integer maximo;
-	Integer tolerancia;
-	//Lista de calibraciones
-	List<Calibracion> calibraciones;
 }
