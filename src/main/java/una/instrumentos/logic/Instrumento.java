@@ -19,8 +19,7 @@ public class Instrumento {
 	Integer maximo;
 	Integer tolerancia;
 	//Lista de calibraciones
-	@XmlIDREF
-	@XmlElementWrapper(name = "calibracions")
+	@XmlElementWrapper(name = "calibraciones")
 	@XmlElement(name = "calibracion")
 	List<Calibracion> calibraciones;
 
