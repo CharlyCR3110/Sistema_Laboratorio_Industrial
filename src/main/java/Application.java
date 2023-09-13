@@ -22,7 +22,6 @@ public class Application {
 
 		initializeComponents();
 		setupControllers();
-		loadData();
 		setupTabs();
 		setupWindow();
 		tabbedPane.addChangeListener(createTabChangeListener());
@@ -102,30 +101,6 @@ public class Application {
 				}
 			}
 		};
-	}
-
-	// Guarda los datos en archivos XML
-	private static void saveData() {
-		try {
-			// TODO: Descomentar estas líneas para guardar los datos en archivos XML
-			// una.utiles.XMLDataManager.saveToXML(tiposController.getModel().getList(), "src/main/java/una/xmlFiles/tipos.xml");
-			//una.utiles.XMLDataManager.saveToXML(instrumentosController.getModel().getList(), "src/main/java/una/xmlFiles/instrumentos.xml");
-			// una.utiles.XMLDataManager.saveToXML(calibracionesController.getModel().getList(), "src/main/java/una/xmlFiles/calibraciones.xml");
-			System.out.println("Datos guardados");
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
-
-	private static void loadData() {
-		try {
-//			tiposController.loadList(una.utiles.XMLDataManager.loadFromXML("src/main/java/una/xmlFiles/tipos.xml"));
-//			instrumentosController.loadList(una.utiles.XMLDataManager.loadFromXML("src/main/java/una/xmlFiles/instrumentos.xml"));
-			// calibracionesController.loadList(una.utiles.XMLDataManager.loadFromXML("src/main/java/una/xmlFiles/calibraciones.xml"));
-			System.out.println("Datos cargados");
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
 	}
 
 	private static void setupWindow() {
