@@ -12,7 +12,7 @@ public class XmlPersister {
     private String path;
     private static XmlPersister theInstance;
     public static XmlPersister instance(){
-        if (theInstance==null) theInstance=new XmlPersister("src/main/java/una/xmlFiles/test.xml");
+        if (theInstance==null) theInstance=new XmlPersister("src/main/java/una/xmlFiles/InstrumentosFile.xml");
         return theInstance;
     }
     public XmlPersister(String p) {
