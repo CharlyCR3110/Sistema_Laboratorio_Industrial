@@ -1,6 +1,7 @@
 package una.instrumentos.logic;
 
 import una.instrumentos.data.Data;
+import una.utiles.XmlPersister;
 
 import java.util.Comparator;
 import java.util.List;
@@ -14,7 +15,19 @@ public class Service {
 	private Data data;
 
 	private Service(){
-		data = new Data();
+		try {
+			data = XmlPersister.instance().load();
+		} catch (Exception e) {
+			data = new Data();
+		}
+	}
+
+	public void stop() {
+		try {
+			XmlPersister.instance().store(data);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void loadTipoList(List<TipoInstrumento> list ) throws Exception {
