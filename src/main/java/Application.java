@@ -31,7 +31,7 @@ public class Application {
 		// Guarda los datos en archivos XML
 		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
 			public void run() {
-				saveData();
+				Service.instance().stop();
 			}
 		}));
 	}
@@ -119,8 +119,8 @@ public class Application {
 
 	private static void loadData() {
 		try {
-			tiposController.loadList(una.utiles.XMLDataManager.loadFromXML("src/main/java/una/xmlFiles/tipos.xml"));
-			instrumentosController.loadList(una.utiles.XMLDataManager.loadFromXML("src/main/java/una/xmlFiles/instrumentos.xml"));
+//			tiposController.loadList(una.utiles.XMLDataManager.loadFromXML("src/main/java/una/xmlFiles/tipos.xml"));
+//			instrumentosController.loadList(una.utiles.XMLDataManager.loadFromXML("src/main/java/una/xmlFiles/instrumentos.xml"));
 			// calibracionesController.loadList(una.utiles.XMLDataManager.loadFromXML("src/main/java/una/xmlFiles/calibraciones.xml"));
 			System.out.println("Datos cargados");
 		} catch (Exception ex) {
