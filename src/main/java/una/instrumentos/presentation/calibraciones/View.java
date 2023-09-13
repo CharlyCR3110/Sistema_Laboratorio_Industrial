@@ -2,7 +2,6 @@ package una.instrumentos.presentation.calibraciones;
 
 import una.instrumentos.logic.Calibracion;
 import una.instrumentos.logic.Instrumento;
-import una.instrumentos.logic.Medicion;
 import una.utiles.Utiles;
 
 import javax.swing.*;
@@ -34,7 +33,6 @@ public class View implements Observer {
 
 	private Controller controller;
 	private Model model;
-	private Instrumento instrumentoSeleccionado;
 
 	public View() {
 		initializeUI();
@@ -68,7 +66,7 @@ public class View implements Observer {
 			public void mouseClicked(MouseEvent e) {
 				if (save.isEnabled()) {
 					numero.setText(Utiles.generateRandomStringNumber());
-					controller.handleSaveAction(numero.getText(), Utiles.parseDate(fecha.getText()), Integer.parseInt(mediciones.getText()), instrumentoSeleccionado);
+					controller.handleSaveAction(numero.getText(), Utiles.parseDate(fecha.getText()), Integer.parseInt(mediciones.getText()));
 				}
 			}
 		});
@@ -172,14 +170,14 @@ public class View implements Observer {
 		medicionesListContainer.setVisible(!enableEdit);
 	}
 
-	public void setInstrumentoSeleccionado(Instrumento instrumento) {
+	// Metodo que se llama cuando se selecciona un instrumento para mostrar la tabla de calibraciones
+	public void showCalibracionesTable() {
 		try {
-			instrumentoSeleccionado = instrumento;
+			Instrumento instrumentoSeleccionado = controller.getInstrumentoSeleccionado();
 			
 			if (instrumentoSeleccionado == null) {
 				// Si el instrumento seleccionado es NULL, muestra la tabla vacía
 				controller.noInstrumentSelected();
-				System.out.println("instrumento seleccionado es null");
 			} else {
 				Calibracion filter = new Calibracion();
 				String searchTerm = searchNumero.getText();
@@ -191,9 +189,7 @@ public class View implements Observer {
 					controller.search(filter);
 				} catch (Exception ex) {
 					// No se hace nada porque esto se ejecuta cuando se entra a esta pantalla
-				}
-				System.out.println("instrumento seleccionado no es null, pero se ingreso un termino de busqueda");
-			}
+				}}
 		} catch (Exception ex) {
 			showError(ex.getMessage());
 		}
