@@ -197,14 +197,7 @@ public class Controller {
 
 	public void instrumentoSeleccionadoCambiado(Instrumento instrumento) {
 		// TODO: Eliminar este metodo y mover su contenido a la clase Mediator
-		// TODO: Eliminar los System.out.println
-		if (instrumento == null) {
-			System.out.println("CONTROLLER-No hay instrumento seleccionado");
-		} else {
-			System.out.println("CONTROLLER-Instrumento seleccionado: " + instrumento.getDescripcion());
-		}
-
-		view.setInstrumentoSeleccionado(instrumento);
+		view.showCalibracionesTable();
 		view.mostrarInformacionInstrumento(instrumento);
 		if (instrumento == null) {
 			return;
@@ -232,12 +225,12 @@ public class Controller {
 		delete(calibracion);
 	}
 
-	public void handleSaveAction(String numero, LocalDate fecha, Integer numeroDeMediciones  , Instrumento instrumentoSeleccionado) {
+	public void handleSaveAction(String numero, LocalDate fecha, Integer numeroDeMediciones) {
 		Calibracion calibracion = new Calibracion();
 		calibracion.setNumero(numero);
 		calibracion.setFecha(fecha);
 		calibracion.setNumeroDeMediciones(numeroDeMediciones);
-		save(calibracion, instrumentoSeleccionado);
+		save(calibracion, model.getInstrumentoSeleccionado());
 	}
 
 	public void handleEditAction(int selectedRow) {
@@ -269,6 +262,14 @@ public class Controller {
 		} catch (Exception e) {
 			view.showError("Parece que hubo un error al seleccionar la calibración");
 		}
+	}
+
+	public Instrumento getInstrumentoSeleccionado() {
+		return model.getInstrumentoSeleccionado();
+	}
+
+	public void setInstrumentoSeleccionado(Instrumento instrumentoSeleccionado) {
+		model.setInstrumentoSeleccionado(instrumentoSeleccionado);
 	}
 
 }
