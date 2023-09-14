@@ -202,6 +202,7 @@ public class Controller {
 		if (instrumento == null) {
 			return;
 		}
+		model.setInstrumentoSeleccionado(instrumento);
 		// recargar la lista de calibraciones
 		loadList(instrumento.getCalibraciones());
 	}
