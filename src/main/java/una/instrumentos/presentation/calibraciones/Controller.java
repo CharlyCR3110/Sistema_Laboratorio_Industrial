@@ -163,6 +163,23 @@ public class Controller {
 			title.setAlignment(Element.ALIGN_CENTER);
 			document.add(title);
 
+			if (model.getInstrumentoSeleccionado() == null) {
+				Paragraph noData = new Paragraph("No hay instrumentos seleccionados");
+				noData.setAlignment(Element.ALIGN_CENTER);
+				document.add(noData);
+				document.close();
+				return;
+			}
+
+			// No es necesario comprobar si no es null porque ya se hizo en el if anterior
+			if (model.getList().isEmpty())  {
+				Paragraph noData = new Paragraph("No hay calibraciones para el " + model.getInstrumentoSeleccionado().getDescripcion());
+				noData.setAlignment(Element.ALIGN_CENTER);
+				document.add(noData);
+				document.close();
+				return;
+			}
+
 			// Agrega la lista de calibraciones al documento
 			PdfPTable table = new PdfPTable(4); // 4 columnas para número, fecha, mediciones y instrumento
 			table.setWidthPercentage(100);
@@ -173,9 +190,9 @@ public class Controller {
 
 			for (Calibracion calibracion : model.getList()) {
 				table.addCell(calibracion.getNumero());
-				table.addCell(Utiles.formatDate(calibracion.getFecha())); // Asumiendo que tienes un método para formatear la fecha
+				table.addCell(Utiles.formatDate(calibracion.getFecha()));
 				table.addCell(String.valueOf(calibracion.getMediciones().size()));
-				table.addCell(calibracion.getInstrumento().getDescripcion()); // Suponiendo que puedes obtener la descripción del instrumento
+				table.addCell(model.getInstrumentoSeleccionado().getDescripcion());
 			}
 
 			document.add(table);
@@ -183,7 +200,6 @@ public class Controller {
 			// Cierra el documento
 			document.close();
 
-			System.out.println("Reporte de calibraciones generado exitosamente en: " + filePath);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
