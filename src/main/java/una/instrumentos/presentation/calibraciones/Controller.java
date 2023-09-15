@@ -9,6 +9,7 @@ import una.instrumentos.logic.Calibracion;
 import una.instrumentos.logic.Instrumento;
 import una.instrumentos.logic.Medicion;
 import una.instrumentos.logic.Service;
+import una.utiles.ReportGenerator;
 import una.utiles.Utiles;
 
 import java.io.FileOutputStream;
@@ -220,10 +221,10 @@ public class Controller {
 		// TODO: Eliminar este metodo y mover su contenido a la clase Mediator
 		view.showCalibracionesTable(instrumento);
 		view.mostrarInformacionInstrumento(instrumento);
+		model.setInstrumentoSeleccionado(instrumento);
 		if (instrumento == null) {
 			return;
 		}
-		model.setInstrumentoSeleccionado(instrumento);
 		// recargar la lista de calibraciones
 		loadList(instrumento.getCalibraciones());
 	}
