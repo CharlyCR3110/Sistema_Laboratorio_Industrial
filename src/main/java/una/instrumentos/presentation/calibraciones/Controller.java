@@ -150,60 +150,8 @@ public class Controller {
 	}
 
 	public void generateReport() {
-		Document document = new Document();
-
-		try {
-			// Especifica la ruta y el nombre del archivo PDF que se generará
-			String filePath = "src/main/java/una/reportes/calibraciones_report.pdf";
-			PdfWriter.getInstance(document, new FileOutputStream(filePath));
-
-			document.open();
-
-			// Agrega el título al documento
-			Paragraph title = new Paragraph("Reporte de Calibraciones");
-			title.setAlignment(Element.ALIGN_CENTER);
-			document.add(title);
-
-			if (model.getInstrumentoSeleccionado() == null) {
-				Paragraph noData = new Paragraph("No hay instrumentos seleccionados");
-				noData.setAlignment(Element.ALIGN_CENTER);
-				document.add(noData);
-				document.close();
-				return;
-			}
-
-			// No es necesario comprobar si no es null porque ya se hizo en el if anterior
-			if (model.getList().isEmpty())  {
-				Paragraph noData = new Paragraph("No hay calibraciones para el " + model.getInstrumentoSeleccionado().getDescripcion());
-				noData.setAlignment(Element.ALIGN_CENTER);
-				document.add(noData);
-				document.close();
-				return;
-			}
-
-			// Agrega la lista de calibraciones al documento
-			PdfPTable table = new PdfPTable(4); // 4 columnas para número, fecha, mediciones y instrumento
-			table.setWidthPercentage(100);
-			table.addCell("Número");
-			table.addCell("Fecha");
-			table.addCell("Mediciones");
-			table.addCell("Instrumento");
-
-			for (Calibracion calibracion : model.getList()) {
-				table.addCell(calibracion.getNumero());
-				table.addCell(Utiles.formatDate(calibracion.getFecha()));
-				table.addCell(String.valueOf(calibracion.getMediciones().size()));
-				table.addCell(model.getInstrumentoSeleccionado().getDescripcion());
-			}
-
-			document.add(table);
-
-			// Cierra el documento
-			document.close();
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		String filePath = "src/main/java/una/reportes/calibraciones_report.pdf";
+		ReportGenerator.generateCalibrationsReport(model, filePath);
 	}
 
 	public void loadList(List<Calibracion> calibracionList) {
