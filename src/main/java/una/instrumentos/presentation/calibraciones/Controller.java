@@ -141,7 +141,7 @@ public class Controller {
 			model.setCurrent(new Calibracion());
 			model.commit();
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
 		}
 	}
 
@@ -193,8 +193,13 @@ public class Controller {
 			return;
 		}
 
-		Calibracion calibracion = model.getList().get(selectedRow);
-		delete(calibracion);
+		try {
+			Calibracion calibracion = model.getList().get(selectedRow);
+			delete(calibracion);
+			view.showMessage("La calibración número " + calibracion.getNumero() + " ha sido eliminada exitosamente");
+		} catch (Exception e) {
+			view.showError(e.getMessage());
+		}
 	}
 
 	public void handleSaveAction(String numero, LocalDate fecha, Integer numeroDeMediciones) {
@@ -202,7 +207,11 @@ public class Controller {
 		calibracion.setNumero(numero);
 		calibracion.setFecha(fecha);
 		calibracion.setNumeroDeMediciones(numeroDeMediciones);
-		save(calibracion, model.getInstrumentoSeleccionado());
+		if (save(calibracion, model.getInstrumentoSeleccionado()) == 1) {
+			view.showMessage("Calibración número " + numero + " guardada exitosamente");
+		} else {
+			view.showError("No se pudo guardar la calibración");
+		}
 	}
 
 	public void handleEditAction(int selectedRow) {
