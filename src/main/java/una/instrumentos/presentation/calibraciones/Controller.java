@@ -91,6 +91,11 @@ public class Controller {
 			return 0;
 		}
 
+		if (calibracion.getNumeroDeMediciones() < 1) {
+			view.showError("El número de mediciones debe ser mayor a 0");
+			return 0;
+		}
+
 		try {
 			Utiles.parseDate(calibracion.getFecha().toString());
 		} catch (Exception e) {
