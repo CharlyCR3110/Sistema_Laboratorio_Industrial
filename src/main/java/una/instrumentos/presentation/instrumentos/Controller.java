@@ -238,6 +238,7 @@ public class Controller {
 	public void generateReport() {
 		String filePath = "src/main/java/una/reportes/instrumentos_report.pdf";
 		ReportGenerator.generateInstrumentsReport(model, filePath);
+		view.showMessage("Reporte generado exitosamente en: " + filePath);
 	}
 
 	public List<TipoInstrumento> getTipos() {

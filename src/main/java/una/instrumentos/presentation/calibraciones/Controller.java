@@ -152,6 +152,7 @@ public class Controller {
 	public void generateReport() {
 		String filePath = "src/main/java/una/reportes/calibraciones_report.pdf";
 		ReportGenerator.generateCalibrationsReport(model, filePath);
+		view.showMessage("Reporte generado exitosamente en: " + filePath);
 	}
 
 	public void loadList(List<Calibracion> calibracionList) {
