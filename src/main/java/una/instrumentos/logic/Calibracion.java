@@ -71,15 +71,16 @@ public class Calibracion {
 		this.mediciones = mediciones;
 	}
 	public void agregarMediciones(int numeroDeMediciones, int minimo, int maximo) {
+		// Generar mediciones aleatorias
+		int rangoReferencia = (maximo - minimo) / numeroDeMediciones;	// rango de referencia entre mediciones
 		for (int i = 0; i < numeroDeMediciones; i++) {
-			int rangoReferencia = maximo / numeroDeMediciones;
-			int referencia = i * rangoReferencia;
+			int referencia = minimo + (i * rangoReferencia);	// referencia de la medicion
 
-			int maxLecturaVariation = (referencia == 0) ? 5 : 5;
-			int lecturaVariation = (int) (Math.random() * (2 * maxLecturaVariation + 1)) - maxLecturaVariation;
-			int lectura = referencia + lecturaVariation;
+			int maxLecturaVariation = (referencia == minimo) ? 5 : 5;	// variacion maxima de la lectura (es un numero arbitrario, o sea, no tiene ninguna base cientifica)
+			int lecturaVariation = (int) (Math.random() * (2 * maxLecturaVariation + 1)) - maxLecturaVariation;	// variacion de la lectura
+			int lectura = referencia + lecturaVariation;	// lectura de la medicion
 
-			this.mediciones.add(new Medicion(i + 1, referencia, lectura));
+			this.mediciones.add(new Medicion(i + 1, referencia, lectura));	// agregar medicion
 		}
 	}
 
