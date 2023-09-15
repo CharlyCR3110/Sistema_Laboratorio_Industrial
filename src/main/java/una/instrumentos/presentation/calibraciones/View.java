@@ -171,10 +171,8 @@ public class View implements Observer {
 	}
 
 	// Metodo que se llama cuando se selecciona un instrumento para mostrar la tabla de calibraciones
-	public void showCalibracionesTable() {
+	public void showCalibracionesTable(Instrumento instrumentoSeleccionado) {
 		try {
-			Instrumento instrumentoSeleccionado = controller.getInstrumentoSeleccionado();
-			
 			if (instrumentoSeleccionado == null) {
 				// Si el instrumento seleccionado es NULL, muestra la tabla vacía
 				controller.noInstrumentSelected();
