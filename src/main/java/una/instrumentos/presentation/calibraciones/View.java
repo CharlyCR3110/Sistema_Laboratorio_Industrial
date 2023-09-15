@@ -246,4 +246,8 @@ public class View implements Observer {
 	public String getFecha() {
 		return fecha.getText();
 	}
+
+	public void showMessage(String message) {
+		JOptionPane.showMessageDialog(panel, message, "Informacion", JOptionPane.INFORMATION_MESSAGE);
+	}
 }
