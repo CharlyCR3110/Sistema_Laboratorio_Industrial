@@ -202,7 +202,7 @@ public class Controller {
 
 	public void instrumentoSeleccionadoCambiado(Instrumento instrumento) {
 		// TODO: Eliminar este metodo y mover su contenido a la clase Mediator
-		view.showCalibracionesTable();
+		view.showCalibracionesTable(instrumento);
 		view.mostrarInformacionInstrumento(instrumento);
 		if (instrumento == null) {
 			return;
