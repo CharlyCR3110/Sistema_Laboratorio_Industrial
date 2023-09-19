@@ -24,15 +24,8 @@ public class Application {
 		setupControllers();
 		setupTabs();
 		setupWindow();
-		tabbedPane.addChangeListener(createTabChangeListener());
-		tabbedPane.addChangeListener(createTipoInstrumentoChangeListener());
-
-		// Guarda los datos en archivos XML
-		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-			public void run() {
-				Service.instance().stop();
-			}
-		}));
+		addTabChangeListeners();
+		addShutdownHook();
 	}
 
 	private static void setLookAndFeel() {
@@ -75,6 +68,11 @@ public class Application {
 		tabbedPane.addTab("Acerca de", new una.instrumentos.presentation.acercaDe.View().getPanel());
 	}
 
+	private static void addTabChangeListeners () {
+		tabbedPane.addChangeListener(createTabChangeListener());
+		tabbedPane.addChangeListener(createTipoInstrumentoChangeListener());
+	}
+
 	private static ChangeListener createTabChangeListener() {
 		return new ChangeListener() {
 			@Override
@@ -110,5 +108,9 @@ public class Application {
 		window.setIconImage(new ImageIcon(Application.class.getResource("icon.png")).getImage());
 		window.setTitle("SILAB: Sistema de Laboratorio Industrial");
 		window.setVisible(true);
+	}
+
+	private static void addShutdownHook() {
+		Runtime.getRuntime().addShutdownHook(new Thread(Service.instance()::stop));
 	}
 }
