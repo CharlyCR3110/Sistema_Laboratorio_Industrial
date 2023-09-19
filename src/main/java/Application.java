@@ -1,4 +1,5 @@
 import una.instrumentos.logic.Instrumento;
+import una.instrumentos.logic.Mediator;
 import una.instrumentos.logic.Service;
 
 import javax.swing.*;
@@ -13,24 +14,18 @@ public class Application {
 	private static una.instrumentos.presentation.instrumentos.Controller instrumentosController;
 	private static una.instrumentos.presentation.calibraciones.Controller calibracionesController;
 
+	private static Mediator mediator;
+
 	public static void main(String[] args) {
 		Service service = Service.instance();
 		setLookAndFeel();
 
 		initializeComponents();
 		setupControllers();
-		loadData();
 		setupTabs();
 		setupWindow();
-		tabbedPane.addChangeListener(createTabChangeListener());
-		tabbedPane.addChangeListener(createTipoInstrumentoChangeListener());
-
-		// Guarda los datos en archivos XML
-		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
-			public void run() {
-				saveData();
-			}
-		}));
+		addTabChangeListeners();
+		addShutdownHook();
 	}
 
 	private static void setLookAndFeel() {
@@ -62,6 +57,8 @@ public class Application {
 				new una.instrumentos.presentation.calibraciones.View(),
 				new una.instrumentos.presentation.calibraciones.Model()
 		);
+
+		mediator = new Mediator(instrumentosController, calibracionesController);
 	}
 
 	private static void setupTabs() {
@@ -71,6 +68,11 @@ public class Application {
 		tabbedPane.addTab("Acerca de", new una.instrumentos.presentation.acercaDe.View().getPanel());
 	}
 
+	private static void addTabChangeListeners () {
+		tabbedPane.addChangeListener(createTabChangeListener());
+		tabbedPane.addChangeListener(createTipoInstrumentoChangeListener());
+	}
+
 	private static ChangeListener createTabChangeListener() {
 		return new ChangeListener() {
 			@Override
@@ -78,8 +80,7 @@ public class Application {
 				int selectedIndex = tabbedPane.getSelectedIndex();
 				if (selectedIndex == 2) { // Índice 2 corresponde a la pestaña de Calibraciones
 					tabbedPane.setSelectedIndex(selectedIndex);
-					instrumentoSeleccionado = instrumentosController.getSelected();
-					calibracionesController.getView().setInstrumentoSeleccionado(instrumentoSeleccionado);
+					mediator.setInstrumentoSeleccionado();
 				}
 			}
 		};
@@ -100,29 +101,6 @@ public class Application {
 		};
 	}
 
-	// Guarda los datos en archivos XML
-	private static void saveData() {
-		try {
-			una.utiles.XMLDataManager.saveToXML(tiposController.getModel().getList(), "src/main/java/una/xmlFiles/tipos.xml");
-			una.utiles.XMLDataManager.saveToXML(instrumentosController.getModel().getList(), "src/main/java/una/xmlFiles/instrumentos.xml");
-			una.utiles.XMLDataManager.saveToXML(calibracionesController.getModel().getList(), "src/main/java/una/xmlFiles/calibraciones.xml");
-			System.out.println("Datos guardados");
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
-
-	private static void loadData() {
-		try {
-			tiposController.getModel().loadList(una.utiles.XMLDataManager.loadFromXML("src/main/java/una/xmlFiles/tipos.xml"));
-			instrumentosController.getModel().loadList(una.utiles.XMLDataManager.loadFromXML("src/main/java/una/xmlFiles/instrumentos.xml"));
-			calibracionesController.getModel().loadList(una.utiles.XMLDataManager.loadFromXML("src/main/java/una/xmlFiles/calibraciones.xml"));
-			System.out.println("Datos cargados");
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
-	}
-
 	private static void setupWindow() {
 		window.setSize(900, 400);
 		window.setResizable(true);
@@ -130,5 +108,9 @@ public class Application {
 		window.setIconImage(new ImageIcon(Application.class.getResource("icon.png")).getImage());
 		window.setTitle("SILAB: Sistema de Laboratorio Industrial");
 		window.setVisible(true);
+	}
+
+	private static void addShutdownHook() {
+		Runtime.getRuntime().addShutdownHook(new Thread(Service.instance()::stop));
 	}
 }

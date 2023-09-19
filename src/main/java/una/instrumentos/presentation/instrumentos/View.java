@@ -36,6 +36,9 @@ public class View implements Observer {
 	private JLabel tipoLbl;
 	private JTextField minimo;
 
+	Controller controller;
+	Model model;
+
 	public View() {
 		initializeUI();
 		setupEventHandlers();
@@ -49,11 +52,11 @@ public class View implements Observer {
 	}
 
 	private void setupEventHandlers() {
-		search.addActionListener(e -> searchAction());
+		search.addActionListener(e -> controller.handleSearchAction(searchDescripcion.getText()) );
 		list.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				handleListClick();
+				controller.edit(list.getSelectedRow());
 			}
 		});
 		clear.addMouseListener(new MouseAdapter() {
@@ -65,25 +68,25 @@ public class View implements Observer {
 		save.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				saveAction();
+				controller.handleSaveAction(serie.getText(), descripcion.getText(), minimo.getText(), maximo.getText(), tolerancia.getText(), tipo.getSelectedItem().toString());
 			}
 		});
 		delete.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				deleteAction();
+				controller.handleDeleteAction(list.getSelectedRow());
 			}
 		});
 		edit.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				editAction();
+				controller.handleEditAction(list.getSelectedRow());
 			}
 		});
 		report.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				generateReport();
+				controller.generateReport();
 			}
 		});
 		list.getSelectionModel().addListSelectionListener(e -> {
@@ -99,48 +102,7 @@ public class View implements Observer {
 		updateSaveState();
 	}
 
-	private void generateReport() {
-		controller.generateReport();
-	}
-
-	private void editAction() {
-		int row = list.getSelectedRow();
-		try {
-			Instrumento instrumento = model.getList().get(row);
-			controller.edit(instrumento);
-		} catch (IndexOutOfBoundsException e) {
-			showErrorMessageBox("Debe seleccionar un elemento de la lista");
-		}
-		clearAction();
-	}
-
-	private void deleteAction() {
-		try {
-			int row = list.getSelectedRow();
-			Instrumento instrumento = model.getList().get(row);
-			controller.delete(instrumento);
-			clearAction();
-		} catch (IndexOutOfBoundsException ex) {
-			showErrorMessageBox("Debe seleccionar un elemento de la lista");
-		} catch (Exception ex) {
-			showErrorMessageBox(ex.getMessage());
-		}
-	}
-
-	private void saveAction() {
-		try {
-			// Se pasan los datos del formulario al controlador
-			if (controller.save(serie.getText(), descripcion.getText(), Integer.parseInt(minimo.getText()), Integer.parseInt(maximo.getText()), Integer.parseInt(maximo.getText()), tipo.getSelectedItem().toString()) == 1) {
-				clearAction();
-			} else {
-				showErrorMessageBox("Debe llenar todos los campos");
-			}
-		} catch (Exception ex) {
-			JOptionPane.showMessageDialog(panel, ex.getMessage(), "Informacion", JOptionPane.INFORMATION_MESSAGE);
-		}
-	}
-
-	private void clearAction() {
+	public void clearAction() {
 		serie.setText("");
 		descripcion.setText("");
 		minimo.setText("0");
@@ -153,31 +115,9 @@ public class View implements Observer {
 		System.out.println("clearAction");
 	}
 
-	private void searchAction() {
-		try {
-			Instrumento filter = new Instrumento();
-			filter.setDescripcion(searchDescripcion.getText());
-			controller.search(filter);
-		} catch (Exception ex) {
-			JOptionPane.showMessageDialog(panel, ex.getMessage(), "Informacion", JOptionPane.INFORMATION_MESSAGE);
-		}
-	}
-
-	private void handleListClick() {
-		int row = list.getSelectedRow();
-		controller.edit(row);
-	}
-
-	private void showErrorMessageBox(String message) {
-		JOptionPane.showMessageDialog(panel, message, "Informacion", JOptionPane.INFORMATION_MESSAGE);
-	}
-
 	public JPanel getPanel() {
 		return panel;
 	}
-
-	Controller controller;
-	Model model;
 
 	public void setController(Controller controller) {
 		this.controller = controller;
@@ -204,13 +144,17 @@ public class View implements Observer {
 			minimo.setText(String.valueOf(model.getCurrent().getMinimo()));
 			maximo.setText(String.valueOf(model.getCurrent().getMaximo()));
 			tolerancia.setText(String.valueOf(model.getCurrent().getTolerancia()));
-			tipo.setSelectedItem(model.getCurrent().getTipo());
+			tipo.setSelectedItem(model.getCurrent().getTipo().getNombre());
 		}
 		this.panel.revalidate();
 	}
 
 	public void showError(String message) {
 		JOptionPane.showMessageDialog(panel, message, "Error", JOptionPane.ERROR_MESSAGE);
+	}
+
+	public void showMessage(String message) {
+		JOptionPane.showMessageDialog(panel, message, "Informacion", JOptionPane.INFORMATION_MESSAGE);
 	}
 
 	public void highlightEmptyField(String fieldName) {
@@ -287,17 +231,6 @@ public class View implements Observer {
 
 	public TipoInstrumento getTipoSeleccionado() {
 		return controller.getTipoSeleccionado(tipo.getSelectedItem().toString());
-	}
-
-	private Instrumento createInstrumentoFromView() {
-		Instrumento instrumento = new Instrumento();
-		instrumento.setSerie(serie.getText());
-		instrumento.setDescripcion(descripcion.getText());
-		instrumento.setMinimo(Integer.parseInt(minimo.getText()));
-		instrumento.setMaximo(Integer.parseInt(maximo.getText()));
-		instrumento.setTolerancia(Integer.parseInt(tolerancia.getText()));
-		instrumento.setTipo(getTipoSeleccionado());
-		return instrumento;
 	}
 
 	public int getSelectedRow() {

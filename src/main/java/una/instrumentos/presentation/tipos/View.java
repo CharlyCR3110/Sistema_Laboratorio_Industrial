@@ -7,6 +7,7 @@ import javax.swing.border.Border;
 import javax.swing.table.TableColumnModel;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -35,16 +36,19 @@ public class View implements Observer {
     }
 
     private void initializeUI() {
+        if (list == null) {
+            list = new JTable();
+        }
         list.getTableHeader().setReorderingAllowed(false);
         list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
 
     private void setupEventHandlers() {
-        search.addActionListener(e -> searchAction());
+        search.addActionListener(e -> controller.handleSearchAction(searchNombre.getText()));
         list.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                handleListClick();
+                controller.edit(list.getSelectedRow());
             }
         });
         clear.addMouseListener(new MouseAdapter() {
@@ -56,25 +60,25 @@ public class View implements Observer {
         save.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                saveAction();
+                controller.handleSaveAction(codigo.getText(), nombre.getText(), unidad.getText());
             }
         });
         delete.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                deleteAction();
+                controller.handleDeleteAction(list.getSelectedRow());
             }
         });
         edit.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                editAction();
+                controller.handleEditAction(list.getSelectedRow());
             }
         });
         report.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                generateReport();
+                controller.generateReport();
             }
         });
         list.getSelectionModel().addListSelectionListener(e -> {
@@ -89,49 +93,6 @@ public class View implements Observer {
         updateEditButtonState();
         updateSaveState();
     }
-    
-    private void generateReport() {
-        controller.generateReport();
-    }
-
-    private void editAction() {
-        int row = list.getSelectedRow();
-        try {
-            TipoInstrumento tipoInstrumento = model.getList().get(row);
-            controller.edit(tipoInstrumento);
-        } catch (IndexOutOfBoundsException e) {
-            showErrorMessageBox("Debe seleccionar un elemento de la lista");
-        }
-        clearAction();
-    }
-
-    private void deleteAction() {
-        try {
-            int row = list.getSelectedRow();
-            TipoInstrumento tipoInstrumento = model.getList().get(row);
-            controller.delete(tipoInstrumento);
-            clearAction();
-        } catch (IndexOutOfBoundsException e) {
-            showErrorMessageBox("Debe seleccionar un elemento de la lista");
-        } catch (Exception e) {
-            showErrorMessageBox(e.getMessage());
-        }
-    }
-
-    private void saveAction() {
-        try {
-            TipoInstrumento tipoInstrumento = new TipoInstrumento();
-            tipoInstrumento.setCodigo(codigo.getText());
-            tipoInstrumento.setNombre(nombre.getText());
-            tipoInstrumento.setUnidad(unidad.getText());
-            if (controller.save(tipoInstrumento) == 0) {
-                return;
-            }
-            clearAction();
-        } catch (Exception ex) {
-            showErrorMessageBox(ex.getMessage());
-        }
-    }
 
     private void clearAction() {
         codigo.setText("");
@@ -140,25 +101,6 @@ public class View implements Observer {
         list.clearSelection();
         save.setEnabled(true);
         codigo.setEnabled(true);
-    }
-
-    private void searchAction() {
-        try {
-            TipoInstrumento filter = new TipoInstrumento();
-            filter.setNombre(searchNombre.getText());
-            controller.search(filter);
-        } catch (Exception ex) {
-            JOptionPane.showMessageDialog(panel, ex.getMessage(), "Informacion", JOptionPane.INFORMATION_MESSAGE);
-        }
-    }
-
-    private void handleListClick() {
-        int row = list.getSelectedRow();
-        controller.edit(row);
-    }
-
-    private void showErrorMessageBox(String message) {
-        JOptionPane.showMessageDialog(panel, message, "Informacion", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public JPanel getPanel() {
@@ -197,6 +139,10 @@ public class View implements Observer {
 
     public void showError(String message) {
         JOptionPane.showMessageDialog(panel, message, "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
+    public void showMessage(String message) {
+        JOptionPane.showMessageDialog(panel, message, "Informacion", JOptionPane.INFORMATION_MESSAGE);
     }
 
     public void highlightEmptyField(String fieldName) {

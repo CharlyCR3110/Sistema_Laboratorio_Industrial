@@ -53,15 +53,4 @@ public class Model extends Observable {
 		changedProps |= CURRENT;
 		this.current = current;
 	}
-
-	public void loadList(List<Instrumento> instrumentosList) {
-		try {
-			Service.instance().loadInstrumentoList(instrumentosList);
-			setList(instrumentosList);
-			setCurrent(new Instrumento());
-			commit();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
 }

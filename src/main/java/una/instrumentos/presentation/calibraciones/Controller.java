@@ -5,13 +5,16 @@ import com.itextpdf.text.Element;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import una.instrumentos.logic.Calibracion;
 import una.instrumentos.logic.Instrumento;
 import una.instrumentos.logic.Medicion;
 import una.instrumentos.logic.Service;
-import una.instrumentos.logic.Calibracion;
+import una.utiles.ReportGenerator;
 import una.utiles.Utiles;
 
 import java.io.FileOutputStream;
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Controller {
@@ -37,14 +40,16 @@ public class Controller {
 	public void search(Calibracion filter) {
 		try {
 			List<Calibracion> rows = Service.instance().search(filter);
+			// se tira la excepcion despues, porque
 			if (rows.isEmpty()) {
-				throw new Exception("NINGUN REGISTRO COINCIDE");
+				// Tirar una excepcion que no se encontro
+				throw new Exception("Ninguna calibración coincide con el criterio de busqueda");
 			}
 			model.setList(rows);
 			model.setCurrent(new Calibracion());
 			model.commit();
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			throw new RuntimeException(ex.getMessage());
 		}
 	}
 
@@ -55,7 +60,7 @@ public class Controller {
 			model.setCurrent(current);
 			model.commit();
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			throw new RuntimeException(ex.getMessage());
 		}
 	}
 
@@ -64,7 +69,7 @@ public class Controller {
 			Calibracion current = Service.instance().read(e);
 			// buscar la medicion y remplazarla con los nuevos datos
 			for (int i = 0; i < current.getMediciones().size(); i++) {
-				if ( current.getMediciones().get(i).getNumero() == medicion.getNumero() ) {	// si el numero de la medicion es igual al numero de la medicion que se quiere editar
+				if (current.getMediciones().get(i).getNumero() == medicion.getNumero()) {    // si el numero de la medicion es igual al numero de la medicion que se quiere editar
 					current.getMediciones().set(i, medicion);
 					break;
 				}
@@ -87,6 +92,11 @@ public class Controller {
 			return 0;
 		}
 
+		if (calibracion.getNumeroDeMediciones() < 1) {
+			view.showError("El número de mediciones debe ser mayor a 0");
+			return 0;
+		}
+
 		try {
 			Utiles.parseDate(calibracion.getFecha().toString());
 		} catch (Exception e) {
@@ -99,17 +109,7 @@ public class Controller {
 		instrumentoSeleccionado.agregarCalibracion(calibracion);
 		calibracion.setInstrumento(instrumentoSeleccionado);
 
-		try {
-			Service service = Service.instance();
-			try {
-				service.create(calibracion);
-			} catch (Exception e) {
-				view.showError("Ya existe una calibración con ese número");
-			}
-			updateModelAfterSave(service);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		updateModelAfterSave(Service.instance());
 		return 1;
 	}
 
@@ -134,14 +134,14 @@ public class Controller {
 	}
 
 	public void delete(Calibracion calibracion) {
-		calibracion.getInstrumento().getCalibraciones().remove(calibracion);
+		model.getInstrumentoSeleccionado().getCalibraciones().remove(calibracion);
 		try {
 			Service.instance().delete(calibracion);
 			model.setList(Service.instance().search(new Calibracion()));
 			model.setCurrent(new Calibracion());
 			model.commit();
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new RuntimeException(e.getMessage());
 		}
 	}
 
@@ -150,43 +150,107 @@ public class Controller {
 	}
 
 	public void generateReport() {
-		Document document = new Document();
+		String filePath = "src/main/java/una/reportes/calibraciones_report.pdf";
+		ReportGenerator.generateCalibrationsReport(model, filePath);
+		view.showMessage("Reporte generado exitosamente en: " + filePath);
+	}
 
+	public void loadList(List<Calibracion> calibracionList) {
 		try {
-			// Especifica la ruta y el nombre del archivo PDF que se generará
-			String filePath = "src/main/java/una/reportes/calibraciones_report.pdf";
-			PdfWriter.getInstance(document, new FileOutputStream(filePath));
-
-			document.open();
-
-			// Agrega el título al documento
-			Paragraph title = new Paragraph("Reporte de Calibraciones");
-			title.setAlignment(Element.ALIGN_CENTER);
-			document.add(title);
-
-			// Agrega la lista de calibraciones al documento
-			PdfPTable table = new PdfPTable(4); // 4 columnas para número, fecha, mediciones y instrumento
-			table.setWidthPercentage(100);
-			table.addCell("Número");
-			table.addCell("Fecha");
-			table.addCell("Mediciones");
-			table.addCell("Instrumento");
-
-			for (Calibracion calibracion : model.getList()) {
-				table.addCell(calibracion.getNumero());
-				table.addCell(Utiles.formatDate(calibracion.getFecha())); // Asumiendo que tienes un método para formatear la fecha
-				table.addCell(String.valueOf(calibracion.getMediciones().size()));
-				table.addCell(calibracion.getInstrumento().getDescripcion()); // Suponiendo que puedes obtener la descripción del instrumento
-			}
-
-			document.add(table);
-
-			// Cierra el documento
-			document.close();
-
-			System.out.println("Reporte de calibraciones generado exitosamente en: " + filePath);
+			Service.instance().loadCalibracionList(calibracionList);
+			model.setList(calibracionList);
+			model.setCurrent(new Calibracion());
+			model.commit();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
+
+	public void instrumentoSeleccionadoCambiado(Instrumento instrumento) {
+		// TODO: Eliminar este metodo y mover su contenido a la clase Mediator
+		view.showCalibracionesTable(instrumento);
+		view.mostrarInformacionInstrumento(instrumento);
+		model.setInstrumentoSeleccionado(instrumento);
+		if (instrumento == null) {
+			return;
+		}
+		// recargar la lista de calibraciones
+		loadList(instrumento.getCalibraciones());
+	}
+
+	public void noInstrumentSelected() {
+		model.setList(new ArrayList<>());
+		model.commit();
+	}
+
+	public void setList(ArrayList<Calibracion> list) {
+		model.setList(list);
+	}
+
+	public void handleDeleteAction(int selectedRow) {
+		if (selectedRow < 0) {
+			view.showError("Debe seleccionar una calibración");
+			return;
+		}
+
+		try {
+			Calibracion calibracion = model.getList().get(selectedRow);
+			delete(calibracion);
+			view.showMessage("La calibración número " + calibracion.getNumero() + " ha sido eliminada exitosamente");
+		} catch (Exception e) {
+			view.showError(e.getMessage());
+		}
+	}
+
+	public void handleSaveAction(String numero, LocalDate fecha, Integer numeroDeMediciones) {
+		Calibracion calibracion = new Calibracion();
+		calibracion.setNumero(numero);
+		calibracion.setFecha(fecha);
+		calibracion.setNumeroDeMediciones(numeroDeMediciones);
+		if (save(calibracion, model.getInstrumentoSeleccionado()) == 1) {
+			view.showMessage("Calibración número " + numero + " guardada exitosamente");
+		} else {
+			view.showError("No se pudo guardar la calibración");
+		}
+	}
+
+	public void handleEditAction(int selectedRow) {
+		if (selectedRow < 0) {
+			view.showError("Debe seleccionar una calibración");
+			return;
+		}
+
+		Calibracion calibracion = model.getList().get(selectedRow);
+		edit(selectedRow);
+	}
+
+	public void handleSearchAction(String searchNumero) {
+		try {
+			Calibracion filter = new Calibracion();
+			filter.setNumero(searchNumero);
+			search(filter);
+		} catch (Exception e) {
+			view.showError(e.getMessage());
+		}
+	}
+
+	public void handleListClick(int selectedRow) {
+		if (selectedRow < 0) {
+			return;
+		}
+		try {
+			edit(selectedRow);
+		} catch (Exception e) {
+			view.showError("Parece que hubo un error al seleccionar la calibración");
+		}
+	}
+
+	public Instrumento getInstrumentoSeleccionado() {
+		return model.getInstrumentoSeleccionado();
+	}
+
+	public void setInstrumentoSeleccionado(Instrumento instrumentoSeleccionado) {
+		model.setInstrumentoSeleccionado(instrumentoSeleccionado);
+	}
+
 }

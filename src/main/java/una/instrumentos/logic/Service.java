@@ -1,6 +1,7 @@
 package una.instrumentos.logic;
 
 import una.instrumentos.data.Data;
+import una.utiles.XmlPersister;
 
 import java.util.Comparator;
 import java.util.List;
@@ -14,7 +15,19 @@ public class Service {
 	private Data data;
 
 	private Service(){
-		data = new Data();
+		try {
+			data = XmlPersister.instance().load();
+		} catch (Exception e) {
+			data = new Data();
+		}
+	}
+
+	public void stop() {
+		try {
+			XmlPersister.instance().store(data);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 	public void loadTipoList(List<TipoInstrumento> list ) throws Exception {
@@ -88,14 +101,11 @@ public class Service {
 	}
 		// Instrumento
 	public void update(Instrumento e) throws Exception {
-		Instrumento result;
-		try{
-			result = this.read(e);
-			data.getInstrumentos().remove(result);
-			data.getInstrumentos().add(e);
-		}catch (Exception ex) {
+		if (e == null || !data.getInstrumentos().contains(e)) {
 			throw new Exception("Instrumento no existe");
 		}
+		// Si el instrumento existe, se actualiza la información
+		search(e).get(0).updateInfo(e);
 	}
 		// Calibracion
 	public void update (Calibracion e) throws Exception {
@@ -120,7 +130,7 @@ public class Service {
 		// Instrumento
 	public void delete(Instrumento e) throws Exception {
 		// Verificar que no existan calibraciones con ese instrumento
-		if (data.getCalibraciones().stream().anyMatch(i->i.getInstrumento().equals(e))) {
+		if (e.hasCalibraciones()) {
 			throw new Exception("Parece que hay calibraciones asociadas a este instrumento");
 		}
 		data.getInstrumentos().remove(e);

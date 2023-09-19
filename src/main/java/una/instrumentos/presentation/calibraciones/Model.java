@@ -11,6 +11,7 @@ import java.util.Observer;
 public class Model extends Observable {
 	private List<Calibracion> list;
 	private Calibracion current;
+	Instrumento instrumentoSeleccionado;
 	private int changedProps = NONE;
 
 	public static final int NONE = 0;
@@ -53,15 +54,11 @@ public class Model extends Observable {
 		changedProps |= CURRENT;  // Usar operador de bits para combinar las propiedades cambiadas
 		this.current = current;
 	}
+	public Instrumento getInstrumentoSeleccionado() {
+		return instrumentoSeleccionado;
+	}
 
-	public void loadList(List<Calibracion> calibracionList) {
-		try {
-			Service.instance().loadCalibracionList(calibracionList);
-			setList(calibracionList);
-			setCurrent(new Calibracion());
-			commit();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+	public void setInstrumentoSeleccionado(Instrumento instrumentoSeleccionado) {
+		this.instrumentoSeleccionado = instrumentoSeleccionado;
 	}
 }

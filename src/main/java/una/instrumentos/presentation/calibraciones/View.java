@@ -2,7 +2,6 @@ package una.instrumentos.presentation.calibraciones;
 
 import una.instrumentos.logic.Calibracion;
 import una.instrumentos.logic.Instrumento;
-import una.instrumentos.logic.Medicion;
 import una.utiles.Utiles;
 
 import javax.swing.*;
@@ -34,7 +33,6 @@ public class View implements Observer {
 
 	private Controller controller;
 	private Model model;
-	private Instrumento instrumentoSeleccionado;
 
 	public View() {
 		initializeUI();
@@ -50,11 +48,11 @@ public class View implements Observer {
 	}
 
 	private void setupEventHandlers() {
-		search.addActionListener(e -> searchAction());
+		search.addActionListener(e -> controller.handleSearchAction(searchNumero.getText()) );
 		list.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				handleListClick();
+				controller.handleListClick(list.getSelectedRow());
 			}
 		});
 		clear.addMouseListener(new MouseAdapter() {
@@ -67,26 +65,27 @@ public class View implements Observer {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (save.isEnabled()) {
-					saveAction();
+					numero.setText(Utiles.generateRandomStringNumber());
+					controller.handleSaveAction(numero.getText(), Utiles.parseDate(fecha.getText()), Integer.parseInt(mediciones.getText()));
 				}
 			}
 		});
 		delete.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				deleteAction();
+				controller.handleDeleteAction(list.getSelectedRow());
 			}
 		});
 		edit.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				editAction();
+				controller.handleEditAction(list.getSelectedRow());
 			}
 		});
 		report.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				generateReport();
+				controller.generateReport();
 			}
 		});
 		list.getSelectionModel().addListSelectionListener(e -> {
@@ -102,58 +101,6 @@ public class View implements Observer {
 		updateSaveState();
 	}
 
-	private void generateReport() {
-		controller.generateReport();
-	}
-
-	private void editAction() {
-		try {
-			Calibracion calibracion = model.getCurrent();
-			// recuperar la medicion seleccionada
-			int row = medicionesList.getSelectedRow();
-			if (row == -1) {
-				showError("Debe seleccionar una medición");
-				return;
-			}
-			Medicion medicion = calibracion.getMediciones().get(row);
-			System.out.println(medicion.getReferencia());
-			controller.edit(calibracion, medicion);
-			clearAction();
-		} catch (Exception ex) {
-			showError(ex.getMessage());
-		}
-	}
-
-	private void deleteAction() {
-		try {
-			Calibracion calibracion = model.getCurrent();
-			controller.delete(calibracion);
-			clearAction();
-		} catch (Exception ex) {
-			showError(ex.getMessage());
-		}
-	}
-
-	private void saveAction() {
-		try {
-			Calibracion calibracion = new Calibracion();
-			String numeroCalibracion = this.generateNumero();
-			this.numero.setText(numeroCalibracion);
-			calibracion.setNumero(numeroCalibracion);
-			calibracion.setNumeroDeMediciones(Integer.valueOf(mediciones.getText()));
-			calibracion.setFecha(Utiles.parseDate(fecha.getText()));
-			if (instrumentoSeleccionado == null) {
-				showError("Debe seleccionar un instrumento");
-				return;
-			}
-
-			controller.save(calibracion, instrumentoSeleccionado);
-			clearAction();
-		} catch (Exception ex) {
-			showError("El formato de la fecha no es válido");
-		}
-	}
-
 	private void clearAction() {
 		numero.setText("");
 		mediciones.setText("0");
@@ -161,22 +108,9 @@ public class View implements Observer {
 		list.clearSelection();
 		save.setEnabled(true);
 		numero.setEnabled(false);
+		mediciones.setEnabled(true);
+		fecha.setEnabled(true);
 		medicionesListContainer.setVisible(false);
-	}
-
-	private void searchAction() {
-		try {
-			Calibracion filter = new Calibracion();
-			filter.setNumero(searchNumero.getText());
-			controller.search(filter);
-		} catch (Exception ex) {
-			showError(ex.getMessage());
-		}
-	}
-
-	private void handleListClick() {
-		int row = list.getSelectedRow();
-		controller.edit(row);
 	}
 
 	public void showError(String message) {
@@ -236,15 +170,36 @@ public class View implements Observer {
 		medicionesListContainer.setVisible(!enableEdit);
 	}
 
-	public void setInstrumentoSeleccionado(Instrumento instrumento) {
+	// Metodo que se llama cuando se selecciona un instrumento para mostrar la tabla de calibraciones
+	public void showCalibracionesTable(Instrumento instrumentoSeleccionado) {
+		try {
+			if (instrumentoSeleccionado == null) {
+				// Si el instrumento seleccionado es NULL, muestra la tabla vacía
+				controller.noInstrumentSelected();
+			} else {
+				Calibracion filter = new Calibracion();
+				String searchTerm = searchNumero.getText();
+
+				filter.setInstrumento(instrumentoSeleccionado);
+				filter.setNumero(searchTerm);	// da igual si esta vacio, porque el metodo search() lo ignora
+
+				try {
+					controller.search(filter);
+				} catch (Exception ex) {
+					// No se hace nada porque esto se ejecuta cuando se entra a esta pantalla
+				}}
+		} catch (Exception ex) {
+			showError(ex.getMessage());
+		}
+	}
+
+	public void mostrarInformacionInstrumento(Instrumento instrumento) {
 		if (instrumento == null) {
 			instrumentoLbl.setText("No hay ningún instrumento seleccionado");
-			instrumentoSeleccionado = null;
 		} else {
 			String labelText = String.format("%s - %s (%s - %s)",
 					instrumento.getSerie(), instrumento.getDescripcion(), instrumento.getMinimo(), instrumento.getMaximo());
 			instrumentoLbl.setText(labelText);
-			instrumentoSeleccionado = instrumento;
 		}
 	}
 
@@ -270,17 +225,14 @@ public class View implements Observer {
 
 	private void updateEditButtonState() {
 		int selectedRowCount = list.getSelectedRowCount();
-		edit.setEnabled(selectedRowCount > 0);
+		edit.setEnabled(selectedRowCount > 0);	// Si hay una fila seleccionada, se activa el boton para modificar
+		mediciones.setEnabled(selectedRowCount <= 0);	// Si hay una fila seleccionada, se desactiva el campo de mediciones
+		fecha.setEnabled(selectedRowCount <= 0);	// Si hay una fila seleccionada, se desactiva el campo de fecha
 	}
 
 	private void updateSaveState() {
 		int selectedRowCount = list.getSelectedRowCount();
 		save.setEnabled(selectedRowCount == 0);
-	}
-
-	// Generar número de calibración aleatorio
-	private String generateNumero() {
-		return String.valueOf((int) (Math.random() * 1000000));
 	}
 
 	public String getNumero() {
@@ -293,5 +245,9 @@ public class View implements Observer {
 
 	public String getFecha() {
 		return fecha.getText();
+	}
+
+	public void showMessage(String message) {
+		JOptionPane.showMessageDialog(panel, message, "Informacion", JOptionPane.INFORMATION_MESSAGE);
 	}
 }
