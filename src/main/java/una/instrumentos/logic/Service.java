@@ -123,7 +123,7 @@ public class Service {
 	public void delete(TipoInstrumento e) throws Exception{
 		// Verificar que no existan instrumentos con ese tipo
 		if (data.getInstrumentos().stream().anyMatch(i->i.getTipo().equals(e))) {
-			throw new Exception("Parece que hay instrumentos con este tipo asociado");
+			throw new Exception("Parece que hay instrumentos asociados a este tipo");
 		}
 		data.getTipos().remove(e);
 	}

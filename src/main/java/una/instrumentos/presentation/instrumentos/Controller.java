@@ -303,7 +303,7 @@ public class Controller {
 			delete(model.getList().get(selectedRow));
 			view.showMessage("Instrumento eliminado exitosamente");
 		} catch (Exception e) {
-			view.showError("No se pudo eliminar el instrumento");
+			view.showError("No se pudo eliminar el instrumento porque tiene calibraciones asociadas");
 		}
 	}
 
