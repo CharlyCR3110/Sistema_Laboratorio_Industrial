@@ -1,5 +1,6 @@
 package una.instrumentos.presentation.instrumentos;
 
+import una.instrumentos.dbRelated.controller.InstrumentoDaoController;
 import una.instrumentos.logic.Service;
 import una.instrumentos.logic.Instrumento;
 import una.instrumentos.logic.TipoInstrumento;
@@ -14,6 +15,8 @@ public class Controller {
 	private final View view;
 	private final Model model;
 
+	private final InstrumentoDaoController instrumentoDbController = new InstrumentoDaoController();
+
 	public Controller(View view, Model model) {
 		this.view = view;
 		this.model = model;
@@ -25,7 +28,7 @@ public class Controller {
 	}
 
 	private void initializeComponents() {
-		model.init(Service.instance().search(new Instrumento()));
+		model.init(instrumentoDbController.listar());
 		view.setController(this);
 		view.setModel(model);
 	}
@@ -45,7 +48,8 @@ public class Controller {
 	 */
 	public void search(Instrumento filter) {
 		try {
-			List<Instrumento> rows = Service.instance().search(filter);
+			List<Instrumento> rows = instrumentoDbController.listarPorDescripcion(filter.getDescripcion());
+
 			if (rows.isEmpty()) {
 				// Tirar una excepcion que no se encontro
 				throw new Exception("Ningun instrumento coincide con el criterio de busqueda");
@@ -66,9 +70,11 @@ public class Controller {
 		Instrumento e = model.getList().get(row);
 		try {
 			// Se obtiene el instrumento actualizado desde la base de datos
-			Instrumento current = Service.instance().read(e);
+			Instrumento current = instrumentoDbController.obtener(e);
 			// Se actualiza el modelo
 			setListCurrentAndCommit(null, current);
+			// actualizarlo
+			instrumentoDbController.modificar(current);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -83,7 +89,7 @@ public class Controller {
 	public void edit(Instrumento e) {
 		try {
 			// Obtener el instrumento actualizado desde la base de datos
-			Instrumento current = Service.instance().read(e);
+			Instrumento current = instrumentoDbController.obtener(e);
 
 			// Actualizar el modelo con los valores de la vista
 			current.setDescripcion(view.getDescripcion());
@@ -93,9 +99,7 @@ public class Controller {
 			current.setTipo(view.getTipoSeleccionado());
 
 			// Actualizar el instrumento en la base de datos
-			Service.instance().update(current);
-			view.showMessage("Instrumento actualizado exitosamente");
-			view.clearAction();
+			instrumentoDbController.modificar(current);
 		} catch (NumberFormatException ex) {
 			throw new RuntimeException("Los valores de mínimo, máximo y tolerancia deben ser números enteros");
 		}
@@ -154,7 +158,7 @@ public class Controller {
 					return 0;
 				}
 
-				service.create(new Instrumento(serie, descripcion, minimo, maximo, tolerancia, tipoInstrumento));
+				instrumentoDbController.guardar(new Instrumento(serie, descripcion, minimo, maximo, tolerancia, tipoInstrumento));
 			} catch (Exception e) {
 				view.showError("Ya existe un instrumento con esa serie");
 			}
@@ -194,9 +198,9 @@ public class Controller {
 	 * @param service
 	 */
 	private void updateModelAfterSave(Service service) {
-		Instrumento emptySearch = new Instrumento();
 		try {
-			setListCurrentAndCommit(service.search(emptySearch), new Instrumento());
+			Instrumento emptySearch = new Instrumento();
+			setListCurrentAndCommit(instrumentoDbController.listar(), new Instrumento());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -209,8 +213,7 @@ public class Controller {
 	 */
 	public void delete(Instrumento instrumento) {
 		try {
-			Service.instance().delete(instrumento);
-			setListCurrentAndCommit(Service.instance().search(new Instrumento()), new Instrumento());
+			instrumentoDbController.eliminar(instrumento.getSerie());
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
 		}
@@ -245,21 +248,6 @@ public class Controller {
 
 	/**
 	 * 
-	 * Carga una lista de instrumentos en el modelo.
-	 * 
-	 * @param instrumentoList
-	 */
-	public void loadList(List<Instrumento> instrumentoList) {
-		try {
-			Service.instance().loadInstrumentoList(instrumentoList);
-			setListCurrentAndCommit(instrumentoList, new Instrumento());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	/**
-	 * 
 	 * Metodo encargadodo de guardar un instrumento en la base de datos.
 	 * 
 	 * @param serie 	 Serie del instrumento.
@@ -274,6 +262,7 @@ public class Controller {
 		try {
 			if (save(serie, descripcion, parseToInt(minimo), parseToInt(maximo), parseToInt(tolerancia), tipo) == 1) {
 				view.showMessage("El instrumento con serie " + serie + " se guardó exitosamente");
+				setListCurrentAndCommit(instrumentoDbController.listar(), new Instrumento());
 			} else {
 				view.showError("No se pudo guardar el instrumento");
 			}
@@ -293,9 +282,15 @@ public class Controller {
 	 */
 
 	public void handleDeleteAction(int selectedRow) {
+		if (selectedRow < 0) {
+			view.showError("Debe seleccionar un elemento de la lista");
+			return;
+		}
+
 		try {
 			delete(model.getList().get(selectedRow));
 			view.showMessage("Instrumento eliminado exitosamente");
+			setListCurrentAndCommit(instrumentoDbController.listar(), new Instrumento());
 		} catch (Exception e) {
 			view.showError("No se pudo eliminar el instrumento porque tiene calibraciones asociadas");
 		}
@@ -309,9 +304,9 @@ public class Controller {
 	 * @param searchDesc
 	 */
 	public void handleSearchAction(String searchDesc) {
+		Instrumento filter = new Instrumento();
+		filter.setDescripcion(searchDesc);
 		try {
-			Instrumento filter = new Instrumento();
-			filter.setDescripcion(searchDesc);
 			search(filter);
 		} catch (Exception e) {
 			view.showError(e.getMessage());
@@ -367,6 +362,9 @@ public class Controller {
 				throw new Exception("No se pudo actualizar el instrumento");
 			}
 			edit(instrumento);
+			view.showMessage("Instrumento actualizado exitosamente");
+			view.clearAction();
+			setListCurrentAndCommit(instrumentoDbController.listar(), new Instrumento());
 		} catch (IndexOutOfBoundsException e) {
 			view.showError("Debe seleccionar un elemento de la lista");
 		} catch (NumberFormatException e) {
