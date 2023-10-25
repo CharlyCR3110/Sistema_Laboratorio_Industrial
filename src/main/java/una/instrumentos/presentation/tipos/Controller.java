@@ -20,10 +20,16 @@ public class Controller {
 	private final Model model;
 	private final TipoInstrumentoDaoController tipoDbController = new TipoInstrumentoDaoController();
 
+	Refresher refresher;
+
 	public Controller(View view, Model model) {
 		this.view = view;
 		this.model = model;
 		initializeComponents();
+
+
+		refresher = new Refresher(this);
+		refresher.start();
 	}
 
 	public Model getModel() {
@@ -224,6 +230,14 @@ public class Controller {
 			search(tipoInstrumento);
 		} catch (Exception e) {
 			view.showError(e.getMessage());
+		}
+	}
+
+	public void refresh() {
+		try {
+			setListCurrentAndCommit(tipoDbController.listar(), new TipoInstrumento());
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 }
