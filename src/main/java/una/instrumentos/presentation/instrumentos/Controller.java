@@ -17,10 +17,15 @@ public class Controller {
 
 	private final InstrumentoDaoController instrumentoDbController = new InstrumentoDaoController();
 
+	Refresher refresher;
+
 	public Controller(View view, Model model) {
 		this.view = view;
 		this.model = model;
 		initializeComponents();
+
+		refresher = new Refresher(this);
+		refresher.start();
 	}
 
 	public Model getModel() {
@@ -371,6 +376,14 @@ public class Controller {
 			view.showError("Los valores de mínimo, máximo y tolerancia deben ser números enteros");
 		} catch (Exception e) {
 			view.showError("No se pudo editar el instrumento");
+		}
+	}
+
+	public void refresh() {
+		try {
+			setListCurrentAndCommit(instrumentoDbController.listar(), new Instrumento());
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 }
