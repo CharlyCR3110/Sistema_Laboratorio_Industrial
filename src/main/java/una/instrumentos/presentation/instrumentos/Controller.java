@@ -1,16 +1,10 @@
 package una.instrumentos.presentation.instrumentos;
 
-import com.itextpdf.text.Document;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
 import una.instrumentos.logic.Service;
 import una.instrumentos.logic.Instrumento;
 import una.instrumentos.logic.TipoInstrumento;
 import una.utiles.ReportGenerator;
 
-import java.io.FileOutputStream;
 import java.util.List;
 
 /**

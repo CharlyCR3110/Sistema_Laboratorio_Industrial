@@ -3,9 +3,7 @@ package una.instrumentos.data;
 import jakarta.xml.bind.annotation.*;
 import una.instrumentos.logic.Calibracion;
 import una.instrumentos.logic.Instrumento;
-import una.instrumentos.logic.TipoInstrumento;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 

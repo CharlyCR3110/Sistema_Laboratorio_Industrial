@@ -1,10 +1,5 @@
 package una.instrumentos.presentation.tipos;
 
-import com.itextpdf.text.Document;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
 import una.instrumentos.dbRelated.controller.TipoInstrumentoDaoController;
 import una.instrumentos.logic.TipoInstrumento;
 import una.instrumentos.logic.Service;

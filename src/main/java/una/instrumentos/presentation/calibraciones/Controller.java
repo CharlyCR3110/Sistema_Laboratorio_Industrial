@@ -1,10 +1,6 @@
 package una.instrumentos.presentation.calibraciones;
 
-import com.itextpdf.text.Document;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
+
 import una.instrumentos.logic.Calibracion;
 import una.instrumentos.logic.Instrumento;
 import una.instrumentos.logic.Medicion;
@@ -12,7 +8,6 @@ import una.instrumentos.logic.Service;
 import una.utiles.ReportGenerator;
 import una.utiles.Utiles;
 
-import java.io.FileOutputStream;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;

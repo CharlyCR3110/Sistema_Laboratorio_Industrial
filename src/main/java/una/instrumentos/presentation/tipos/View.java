@@ -1,13 +1,8 @@
 package una.instrumentos.presentation.tipos;
 
-import una.instrumentos.logic.TipoInstrumento;
-
 import javax.swing.*;
-import javax.swing.border.Border;
 import javax.swing.table.TableColumnModel;
-import java.awt.*;
 import java.awt.event.*;
-import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
