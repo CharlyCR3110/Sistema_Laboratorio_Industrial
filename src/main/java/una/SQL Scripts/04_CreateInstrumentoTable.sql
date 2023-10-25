@@ -3,8 +3,8 @@ USE `laboratorio`;
 CREATE TABLE IF NOT EXISTS instrumentos (
     serie VARCHAR(255) PRIMARY KEY NOT NULL,
     descripcion VARCHAR(255) NOT NULL,
-    tipo VARCHAR(50) NOT NULL,
-    FOREIGN KEY (tipo) REFERENCES tipo_instrumentos(nombre),
+    tipo VARCHAR(20) NOT NULL,
+    FOREIGN KEY (tipo) REFERENCES tipo_instrumentos(codigo),
     minimo INT NOT NULL,
     maximo INT NOT NULL,
     tolerancia INT NOT NULL
