@@ -1,6 +1,7 @@
 package una.instrumentos.logic;
 
 import una.instrumentos.data.Data;
+import una.instrumentos.dbRelated.controller.TipoInstrumentoDaoController;
 import una.utiles.XmlPersister;
 
 import java.util.Comparator;
@@ -125,7 +126,8 @@ public class Service {
 	}
 
 	public List<TipoInstrumento> getTipos() {
-		return data.getTipos();
+		TipoInstrumentoDaoController tipoInstrumentoDaoController = new TipoInstrumentoDaoController();
+		return tipoInstrumentoDaoController.listar();
 	}
 
 	public TipoInstrumento getTipoSeleccionado(String tipo) {
