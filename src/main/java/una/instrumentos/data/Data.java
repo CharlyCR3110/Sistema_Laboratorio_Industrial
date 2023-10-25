@@ -13,9 +13,6 @@ import java.util.List;
 @XmlRootElement(name = "RootElementData")
 @XmlAccessorType(XmlAccessType.FIELD)	// Para que se serialicen los atributos
 public class Data implements java.io.Serializable {
-	@XmlElementWrapper(name = "tipos")
-	@XmlElement(name = "tipo")
-	private List<TipoInstrumento> tipos;
 	@XmlElementWrapper(name = "instrumentos")
 	@XmlElement(name = "instrumento")
 	private List<Instrumento> instrumentos;
@@ -23,13 +20,8 @@ public class Data implements java.io.Serializable {
 	private List<Calibracion> calibraciones;
 
 	public Data() {
-		tipos = new ArrayList<>();
 		instrumentos = new ArrayList<>();
 		calibraciones = new ArrayList<>();
-	}
-
-	public void setTipos(List<TipoInstrumento> tipos) {
-		this.tipos = tipos;
 	}
 
 	public void setInstrumentos(List<Instrumento> instrumentos) {
@@ -38,10 +30,6 @@ public class Data implements java.io.Serializable {
 
 	public void setCalibraciones(List<Calibracion> calibraciones) {
 		this.calibraciones = calibraciones;
-	}
-
-	public List<TipoInstrumento> getTipos() {
-		return tipos;
 	}
 	public List<Instrumento> getInstrumentos() {
 		return instrumentos;
