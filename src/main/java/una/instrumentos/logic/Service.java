@@ -30,11 +30,6 @@ public class Service {
 		}
 	}
 
-	public void loadTipoList(List<TipoInstrumento> list ) throws Exception {
-		data.setTipos(list);
-		data.setInstrumentos(data.getInstrumentos());
-	}
-
 	public void loadInstrumentoList(List<Instrumento> list ) throws Exception {
 		data.setInstrumentos(list);
 		data.setInstrumentos(data.getInstrumentos());
@@ -44,13 +39,6 @@ public class Service {
 		data.setCalibraciones(data.getCalibraciones());
 	}
 	// CREATE
-		// TIPO INSTRUMENTO
-	public void create(TipoInstrumento e) throws Exception{
-		TipoInstrumento result = data.getTipos().stream()
-				.filter(i->i.getCodigo().equals(e.getCodigo())).findFirst().orElse(null);
-		if (result==null) data.getTipos().add(e);
-		else throw new Exception("Tipo ya existe");
-	}
 		// INSTRUMENTO
 	public void create(Instrumento e) throws Exception {
 		Instrumento result = data.getInstrumentos().stream()
@@ -66,13 +54,6 @@ public class Service {
 		else throw new Exception("Calibracion ya existe");
 	}
 	// READ
-		// Tipo Instrumento
-	public TipoInstrumento read(TipoInstrumento e) throws Exception{
-		TipoInstrumento result = data.getTipos().stream()
-				.filter(i->i.getCodigo().equals(e.getCodigo())).findFirst().orElse(null);
-		if (result!=null) return result;
-		else throw new Exception("Tipo no existe");
-	}
 		// Instrumento
 	public Instrumento read(Instrumento e ) throws  Exception {
 		Instrumento result = data.getInstrumentos().stream()
@@ -88,17 +69,6 @@ public class Service {
 		else throw new Exception("Calibracion no existe");
 	}
 	// UPDATE
-		// Tipo Instrumento
-	public void update(TipoInstrumento e) throws Exception{
-		TipoInstrumento result;
-		try{
-			result = this.read(e);
-			data.getTipos().remove(result);
-			data.getTipos().add(e);
-		}catch (Exception ex) {
-			throw new Exception("Tipo no existe");
-		}
-	}
 		// Instrumento
 	public void update(Instrumento e) throws Exception {
 		if (e == null || !data.getInstrumentos().contains(e)) {
@@ -119,14 +89,6 @@ public class Service {
 		}
 	}
 	// DELETE
-		// Tipo Instrumento
-	public void delete(TipoInstrumento e) throws Exception{
-		// Verificar que no existan instrumentos con ese tipo
-		if (data.getInstrumentos().stream().anyMatch(i->i.getTipo().equals(e))) {
-			throw new Exception("Parece que hay instrumentos asociados a este tipo");
-		}
-		data.getTipos().remove(e);
-	}
 		// Instrumento
 	public void delete(Instrumento e) throws Exception {
 		// Verificar que no existan calibraciones con ese instrumento
@@ -140,13 +102,6 @@ public class Service {
 		data.getCalibraciones().remove(e);
 	}
 	// SEARCH
-		// Tipo Instrumento
-	public List<TipoInstrumento> search(TipoInstrumento e){
-		return data.getTipos().stream()
-				.filter(i->i.getNombre().contains(e.getNombre()))
-				.sorted(Comparator.comparing(TipoInstrumento::getNombre))
-				.collect(Collectors.toList());
-	}
 		// Instrumento
 	public List<Instrumento> search(Instrumento e){
 		return data.getInstrumentos().stream()
@@ -164,10 +119,6 @@ public class Service {
 	}
 	private static Service theInstance;
 
-	public TipoInstrumento get(TipoInstrumento e) {
-		return data.getTipos().stream()
-				.filter(i->i.getCodigo().equals(e.getCodigo())).findFirst().orElse(null);
-	}
 
 	public Service getInstance() {
 		return theInstance;
