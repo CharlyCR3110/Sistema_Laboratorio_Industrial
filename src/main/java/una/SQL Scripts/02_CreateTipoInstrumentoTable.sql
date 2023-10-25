@@ -4,6 +4,3 @@ CREATE TABLE IF NOT EXISTS tipo_instrumentos (
   `nombre` VARCHAR(50) NOT NULL,
   `unidad` VARCHAR(30) NULL,
   PRIMARY KEY (`codigo`));
-
--- insert de pruebe
-insert into TipoInstrumento (codigo, nombre, unidad) values('TER','Termómetro','Grados Celcius');
