@@ -16,12 +16,17 @@ public class Controller {
 	private final Model model;
 	private final CalibracionDaoController calibracionDaoController = new CalibracionDaoController();
 
+	Refresher refresher;
+
 	public Controller(View view, Model model) {
 		this.view = view;
 		this.model = model;
 		initializeComponents();  // Mover esta llamada después de inicializar this.model
 		view.setController(this);
 		view.setModel(model);
+
+		refresher = new Refresher(this);
+		refresher.start();
 	}
 
 	public Model getModel() {
@@ -32,6 +37,14 @@ public class Controller {
 		model.init(calibracionDaoController.listar(""));
 	}
 
+	public void setListCurrentAndCommit(List<Calibracion> list, Calibracion current) {
+		if (list != null) {
+			model.setList(list);
+		}
+		model.setCurrent(current);
+		model.commit();
+	}
+
 	public void search(Calibracion filter) {
 		try {
 			List<Calibracion> rows = calibracionDaoController.listar(filter.getInstrumento().getSerie());
@@ -40,9 +53,7 @@ public class Controller {
 				// Tirar una excepcion que no se encontro
 				throw new Exception("Ninguna calibración coincide con el criterio de busqueda");
 			}
-			model.setList(rows);
-			model.setCurrent(new Calibracion());
-			model.commit();
+			setListCurrentAndCommit(rows, new Calibracion());
 		} catch (Exception ex) {
 			throw new RuntimeException(ex.getMessage());
 		}
@@ -64,8 +75,6 @@ public class Controller {
 		try {
 			calibracion.setFecha(Utiles.parseDate(view.getFecha()));
 			calibracionDaoController.modificar(calibracion);
-			model.setCurrent(calibracion);
-			model.commit();
 			return 1;
 		} catch (Exception ex) {
 			throw new RuntimeException(ex.getMessage());
@@ -117,9 +126,7 @@ public class Controller {
 		Calibracion emptySearch = new Calibracion();
 		emptySearch.setInstrumento(model.getInstrumentoSeleccionado());
 		try {
-			model.setList(calibracionDaoController.listar(emptySearch.getInstrumento().getSerie()));
-			model.setCurrent(new Calibracion());
-			model.commit();
+			setListCurrentAndCommit(calibracionDaoController.listar(emptySearch.getInstrumento().getSerie()), new Calibracion());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -149,9 +156,7 @@ public class Controller {
 	public void loadList(List<Calibracion> calibracionList) {
 		try {
 			calibracionDaoController.listar(calibracionList.get(0).getInstrumento().getSerie());
-			model.setList(calibracionList);
-			model.setCurrent(new Calibracion());
-			model.commit();
+			setListCurrentAndCommit(calibracionList, new Calibracion());
 		} catch (Exception e) {
 
 		}
@@ -168,9 +173,13 @@ public class Controller {
 		loadList(instrumento.getCalibraciones());
 	}
 
-	public void noInstrumentSelected() {
-		model.setList(new ArrayList<>());
+	public void setListAndCommit(List<Calibracion> list) {
+		model.setList(list);
 		model.commit();
+	}
+
+	public void noInstrumentSelected() {
+		setListAndCommit(new ArrayList<>());
 	}
 
 	public void setList(ArrayList<Calibracion> list) {
@@ -254,4 +263,9 @@ public class Controller {
 		model.setInstrumentoSeleccionado(instrumentoSeleccionado);
 	}
 
+
+
+	public void refresh() {
+		setListAndCommit(calibracionDaoController.listar(getInstrumentoSeleccionado().getSerie()));
+	}
 }
