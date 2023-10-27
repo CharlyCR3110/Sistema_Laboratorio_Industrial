@@ -1,5 +1,18 @@
 USE `laboratorio`;
 
+CREATE TABLE IF NOT EXISTS tipo_instrumentos (
+    codigo VARCHAR(20) NOT NULL,
+    nombre VARCHAR(50) NOT NULL,
+    unidad VARCHAR(30) NULL,
+    PRIMARY KEY (`codigo`)
+);
+
+CREATE TABLE IF NOT EXISTS mediciones (
+    numero INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    referencia INT NOT NULL,
+    medicion INT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS instrumentos (
     serie VARCHAR(255) PRIMARY KEY NOT NULL,
     descripcion VARCHAR(255) NOT NULL,
@@ -14,6 +27,8 @@ CREATE TABLE IF NOT EXISTS calibraciones (
     numero INT AUTO_INCREMENT PRIMARY KEY,
     fecha DATE NOT NULL,
     numero_de_mediciones INT NOT NULL,
+    mediciones INT NOT NULL,
+    FOREIGN KEY (mediciones) REFERENCES mediciones(numero),
     instrumento_serie VARCHAR(255) NOT NULL,
     FOREIGN KEY (instrumento_serie) REFERENCES instrumentos(serie)
 );
