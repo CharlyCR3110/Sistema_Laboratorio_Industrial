@@ -169,7 +169,7 @@ public class Controller {
 			view.showMessage("El instrumento codigo " + tipoInstrumento.getCodigo() + " ha sido eliminado exitosamente");
 			setListCurrentAndCommit(tipoDbController.listar(), new TipoInstrumento());	// actualizar la lista
 		} catch (Exception e) {
-			view.showError(e.getMessage());
+			view.showError("No se pudo eliminar el instrumento codigo " + tipoInstrumento.getCodigo() + " debido a que está siendo usado por un instrumento");
 		}
 	}
 
