@@ -46,6 +46,11 @@ public class Controller {
 		model.commit();
 	}
 
+	private void setList(List<Instrumento> list) {
+		model.setList(list);
+		model.commit();
+	}
+
 	/**
 	 * Realiza una búsqueda de instrumentos basada en un filtro y actualiza el modelo.
 	 *
@@ -381,7 +386,7 @@ public class Controller {
 
 	public void refresh() {
 		try {
-			setListCurrentAndCommit(instrumentoDbController.listar(), new Instrumento());
+			setList(instrumentoDbController.listar());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
