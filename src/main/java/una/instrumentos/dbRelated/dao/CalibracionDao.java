@@ -184,8 +184,6 @@ public class CalibracionDao {
 			// Setear los valores de la consulta SQL
 			statement.setDate(1, Date.valueOf(calibracion.getFecha()));
 			statement.setString(2, calibracion.getNumero());
-			System.out.println(calibracion.getFecha());
-
 			// Ejecutar la consulta SQL y obtener el resultado
 			return statement.executeUpdate();
 		} catch (SQLException e) {
