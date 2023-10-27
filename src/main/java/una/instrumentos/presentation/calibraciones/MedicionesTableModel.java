@@ -1,5 +1,6 @@
 package una.instrumentos.presentation.calibraciones;
 
+import una.instrumentos.dbRelated.controller.MedicionDaoController;
 import una.instrumentos.logic.Medicion;
 
 import javax.swing.table.AbstractTableModel;
@@ -13,6 +14,8 @@ public class MedicionesTableModel extends AbstractTableModel {
 	private final List<Medicion> rows;
 	private List<Boolean> editableCols;
 	private final String[] colNames = {"Numero", "Referencia", "Lectura"};
+
+	private final MedicionDaoController medicionDaoController = new MedicionDaoController();
 
 	public MedicionesTableModel(int[] cols, List<Medicion> rows, List<Boolean> editableCols) {
 		this.cols = cols;
@@ -29,9 +32,11 @@ public class MedicionesTableModel extends AbstractTableModel {
 		switch (cols[col]) {
 			case REFERENCIA:
 				medicion.setReferencia((int) value);
+				medicionDaoController.modificar(medicion);
 				break;
 			case MEDICION:
 				medicion.setMedicion((int) value);
+				medicionDaoController.modificar(medicion);
 				break;
 		}
 		fireTableCellUpdated(row, col);
