@@ -1,10 +1,9 @@
 package una.instrumentos.presentation.calibraciones;
 
 
+import una.instrumentos.dbRelated.controller.CalibracionDaoController;
 import una.instrumentos.logic.Calibracion;
 import una.instrumentos.logic.Instrumento;
-import una.instrumentos.logic.Medicion;
-import una.instrumentos.logic.Service;
 import una.utiles.ReportGenerator;
 import una.utiles.Utiles;
 
@@ -15,6 +14,7 @@ import java.util.List;
 public class Controller {
 	private final View view;
 	private final Model model;
+	private final CalibracionDaoController calibracionDaoController = new CalibracionDaoController();
 
 	public Controller(View view, Model model) {
 		this.view = view;
@@ -29,12 +29,12 @@ public class Controller {
 	}
 
 	private void initializeComponents() {
-		model.init(Service.instance().search(new Calibracion()));
+		model.init(calibracionDaoController.listar(""));
 	}
 
 	public void search(Calibracion filter) {
 		try {
-			List<Calibracion> rows = Service.instance().search(filter);
+			List<Calibracion> rows = calibracionDaoController.listar(filter.getInstrumento().getSerie());
 			// se tira la excepcion despues, porque
 			if (rows.isEmpty()) {
 				// Tirar una excepcion que no se encontro
@@ -48,30 +48,27 @@ public class Controller {
 		}
 	}
 
-	public void edit(int row) {
+	public void setCurrent(int row) {
 		Calibracion e = model.getList().get(row);
 		try {
-			Calibracion current = Service.instance().read(e);
+			Calibracion current = calibracionDaoController.obtener(e);
 			model.setCurrent(current);
 			model.commit();
+			System.out.println("SETTING CURRENT");//DEBUG
 		} catch (Exception ex) {
 			throw new RuntimeException(ex.getMessage());
 		}
 	}
 
-	public void edit(Calibracion e, Medicion medicion) {
+	public int edit(Calibracion calibracion) {
 		try {
-			Calibracion current = Service.instance().read(e);
-			// buscar la medicion y remplazarla con los nuevos datos
-			for (int i = 0; i < current.getMediciones().size(); i++) {
-				if (current.getMediciones().get(i).getNumero() == medicion.getNumero()) {    // si el numero de la medicion es igual al numero de la medicion que se quiere editar
-					current.getMediciones().set(i, medicion);
-					break;
-				}
-			}
-
+			calibracion.setFecha(Utiles.parseDate(view.getFecha()));
+			calibracionDaoController.modificar(calibracion);
+			model.setCurrent(calibracion);
+			model.commit();
+			return 1;
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			throw new RuntimeException(ex.getMessage());
 		}
 	}
 
@@ -100,11 +97,10 @@ public class Controller {
 		}
 
 		calibracion.agregarMediciones(calibracion.getNumeroDeMediciones(), instrumentoSeleccionado.getMinimo(), instrumentoSeleccionado.getMaximo());
-
 		instrumentoSeleccionado.agregarCalibracion(calibracion);
 		calibracion.setInstrumento(instrumentoSeleccionado);
 
-		updateModelAfterSave(Service.instance());
+		calibracionDaoController.guardar(calibracion);
 		return 1;
 	}
 
@@ -117,10 +113,11 @@ public class Controller {
 		return true;
 	}
 
-	private void updateModelAfterSave(Service service) {
+	private void updateModelAfterAction() {
 		Calibracion emptySearch = new Calibracion();
+		emptySearch.setInstrumento(model.getInstrumentoSeleccionado());
 		try {
-			model.setList(service.search(emptySearch));
+			model.setList(calibracionDaoController.listar(emptySearch.getInstrumento().getSerie()));
 			model.setCurrent(new Calibracion());
 			model.commit();
 		} catch (Exception e) {
@@ -128,13 +125,12 @@ public class Controller {
 		}
 	}
 
-	public void delete(Calibracion calibracion) {
+	public int delete(Calibracion calibracion) {
 		model.getInstrumentoSeleccionado().getCalibraciones().remove(calibracion);
 		try {
-			Service.instance().delete(calibracion);
-			model.setList(Service.instance().search(new Calibracion()));
-			model.setCurrent(new Calibracion());
-			model.commit();
+			int r = calibracionDaoController.eliminar(calibracion.getNumero());
+			System.out.println( r );
+			return r;
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
 		}
@@ -152,17 +148,16 @@ public class Controller {
 
 	public void loadList(List<Calibracion> calibracionList) {
 		try {
-			Service.instance().loadCalibracionList(calibracionList);
+			calibracionDaoController.listar(calibracionList.get(0).getInstrumento().getSerie());
 			model.setList(calibracionList);
 			model.setCurrent(new Calibracion());
 			model.commit();
 		} catch (Exception e) {
-			e.printStackTrace();
+
 		}
 	}
 
 	public void instrumentoSeleccionadoCambiado(Instrumento instrumento) {
-		// TODO: Eliminar este metodo y mover su contenido a la clase Mediator
 		view.showCalibracionesTable(instrumento);
 		view.mostrarInformacionInstrumento(instrumento);
 		model.setInstrumentoSeleccionado(instrumento);
@@ -192,6 +187,7 @@ public class Controller {
 			Calibracion calibracion = model.getList().get(selectedRow);
 			delete(calibracion);
 			view.showMessage("La calibración número " + calibracion.getNumero() + " ha sido eliminada exitosamente");
+			updateModelAfterAction();
 		} catch (Exception e) {
 			view.showError(e.getMessage());
 		}
@@ -204,6 +200,7 @@ public class Controller {
 		calibracion.setNumeroDeMediciones(numeroDeMediciones);
 		if (save(calibracion, model.getInstrumentoSeleccionado()) == 1) {
 			view.showMessage("Calibración número " + numero + " guardada exitosamente");
+			updateModelAfterAction();
 		} else {
 			view.showError("No se pudo guardar la calibración");
 		}
@@ -215,8 +212,17 @@ public class Controller {
 			return;
 		}
 
-		Calibracion calibracion = model.getList().get(selectedRow);
-		edit(selectedRow);
+		Calibracion calibracion = calibracionDaoController.obtener(model.getList().get(selectedRow));
+		try {
+			if (edit(calibracion) == 1) {
+				view.showMessage("Calibración número " + calibracion.getNumero() + " ha sido editada exitosamente");
+				updateModelAfterAction();
+			} else {
+				view.showError("No se pudo editar la calibración");
+			}
+		} catch (Exception e) {
+			view.showError("No se pudo editar la calibracion, verifique la fecha tenga el formato correcto");
+		}
 	}
 
 	public void handleSearchAction(String searchNumero) {
@@ -225,7 +231,7 @@ public class Controller {
 			filter.setNumero(searchNumero);
 			search(filter);
 		} catch (Exception e) {
-			view.showError(e.getMessage());
+			view.showError("No se pudo realizar la búsqueda");
 		}
 	}
 
@@ -234,7 +240,7 @@ public class Controller {
 			return;
 		}
 		try {
-			edit(selectedRow);
+			setCurrent(selectedRow);
 		} catch (Exception e) {
 			view.showError("Parece que hubo un error al seleccionar la calibración");
 		}
