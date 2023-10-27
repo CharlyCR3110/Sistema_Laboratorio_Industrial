@@ -16,7 +16,7 @@ public class Refresher {
 		Runnable task = new Runnable(){
 			public void run(){
 				while(condition){
-					try { Thread.sleep(2000);}
+					try { Thread.sleep(5000);}
 					catch (InterruptedException ex) {}
 					refresh();
 				}
