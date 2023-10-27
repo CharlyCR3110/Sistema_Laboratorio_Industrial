@@ -46,7 +46,7 @@ public class Controller {
 		model.commit();
 	}
 
-	private void setList(List<Instrumento> list) {
+	private void setListAndCommit(List<Instrumento> list) {
 		model.setList(list);
 		model.commit();
 	}
@@ -385,10 +385,6 @@ public class Controller {
 	}
 
 	public void refresh() {
-		try {
-			setList(instrumentoDbController.listar());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		setListAndCommit(instrumentoDbController.listar());
 	}
 }
