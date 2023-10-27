@@ -229,10 +229,7 @@ public class Controller {
 	}
 
 	public void refresh() {
-		try {
-			setListCurrentAndCommit(tipoDbController.listar(), new TipoInstrumento());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		model.setList(tipoDbController.listar());
+		model.commit();
 	}
 }
