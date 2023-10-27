@@ -1,12 +1,8 @@
 package una.instrumentos.logic;
 
-import una.instrumentos.data.Data;
 import una.instrumentos.dbRelated.controller.TipoInstrumentoDaoController;
-import una.utiles.XmlPersister;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Service {
 	private static Service theInstance;
