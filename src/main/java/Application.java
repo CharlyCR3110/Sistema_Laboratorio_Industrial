@@ -25,7 +25,6 @@ public class Application {
 		setupTabs();
 		setupWindow();
 		addTabChangeListeners();
-		addShutdownHook();
 	}
 
 	private static void setLookAndFeel() {
@@ -110,7 +109,4 @@ public class Application {
 		window.setVisible(true);
 	}
 
-	private static void addShutdownHook() {
-		Runtime.getRuntime().addShutdownHook(new Thread(Service.instance()::stop));
-	}
 }
