@@ -1,6 +1,5 @@
 package una.instrumentos.presentation.instrumentos;
 
-import una.instrumentos.logic.Instrumento;
 import una.instrumentos.logic.TipoInstrumento;
 
 import javax.swing.*;

@@ -1,15 +1,8 @@
 package una.instrumentos.logic;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlID;
-import jakarta.xml.bind.annotation.XmlList;
-
 import java.util.Objects;
 
-@XmlAccessorType(XmlAccessType.FIELD)
 public class TipoInstrumento {
-	@XmlID
 	String codigo;
 	String nombre;
 	String unidad;

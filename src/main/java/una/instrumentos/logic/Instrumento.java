@@ -7,20 +7,14 @@ import java.util.List;
 import java.util.Objects;
 
 
-@XmlAccessorType(XmlAccessType.FIELD)
 public class Instrumento {
-	@XmlID
 	String serie;
 	String descripcion;
-	@XmlIDREF
-	@XmlElement(name = "tipoDelInstrumento")
 	TipoInstrumento tipo;	// Combo box
 	Integer minimo;
 	Integer maximo;
 	Integer tolerancia;
 	//Lista de calibraciones
-	@XmlElementWrapper(name = "calibraciones")
-	@XmlElement(name = "calibracion")
 	List<Calibracion> calibraciones;
 
 	public Instrumento() {

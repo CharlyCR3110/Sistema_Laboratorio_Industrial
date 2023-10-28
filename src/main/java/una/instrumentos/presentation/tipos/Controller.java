@@ -1,15 +1,10 @@
 package una.instrumentos.presentation.tipos;
 
-import com.itextpdf.text.Document;
-import com.itextpdf.text.Element;
-import com.itextpdf.text.Paragraph;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
+import una.instrumentos.dbRelated.controller.TipoInstrumentoDaoController;
 import una.instrumentos.logic.TipoInstrumento;
 import una.instrumentos.logic.Service;
 import una.utiles.ReportGenerator;
 
-import java.io.FileOutputStream;
 import java.util.List;
 
 /**
@@ -18,11 +13,18 @@ import java.util.List;
 public class Controller {
 	private final View view;
 	private final Model model;
+	private final TipoInstrumentoDaoController tipoDbController = new TipoInstrumentoDaoController();
+
+	Refresher refresher;
 
 	public Controller(View view, Model model) {
 		this.view = view;
 		this.model = model;
 		initializeComponents();
+
+
+		refresher = new Refresher(this);
+		refresher.start();
 	}
 
 	public Model getModel() {
@@ -31,7 +33,7 @@ public class Controller {
 
 	private void initializeComponents() {
 		// Inicializa los componentes
-		model.init(Service.instance().search(new TipoInstrumento()));
+		model.init(tipoDbController.listar());
 		view.setController(this);
 		view.setModel(model);
 	}
@@ -51,7 +53,7 @@ public class Controller {
 	 */
 	public void search(TipoInstrumento filter) {
 		try {
-			List<TipoInstrumento> rows = Service.instance().search(filter);
+			List<TipoInstrumento> rows = tipoDbController.listarPorNombre(filter.getNombre());
 			if (rows.isEmpty()) {
 				throw new RuntimeException("Ningún tipo de instrumento coincide con los criterios de búsqueda");
 			}
@@ -65,9 +67,11 @@ public class Controller {
 		// Obtener el elemento seleccionado de la lista
 		TipoInstrumento e = model.getList().get(row);
 		try {
-			// Lee el elemento desde la base de datos (Data)
-			TipoInstrumento current = Service.instance().read(e);
+			// Lee el elemento desde la base de datos
+			TipoInstrumento current = tipoDbController.obtener(e);
 			setListCurrentAndCommit(null, current);
+			// actualizarlo en la base de datos
+			tipoDbController.modificar(current);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -75,20 +79,15 @@ public class Controller {
 
 	public void edit(TipoInstrumento e) {
 		try {
-			// Se lee el elemento desde la base de datos (Data)
-			TipoInstrumento current = Service.instance().read(e);
+			// Se lee el elemento desde la base de datos
+			TipoInstrumento current = tipoDbController.obtener(e);
 
 			// Se setean los valores desde el view
 			current.setNombre(view.getNombre());
 			current.setUnidad(view.getUnidad());
 
 			// Se actualiza el objeto en la base de datos
-			Service.instance().update(current);
-			// Se establece la lista actual y se confirma la transacción
-			setListCurrentAndCommit(null, current);
-
-			// Se actualiza la vista para reflejar los cambios
-			search(new TipoInstrumento());
+			tipoDbController.modificar(current);
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
@@ -104,7 +103,7 @@ public class Controller {
 		try {
 			Service service = Service.instance();
 			try {
-				service.create(tipoInstrumento);
+				tipoDbController.guardar(tipoInstrumento);
 			} catch (Exception e) {
 				view.showError("Ya existe un tipo de instrumento con ese código");
 				view.highlightEmptyField("codigo");
@@ -130,7 +129,7 @@ public class Controller {
 	private void updateModelAfterSave(Service service) {
 		try {
 			TipoInstrumento emptySearch = new TipoInstrumento();
-			setListCurrentAndCommit(service.search(emptySearch), new TipoInstrumento());
+			setListCurrentAndCommit(tipoDbController.listar(), new TipoInstrumento());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -138,8 +137,7 @@ public class Controller {
 
 	public void delete(TipoInstrumento tipoInstrumento) {
 		try {
-			Service.instance().delete(tipoInstrumento);
-			setListCurrentAndCommit(Service.instance().search(new TipoInstrumento()), new TipoInstrumento());
+			tipoDbController.eliminar(tipoInstrumento.getCodigo());
 		} catch (Exception e) {
 			throw new RuntimeException(e.getMessage());
 		}
@@ -153,15 +151,6 @@ public class Controller {
 		String filePath = "src/main/java/una/reportes/tipos_instrumentos.pdf";
 		ReportGenerator.generateTypesOfInstrumentsReport(model, filePath);
 		view.showMessage("Reporte generado exitosamente en: " + filePath);
-	}
-
-	public void loadList(List<TipoInstrumento> tipoInstrumentoList) {
-		try {
-			Service.instance().loadTipoList(tipoInstrumentoList);
-			setListCurrentAndCommit(tipoInstrumentoList, new TipoInstrumento());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	/**
@@ -178,8 +167,9 @@ public class Controller {
 		try {
 			delete(tipoInstrumento);
 			view.showMessage("El instrumento codigo " + tipoInstrumento.getCodigo() + " ha sido eliminado exitosamente");
+			setListCurrentAndCommit(tipoDbController.listar(), new TipoInstrumento());	// actualizar la lista
 		} catch (Exception e) {
-			view.showError(e.getMessage());
+			view.showError("No se pudo eliminar el instrumento codigo " + tipoInstrumento.getCodigo() + " debido a que está siendo usado por un instrumento");
 		}
 	}
 
@@ -199,6 +189,7 @@ public class Controller {
 		int result = save(tipoInstrumento);
 		if (result == 1) {
 			view.showMessage("Instrumento codigo " + codigo + " guardado exitosamente");
+			setListCurrentAndCommit(tipoDbController.listar(), new TipoInstrumento());	// actualizar la lista
 		}
 	}
 
@@ -216,6 +207,7 @@ public class Controller {
 			TipoInstrumento tipoInstrumento = model.getList().get(selectedRow);
 			edit(tipoInstrumento);
 			view.showMessage("El instrumento codigo " + tipoInstrumento.getCodigo() + " ha sido editado exitosamente");
+			setListCurrentAndCommit(tipoDbController.listar(), new TipoInstrumento());	// actualizar la lista
 		} catch (Exception e) {
 			view.showError(e.getMessage());
 		}
@@ -234,5 +226,10 @@ public class Controller {
 		} catch (Exception e) {
 			view.showError(e.getMessage());
 		}
+	}
+
+	public void refresh() {
+		model.setList(tipoDbController.listar());
+		model.commit();
 	}
 }

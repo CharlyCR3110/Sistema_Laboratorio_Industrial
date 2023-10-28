@@ -227,7 +227,6 @@ public class View implements Observer {
 		int selectedRowCount = list.getSelectedRowCount();
 		edit.setEnabled(selectedRowCount > 0);	// Si hay una fila seleccionada, se activa el boton para modificar
 		mediciones.setEnabled(selectedRowCount <= 0);	// Si hay una fila seleccionada, se desactiva el campo de mediciones
-		fecha.setEnabled(selectedRowCount <= 0);	// Si hay una fila seleccionada, se desactiva el campo de fecha
 	}
 
 	private void updateSaveState() {

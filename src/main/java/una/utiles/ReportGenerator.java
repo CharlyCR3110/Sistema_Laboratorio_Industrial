@@ -1,4 +1,5 @@
 package una.utiles;
+
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -7,7 +8,6 @@ import una.instrumentos.logic.Instrumento;
 import una.instrumentos.logic.TipoInstrumento;
 
 import java.io.FileOutputStream;
-import java.util.List;
 
 public class ReportGenerator {
 
