@@ -266,6 +266,14 @@ public class Controller {
 
 
 	public void refresh() {
-		setListAndCommit(calibracionDaoController.listar(getInstrumentoSeleccionado().getSerie()));
+		try
+		{
+			if (getInstrumentoSeleccionado() == null) {
+				return;
+			}
+			setListAndCommit(calibracionDaoController.listar(getInstrumentoSeleccionado().getSerie()));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 }
