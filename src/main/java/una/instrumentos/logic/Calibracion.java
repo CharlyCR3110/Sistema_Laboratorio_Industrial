@@ -1,25 +1,14 @@
 package una.instrumentos.logic;
 
-import jakarta.xml.bind.annotation.XmlAccessType;
-import jakarta.xml.bind.annotation.XmlAccessorType;
-import jakarta.xml.bind.annotation.XmlID;
-import jakarta.xml.bind.annotation.XmlTransient;
-import jakarta.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import una.utiles.LocalDateAdapter;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-@XmlAccessorType(XmlAccessType.FIELD)
 public class Calibracion {
-	@XmlID
 	private String numero;	// numero de calibracion
-	@XmlJavaTypeAdapter(LocalDateAdapter.class)
 	private LocalDate fecha;	// fecha de calibracion
 	private Integer numeroDeMediciones;	// numero de mediciones
-	@XmlTransient
 	private Instrumento instrumento;	// instrumento calibrado
 	private List<Medicion> mediciones;	// mediciones de la calibracion
 
